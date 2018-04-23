@@ -6,7 +6,7 @@ QT += \
     sensors bluetooth nfc \
     positioning location
 
-TARGET = ppz
+TARGET = ppt
 TEMPLATE = app
 
 CONFIG += mobility

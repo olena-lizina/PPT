@@ -30,4 +30,55 @@ BlankScreen {
             }
         }
     }
+
+    CFlickable {
+        id: menuFlickable
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: toolBar.bottom
+        anchors.bottom: parent.bottom
+        contentHeight: column.height
+
+        Column {
+            id: column
+            anchors.left: parent.left
+            anchors.right: parent.right
+
+            CInputField{
+                labelText: qsTr("Full name")
+                placeholder: qsTr("Enter name")
+            }
+
+            CInputField{
+                labelText: qsTr("Phone")
+                placeholder: qsTr("+380501111111")
+            }
+
+            CInputField{
+                labelText: qsTr("Email")
+                placeholder: qsTr("email@gmail.com")
+            }
+
+            CInputField{
+                labelText: qsTr("Group")
+                placeholder: qsTr("IS53")
+            }
+
+            CNavigationButton {
+                id: saveBtn
+                text: qsTr("Save")
+                icon: "\u2611"
+            }
+
+            CNavigationButton {
+                id: clearBtn
+                text: qsTr("Clear")
+                icon: "\u2613"
+            }
+        }
+    }
+
+    CScrollBar {
+        flickableItem: menuFlickable
+    }
 }

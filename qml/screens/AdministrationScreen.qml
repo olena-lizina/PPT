@@ -47,10 +47,10 @@ BlankScreen {
             CNavigationButton {
                 text: qsTr("Add new student")
                 icon: "\uf067"
-//                onClicked: {
-//                    ProjectManager.baseFolder = ProjectManager.Projects
-//                    stackView.push(Qt.resolvedUrl("AdministrationScreen.qml")) //
-//                }
+                onClicked: {
+                    //ProjectManager.baseFolder = ProjectManager.Projects
+                    stackView.push(Qt.resolvedUrl("AddStudentScreen.qml")) //
+                }
             }
 
             CNavigationButton {
@@ -89,6 +89,6 @@ BlankScreen {
     }
 
     CScrollBar {
-        flickableItem: listView
+        flickableItem: menuFlickable
     }
 }

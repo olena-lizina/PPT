@@ -50,7 +50,7 @@ BlankScreen {
                QML Creator application is distributed under
                <a href=\"http://www.apache.org/licenses/LICENSE-2.0\">Apache Software License, Version 2</a>.<br><br>
 
-               The source code is available at <a href=\"https://github.com/....\">https://github.com/....</a><br><br>
+               The source code is available at <a href=\"https://github.com/olena-lizina/PPT\">https://github.com/olena-lizina/PPT</a><br><br>
 
                Unless required by applicable law or agreed to in writing, software distributed under the License
                is distributed on an \"AS IS\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.<br><br>
