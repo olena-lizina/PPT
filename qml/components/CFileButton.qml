@@ -27,11 +27,11 @@ Item {
     implicitHeight: 18.5 * settings.pixelDensity
 
     property alias text: buttonLabel.text
-    property alias removeButtonVisible: rightButton.visible
+    property alias rightButtonVisible: rightButton.visible
     property alias rightButtonIcon: icon.text
 
     signal clicked()
-    signal removeClicked()
+    signal rightClicked()
 
     CHorizontalSeparator {
         anchors.left: parent.left
@@ -76,19 +76,18 @@ Item {
             Rectangle {
                 anchors.fill: parent
                 color: palette.button
-                visible: removeButtonMouseArea.pressed
+                visible: rightButtonMouseArea.pressed
             }
 
             CIcon {
                 id: icon
                 anchors.centerIn: parent
-                text: "\uf00d"
             }
 
             MouseArea {
-                id: removeButtonMouseArea
+                id: rightButtonMouseArea
                 anchors.fill: parent
-                onClicked: cFileButton.removeClicked()
+                onClicked: cFileButton.rightClicked()
             }
         }
     }

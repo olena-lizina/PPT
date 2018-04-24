@@ -44,6 +44,7 @@ BlankScreen {
         }
     }
 
+    signal findButtonCLicked()
 
     Column {
         id: column
@@ -57,31 +58,7 @@ BlankScreen {
         CFilterItem {
             comboLabelText: qsTr("Select group")
             textFieldLabelText: qsTr("Enter name")
-        }
-
-        Item {
-            id: rightButton
-
-            Layout.fillHeight: true
-            Layout.minimumWidth: height
-
-            Rectangle {
-                anchors.fill: parent
-                color: palette.button
-            }
-
-            CIcon {
-                id: icon
-                anchors.centerIn: parent
-                text: "\u1F50D"
-            }
-
-            MouseArea {
-                id: findButtonMouseArea
-                anchors.fill: parent
-                onClicked: cFileButton.removeClicked()
-            }
-        }
+        }        
     }
 
     CListView {
@@ -109,7 +86,7 @@ BlankScreen {
             text: name + ',' + group
             rightButtonIcon: "\u270e"
 
-            onRemoveClicked: stackView.push(Qt.resolvedUrl("EditStudentScreen.qml"))
+            onRightClicked: stackView.push(Qt.resolvedUrl("EditStudentScreen.qml"))
         }
     }
 

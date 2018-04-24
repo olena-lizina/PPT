@@ -32,6 +32,8 @@ Item {
     property alias textFieldLabelText: textLabel.text
     property alias textFieldText: textFieldIt.text
 
+    signal findButtonCLicked()
+
     CHorizontalSeparator {
         anchors.left: parent.left
         anchors.right: parent.right
@@ -62,6 +64,10 @@ Item {
         TextField {
             id: textFieldIt
             Layout.minimumWidth: 300
+        }
+
+        CRightButton {
+            icon:
         }
     }
 }
