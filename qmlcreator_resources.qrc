@@ -168,9 +168,12 @@
         <file>qml/screens/AdministrationScreen.qml</file>
         <file>qml/screens/EducationalMaterialsScreen.qml</file>
         <file>qml/screens/ProgressScreen.qml</file>
-        <file>qml/screens/AddStudentScreen.qml</file>
         <file>qml/components/CInputField.qml</file>
-        <file>qml/screens/EditStudentScreen.qml</file>
-        <file>qml/screens/DeleteStudentScreen.qml</file>
+        <file>qml/screens/admins/AddStudentScreen.qml</file>
+        <file>qml/screens/admins/DeleteStudentScreen.qml</file>
+        <file>qml/screens/admins/EditStudentScreen.qml</file>
+        <file>qml/screens/admins/AddGroupScreen.qml</file>
+        <file>qml/screens/admins/DeleteGroupScreen.qml</file>
+        <file>qml/screens/admins/EditGroupScreen.qml</file>
     </qresource>
 </RCC>

@@ -8,10 +8,11 @@ import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.2
 import ProjectManager 1.1
-import "../components"
+import "../../components"
+import "../"
 
 BlankScreen {
-    id: addStudentScreen
+    id: editGroupScreen
 
     CToolBar {
         id: toolBar
@@ -26,7 +27,7 @@ BlankScreen {
             CBackButton {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                text: qsTr("Administration")
+                text: qsTr("Edit group")
             }
         }
     }
@@ -45,23 +46,18 @@ BlankScreen {
             anchors.right: parent.right
 
             CInputField{
-                labelText: qsTr("Full name")
-                placeholder: qsTr("Enter name")
+                labelText: qsTr("Group ID")
+                tText: qsTr("Enter group id")
             }
 
             CInputField{
-                labelText: qsTr("Phone")
-                placeholder: qsTr("+380501111111")
+                labelText: qsTr("Faculty")
+                tText: qsTr("Enter faculty")
             }
 
             CInputField{
-                labelText: qsTr("Email")
-                placeholder: qsTr("email@gmail.com")
-            }
-
-            CInputField{
-                labelText: qsTr("Group")
-                placeholder: qsTr("IS53")
+                labelText: qsTr("Year")
+                tText: qsTr("Enter year")
             }
 
             CNavigationButton {
@@ -72,7 +68,7 @@ BlankScreen {
 
             CNavigationButton {
                 id: clearBtn
-                text: qsTr("Clear")
+                text: qsTr("Cancel")
                 icon: "\u2613"
             }
         }

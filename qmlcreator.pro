@@ -35,6 +35,7 @@ SOURCES += \
     qml/components/palettes/*.qml \
     qml/modules/*.qml \
     qml/screens/*.qml \
+    qml/screens/admins/*.qml \
     qml/*.qml
 }
 
