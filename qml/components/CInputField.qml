@@ -52,6 +52,11 @@ Item {
             id: text
             Layout.fillWidth: true
             Layout.fillHeight: true
+            anchors.leftMargin: 4 * settings.pixelDensity
+            anchors.rightMargin: 4 * settings.pixelDensity
+            font.pixelSize: 6 * settings.pixelDensity
+            verticalAlignment: Text.AlignVCenter
+            clip: true
         }
     }
 }

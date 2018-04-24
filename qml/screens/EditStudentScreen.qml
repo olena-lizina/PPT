@@ -11,7 +11,7 @@ import ProjectManager 1.1
 import "../components"
 
 BlankScreen {
-    id: administrationScreen
+    id: editStudentScreen
 
     CToolBar {
         id: toolBar
@@ -26,7 +26,7 @@ BlankScreen {
             CBackButton {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                text: qsTr("Administration")
+                text: qsTr("Edit existing student")
             }
         }
     }
@@ -44,40 +44,36 @@ BlankScreen {
             anchors.left: parent.left
             anchors.right: parent.right
 
-            CNavigationButton {
-                text: qsTr("Add new student")
-                icon: "\uf067"
-                onClicked: stackView.push(Qt.resolvedUrl("AddStudentScreen.qml"))
+            CInputField{
+                labelText: qsTr("Full name")
+                tText: qsTr("Enter name")
+            }
+
+            CInputField{
+                labelText: qsTr("Phone")
+                tText: qsTr("+380501111111")
+            }
+
+            CInputField{
+                labelText: qsTr("Email")
+                tText: qsTr("email@gmail.com")
+            }
+
+            CInputField{
+                labelText: qsTr("Group")
+                tText: qsTr("IS53")
             }
 
             CNavigationButton {
-                text: qsTr("Edit existing student")
-                icon: "\u270e"
-                onClicked: stackView.push(Qt.resolvedUrl("EditStudentScreen.qml"))
+                id: saveBtn
+                text: qsTr("Save")
+                icon: "\u2611"
             }
 
             CNavigationButton {
-                text: qsTr("Delete existing student")
+                id: clearBtn
+                text: qsTr("Cancel")
                 icon: "\u2613"
-                onClicked: stackView.push(Qt.resolvedUrl("DeleteStudentScreen.qml"))
-            }
-
-            CNavigationButton {
-                text: qsTr("Add group")
-                icon: "\uf067"
-                //onClicked: stackView.push(Qt.resolvedUrl("ModulesScreen.qml"))
-            }
-
-            CNavigationButton {
-                text: qsTr("Edit group")
-                icon: "\u270e"
-                //onClicked: stackView.push(Qt.resolvedUrl("AboutScreen.qml"))
-            }
-
-            CNavigationButton {
-                text: qsTr("Delete group")
-                icon: "\u2613"
-                //onClicked: stackView.push(Qt.resolvedUrl("AboutScreen.qml"))
             }
         }
     }

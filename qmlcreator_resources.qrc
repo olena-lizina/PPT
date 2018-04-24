@@ -170,5 +170,7 @@
         <file>qml/screens/ProgressScreen.qml</file>
         <file>qml/screens/AddStudentScreen.qml</file>
         <file>qml/components/CInputField.qml</file>
+        <file>qml/screens/EditStudentScreen.qml</file>
+        <file>qml/screens/DeleteStudentScreen.qml</file>
     </qresource>
 </RCC>
