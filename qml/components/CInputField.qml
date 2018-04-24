@@ -26,10 +26,9 @@ Item {
     anchors.right: parent.right
     implicitHeight: 18.5 * settings.pixelDensity
 
-    property string labelText: "" /*label.text*/
+    property alias labelText: label.text
     property alias tText: text.text
-    property alias placeholder: text.placeholder
-    property alias validator: text.validator
+    property alias placeholder: text.placeholderText
 
     CHorizontalSeparator {
         anchors.left: parent.left
@@ -37,28 +36,22 @@ Item {
         anchors.bottom: parent.bottom
     }
 
-    GridLayout {
+    RowLayout {
         anchors.fill: parent
         anchors.leftMargin: 5 * settings.pixelDensity
         anchors.rightMargin: 5 * settings.pixelDensity
-
-        columns: 2
-        columnSpacing : 3 * settings.pixelDensity
+        spacing: 3 * settings.pixelDensity
 
         CLabel {
             id: label
-//            Layout.fillWidth: true
-//            Layout.fillHeight: true
-//            Layout.minimumWidth: 50
-//            Layout.preferredWidth: 100
+            Layout.fillWidth: true
+            Layout.maximumWidth: 200
         }
 
-        CTextField {
+        TextField {
             id: text
-//            Layout.fillWidth: true
-//            Layout.fillHeight: true
-//            Layout.minimumWidth: 200
-//            Layout.preferredWidth: 300
+            Layout.fillWidth: true
+            Layout.fillHeight: true
         }
     }
 }
