@@ -65,7 +65,8 @@ BlankScreen {
             CNavigationButton {
                 text: qsTr("Edit existing student")
                 icon: "\u270e"
-                onClicked: stackView.push(Qt.resolvedUrl("admins/EditStudentScreen.qml"))
+                //onClicked: stackView.push(Qt.resolvedUrl("admins/EditStudentScreen.qml"))
+                onClicked: stackView.push(Qt.resolvedUrl("admins/SelectEditStudentScreen.qml"))
             }
 
             CNavigationButton {

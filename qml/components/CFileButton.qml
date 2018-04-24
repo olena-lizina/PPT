@@ -27,7 +27,8 @@ Item {
     implicitHeight: 18.5 * settings.pixelDensity
 
     property alias text: buttonLabel.text
-    property alias removeButtonVisible: removeButton.visible
+    property alias removeButtonVisible: rightButton.visible
+    property alias rightButtonIcon: icon.text
 
     signal clicked()
     signal removeClicked()
@@ -67,7 +68,8 @@ Item {
         }
 
         Item {
-            id: removeButton
+            id: rightButton
+
             Layout.fillHeight: true
             Layout.minimumWidth: height
 
@@ -78,6 +80,7 @@ Item {
             }
 
             CIcon {
+                id: icon
                 anchors.centerIn: parent
                 text: "\uf00d"
             }
