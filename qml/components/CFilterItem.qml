@@ -19,6 +19,7 @@
 import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.2
+import QtQuick.Window 2.0
 
 Item {
     id: cFilterItem
@@ -27,12 +28,10 @@ Item {
     anchors.right: parent.right
     implicitHeight: 18.5 * settings.pixelDensity
 
-    property alias comboLabelText: comboLabel.text
-    property alias groupValue: groupComboBox.currentText
-    property alias textFieldLabelText: textLabel.text
-    property alias textFieldText: textFieldIt.text
+    signal rightClicked()
 
-    signal findButtonCLicked()
+    property alias comboLabelText: comboLabel.text
+    property alias textFieldLabelText: textLabel.text
 
     CHorizontalSeparator {
         anchors.left: parent.left
@@ -40,34 +39,86 @@ Item {
         anchors.bottom: parent.bottom
     }
 
-    Row {
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.verticalCenter: parent.verticalCenter
-        anchors.leftMargin: 5 * settings.pixelDensity
-        anchors.rightMargin: 5 * settings.pixelDensity
-        spacing: 0.5 * settings.pixelDensity
+    RowLayout {
+        anchors.fill: parent
+        spacing: 0
 
-        CLabel {
-            id: comboLabel
+        Item {
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+
+            CLabel {
+                id: comboLabel
+                width: implicitWidth
+                anchors {
+                    left: parent.left
+                    top: parent.top
+                    bottom: parent.bottom
+                    leftMargin: 5 * settings.pixelDensity
+                }
+            }
+
+            ComboBox {
+                id: groupComboBox
+                width: 0.15 * Screen.width
+                anchors {
+                    left: comboLabel.right
+                    top: parent.top
+                    bottom: parent.bottom
+                    leftMargin: 5 * settings.pixelDensity
+                    topMargin: 3 * settings.pixelDensity
+                    bottomMargin: 3 * settings.pixelDensity
+                }
+            }
+
+            CLabel {
+                id: textLabel
+                width: implicitWidth
+                anchors {
+                    left: groupComboBox.right
+                    top: parent.top
+                    bottom: parent.bottom
+                    leftMargin: 5 * settings.pixelDensity
+                }
+            }
+
+            TextField {
+                id: textFieldIt
+                width: 0.15 * Screen.width
+                anchors {
+                    left: textLabel.right
+                    top: parent.top
+                    bottom: parent.bottom
+                    leftMargin: 5 * settings.pixelDensity
+                    topMargin: 3 * settings.pixelDensity
+                    bottomMargin: 3 * settings.pixelDensity
+                }
+            }
         }
 
-        ComboBox {
-            id: groupComboBox
-            Layout.minimumWidth: 200
-        }
+        Item {
+            id: rightButton
 
-        CLabel {
-            id: textLabel
-        }
+            Layout.fillHeight: true
+            Layout.minimumWidth: height
 
-        TextField {
-            id: textFieldIt
-            Layout.minimumWidth: 300
-        }
+            Rectangle {
+                anchors.fill: parent
+                color: palette.button
+                visible: rightButtonMouseArea.pressed
+            }
 
-        CRightButton {
-            icon:
+            CIcon {
+                id: icon
+                anchors.centerIn: parent
+                text: "\u2315"
+            }
+
+            MouseArea {
+                id: rightButtonMouseArea
+                anchors.fill: parent
+                onClicked: cFilterItem.rightClicked()
+            }
         }
     }
 }
