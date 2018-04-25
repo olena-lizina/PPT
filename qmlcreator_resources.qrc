@@ -177,6 +177,5 @@
         <file>qml/screens/admins/EditGroupScreen.qml</file>
         <file>qml/screens/admins/SelectEditStudentScreen.qml</file>
         <file>qml/components/CFilterItem.qml</file>
-        <file>qml/components/CRightButton.qml</file>
     </qresource>
 </RCC>
