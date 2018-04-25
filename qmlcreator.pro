@@ -19,14 +19,20 @@ HEADERS += \
     cpp/ProjectManager.h \
     cpp/QMLHighlighter.h \
     cpp/SyntaxHighlighter.h \
-    cpp/MessageHandler.h
+    cpp/MessageHandler.h \
+    cpp/StudentManager.h \
+    cpp/SaveManager.h \
+    cpp/Student.h
 
 SOURCES += \
     cpp/main.cpp \
     cpp/ProjectManager.cpp \
     cpp/QMLHighlighter.cpp \
     cpp/SyntaxHighlighter.cpp \
-    cpp/MessageHandler.cpp
+    cpp/MessageHandler.cpp \
+    cpp/StudentManager.cpp \
+    cpp/SaveManager.cpp \
+    cpp/Student.cpp
 
 lupdate_only {
 SOURCES += \
