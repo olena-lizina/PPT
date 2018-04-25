@@ -32,6 +32,8 @@ Item {
 
     property alias comboLabelText: comboLabel.text
     property alias textFieldLabelText: textLabel.text
+    property alias textFieldVisibility: textFieldIt.visible
+    property alias textLabelVisibility: textLabel.visible
 
     CHorizontalSeparator {
         anchors.left: parent.left

@@ -177,5 +177,8 @@
         <file>qml/screens/admins/EditGroupScreen.qml</file>
         <file>qml/screens/admins/SelectEditStudentScreen.qml</file>
         <file>qml/components/CFilterItem.qml</file>
+        <file>qml/screens/admins/SelectDeleteStudentScreen.qml</file>
+        <file>qml/screens/admins/SelectEditGroupScreen.qml</file>
+        <file>qml/screens/admins/SelectDeleteGroupScreen.qml</file>
     </qresource>
 </RCC>

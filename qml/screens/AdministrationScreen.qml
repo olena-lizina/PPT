@@ -72,7 +72,7 @@ BlankScreen {
             CNavigationButton {
                 text: qsTr("Delete existing student")
                 icon: "\u2613"
-                onClicked: stackView.push(Qt.resolvedUrl("admins/DeleteStudentScreen.qml"))
+                onClicked: stackView.push(Qt.resolvedUrl("admins/SelectDeleteStudentScreen.qml"))
             }
 
             CNavigationButton {
@@ -84,13 +84,13 @@ BlankScreen {
             CNavigationButton {
                 text: qsTr("Edit group")
                 icon: "\u270e"
-                onClicked: stackView.push(Qt.resolvedUrl("admins/EditGroupScreen.qml"))
+                onClicked: stackView.push(Qt.resolvedUrl("admins/SelectEditGroupScreen.qml"))
             }
 
             CNavigationButton {
                 text: qsTr("Delete group")
                 icon: "\u2613"
-                onClicked: stackView.push(Qt.resolvedUrl("admins/DeleteGroupScreen.qml"))
+                onClicked: stackView.push(Qt.resolvedUrl("admins/SelectDeleteGroupScreen.qml"))
             }
         }
     }
