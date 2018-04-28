@@ -21,6 +21,8 @@
 #include <QTranslator>
 #include "MessageHandler.h"
 #include "ProjectManager.h"
+#include "StudentManager.h"
+#include "LecturesManager.h"
 #include "SyntaxHighlighter.h"
 
 int main(int argc, char *argv[])
@@ -37,11 +39,20 @@ int main(int argc, char *argv[])
     app.installTranslator(&translator);
 
     qmlRegisterSingletonType<ProjectManager>("ProjectManager", 1, 1, "ProjectManager", &ProjectManager::projectManagerProvider);
+    qmlRegisterSingletonType<StudentManager>("StudentManager", 1, 1, "StudentManager", &StudentManager::studentManagerProvider);
+    qmlRegisterSingletonType<StudentManager>("LecturesManager", 1, 1, "LecturesManager", &LecturesManager::lecturesManagerProvider);
+
     qmlRegisterType<SyntaxHighlighter>("SyntaxHighlighter", 1, 1, "SyntaxHighlighter");
+
+    std::shared_ptr<SaveManager> saveManager(new SaveManager());
+    StudentManager::setSaveManager(saveManager);
+    LecturesManager::setSaveManager(saveManager);
 
     QQmlApplicationEngine engine(QUrl("qrc:/qml/main.qml"));
     ProjectManager::setQmlEngine(&engine);
+    StudentManager::setQmlEngine(&engine);
     MessageHandler::setQmlEngine(&engine);
+    LecturesManager::setQmlEngine((&engine));
 
     return app.exec();
 }

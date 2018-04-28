@@ -53,19 +53,13 @@ BlankScreen {
             CNavigationButton {
                 text: qsTr("Administration")
                 icon: "\uf085"
-                onClicked: {
-                    //ProjectManager.baseFolder = ProjectManager.Projects
-                    stackView.push(Qt.resolvedUrl("AdministrationScreen.qml")) //
-                }
+                onClicked: stackView.push(Qt.resolvedUrl("AdministrationScreen.qml"))
             }
 
             CNavigationButton {
                 text: qsTr("Educational materials")
                 icon: "\uf0f6"
-                onClicked: {
-                    //ProjectManager.baseFolder = ProjectManager.Examples
-                    stackView.push(Qt.resolvedUrl("EducationalMaterialsScreen.qml"))
-                }
+                onClicked: stackView.push(Qt.resolvedUrl("EducationalMaterialsScreen.qml"))
             }
 
             CNavigationButton {

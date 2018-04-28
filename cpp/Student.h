@@ -20,8 +20,11 @@
 #define STUDENT_H
 #include <QString>
 
-class Studen {
+class Student {
+public:
     explicit Student(const QString&, const QString&, const QString&, const QString&);
+    Student operator=(const Student& rhs);
+    bool operator==(const Student& rhs);
     virtual ~Student();
 
     QString name() const;

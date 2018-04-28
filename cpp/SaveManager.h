@@ -36,7 +36,12 @@ public:
 
     void saveStudent(const Student&);
     void removeStudent(const Student&);
+    void updateStudent(const Student& oldStudent, const Student& newStudent);
     QList<Student> loadAllStudents();
+    QStringList getGroups();
+
+protected:
+    void initTables();
 
 protected:
     QSharedPointer<QSqlDatabase> mDbConnection;

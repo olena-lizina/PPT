@@ -19,7 +19,7 @@
 import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.2
-import ProjectManager 1.1
+import StudentManager 1.1
 import "../../components"
 import "../"
 
@@ -39,7 +39,7 @@ BlankScreen {
             CBackButton {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                text: qsTr("Administration")
+                text: qsTr("Add new student")
             }
         }
     }
@@ -58,21 +58,25 @@ BlankScreen {
             anchors.right: parent.right
 
             CInputField{
+                id: name
                 labelText: qsTr("Full name")
                 placeholder: qsTr("Enter name")
             }
 
             CInputField{
+                id: phone
                 labelText: qsTr("Phone")
                 placeholder: qsTr("+380501111111")
             }
 
             CInputField{
+                id: email
                 labelText: qsTr("Email")
                 placeholder: qsTr("email@gmail.com")
             }
 
             CInputField{
+                id: group
                 labelText: qsTr("Group")
                 placeholder: qsTr("IS53")
             }
@@ -81,12 +85,28 @@ BlankScreen {
                 id: saveBtn
                 text: qsTr("Save")
                 icon: "\u2611"
+
+                onClicked: {
+                    if (name.tText !== "" && phone.tText !== "" && email.tText !== "" && group.tText !== "")
+                    {
+                        StudentManager.createStudent(name.tText, phone.tText, email.tText, group.tText);
+                        if (!stackView.busy)
+                            stackView.pop()
+                    }
+                }
             }
 
             CNavigationButton {
                 id: clearBtn
                 text: qsTr("Clear")
                 icon: "\u2613"
+
+                onClicked: {
+                    name.tText = "";
+                    phone.tText = "";
+                    email.tText = "";
+                    group.tText = "";
+                }
             }
         }
     }

@@ -19,12 +19,27 @@
 import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.2
-import ProjectManager 1.1
+import StudentManager 1.1
 import "../../components"
 import "../"
 
 BlankScreen {
     id: selectStudentScreen
+
+    signal findByGroup()
+
+    Stack.onStatusChanged: {
+        if (Stack.status === Stack.Activating)
+        {
+            findMenu.comboBox.model = StudentManager.getGroups();
+            findMenu.comboBox.currentIndex = StudentManager.selectedGroupIdx();
+        }        
+        listView.model = StudentManager.getStudentsByGroup(findMenu.comboBox.textAt(findMenu.comboBox.currentIndex));
+    }
+
+    onFindByGroup: {
+        listView.model = StudentManager.getStudentsByGroup(findMenu.comboBox.currentIndex);
+    }
 
     CToolBar {
         id: toolBar
@@ -39,12 +54,10 @@ BlankScreen {
             CBackButton {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                text: qsTr("Select student to edit")
+                text: qsTr("Edit existing student")
             }
         }
     }
-
-    signal findButtonCLicked()
 
     Column {
         id: column
@@ -56,8 +69,37 @@ BlankScreen {
         }
 
         CFilterItem {
+            id: findMenu
+
+            property string dummy: "------"
+
             comboLabelText: qsTr("Select group")
             textFieldLabelText: qsTr("Enter name")
+
+            comboBox.onCurrentIndexChanged:
+            {
+                if (findMenu.comboBox.textAt(findMenu.comboBox.currentIndex) !== dummy)
+                    StudentManager.selectedGroupIdx(findMenu.comboBox.currentIndex);
+                listView.model = StudentManager.getStudentsByGroup(findMenu.comboBox.textAt(findMenu.comboBox.currentIndex));
+            }
+
+            onFindBtnClicked: {
+                if (findMenu.comboBox.textAt(findMenu.comboBox.currentIndex) !== dummy && textItem !== "")
+                {
+                    StudentManager.selectedGroupIdx(findMenu.comboBox.currentIndex);
+                    listView.model = StudentManager.getStudentsByNameAndGroup(findMenu.textItem, findMenu.comboBox.textAt(findMenu.comboBox.currentIndex));
+                }
+                if (findMenu.comboBox.textAt(findMenu.comboBox.currentIndex) !== dummy && textItem === "")
+                {
+                    StudentManager.selectedGroupIdx(findMenu.comboBox.currentIndex);
+                    listView.model = StudentManager.getStudentsByGroup(findMenu.comboBox.textAt(findMenu.comboBox.currentIndex));
+                }
+                else if (findMenu.comboBox.textAt(findMenu.comboBox.currentIndex) === dummy && textItem !== "")
+                {
+                    StudentManager.selectedGroupIdx(0);
+                    listView.model = StudentManager.getStudentsByName(findMenu.textItem);
+                }
+            }
         }        
     }
 
@@ -71,22 +113,14 @@ BlankScreen {
             bottom: parent.bottom
         }
 
-        model: ListModel{
-            ListElement {
-                    name: "Lizina Olena Volodymyrivna"
-                    group: "ISz41"
-                }
-            ListElement {
-                    name: "Ivashchenko Galyna Ivanivna"
-                    group: "ISz41"
-                }
-        }
-
         delegate: CFileButton {
-            text: name + ',' + group
+            text: modelData
             rightButtonIcon: "\u270e"
 
-            onRightClicked: stackView.push(Qt.resolvedUrl("EditStudentScreen.qml"))
+            onRightClicked: {
+                StudentManager.selectedStudent(modelData)
+                stackView.push(Qt.resolvedUrl("EditStudentScreen.qml"))
+            }
         }
     }
 

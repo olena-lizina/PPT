@@ -20,31 +20,51 @@
 #define STUDENTMANAGER_H
 #include <QObject>
 #include <memory>
-
-class Student;
-class SaveManager;
+#include "SaveManager.h"
+#include "Student.h"
+#include <QQmlApplicationEngine>
 
 class StudentManager: public QObject
 {
     Q_OBJECT
 
 public:
-    explicit StudentManager(std::weak_ptr<SaveManager>, QObject *parent = nullptr);
+    explicit StudentManager(QObject *parent = nullptr);
+
+    // singleton type provider function
+    static QObject* studentManagerProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
+    static void setQmlEngine(QQmlApplicationEngine *engine);
+    static void setSaveManager(std::shared_ptr<SaveManager> saveMgr);
+    Q_INVOKABLE void clearComponentCache();
 
     Q_INVOKABLE void createStudent(const QString&, const QString&, const QString&, const QString&);
-    Q_INVOKABLE void deleteStudent(const QString&, const QString&);
-    Q_INVOKABLE void updateStudent(const QString&, const QString&, const QString&, const QString&, const QString&, const QString&);
+    Q_INVOKABLE void deleteStudent(const QString&);
+    Q_INVOKABLE void updateStudent(const QString&, const QString&, const QString&, const QString&);
 
+    Q_INVOKABLE QStringList getGroups();
+    Q_INVOKABLE QStringList getAllStudents();
     Q_INVOKABLE QStringList getStudentsByGroup(const QString&);
     Q_INVOKABLE QStringList getStudentsByName(const QString&);
-    Q_INVOKABLE QStringList getStudentsByNameAndGroup(const QString&, const QString&);
+    Q_INVOKABLE QStringList getStudentsByNameAndGroup(const QString& name, const QString& group);
+
+    Q_INVOKABLE void selectedStudent(const QString&);
+    Q_INVOKABLE QString selectedStudentName() const;
+    Q_INVOKABLE QString selectedStudentPhone() const;
+    Q_INVOKABLE QString selectedStudentEmail() const;
+    Q_INVOKABLE QString selectedStudentGroup() const;
+
+    Q_INVOKABLE void selectedGroupIdx(const int&);
+    Q_INVOKABLE int selectedGroupIdx() const;
 
 private:
     void loadStudentsFromDB();
 
 protected:
     QList<Student> mStudentList;
-    std::weak_ptr<SaveManager> mSaveManager;
+    Student mSelectedStudent;
+    int mSelectedGroupIdx;
+    static std::shared_ptr<SaveManager> mSaveManager;
+    static QQmlApplicationEngine *m_qmlEngine;
 };
 
 #endif // STUDENTMANAGER_H

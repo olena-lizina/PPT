@@ -19,7 +19,7 @@
 import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.2
-import ProjectManager 1.1
+import StudentManager 1.1
 import "../../components"
 import "../"
 
@@ -58,35 +58,49 @@ BlankScreen {
             anchors.right: parent.right
 
             CInputField{
+                id: name
                 labelText: qsTr("Full name")
-                tText: qsTr("Enter name")
+                tText: StudentManager.selectedStudentName()
             }
 
             CInputField{
+                id: phone
                 labelText: qsTr("Phone")
-                tText: qsTr("+380501111111")
+                tText: StudentManager.selectedStudentPhone()
             }
 
             CInputField{
+                id: email
                 labelText: qsTr("Email")
-                tText: qsTr("email@gmail.com")
+                tText: StudentManager.selectedStudentEmail()
             }
 
             CInputField{
+                id: group
                 labelText: qsTr("Group")
-                tText: qsTr("IS53")
+                tText: StudentManager.selectedStudentGroup()
             }
 
             CNavigationButton {
                 id: saveBtn
                 text: qsTr("Save")
                 icon: "\u2611"
+
+                onClicked: {
+                    if (name.tText !== "" && phone.tText !== "" && email.tText !== "" && group.tText !== "")
+                        StudentManager.updateStudent(name.tText, phone.tText, email.tText, group.tText);
+                    if (!stackView.busy)
+                        stackView.pop()
+                }
             }
 
             CNavigationButton {
                 id: clearBtn
                 text: qsTr("Cancel")
                 icon: "\u2613"
+                onClicked:
+                    if (!stackView.busy)
+                        stackView.pop()
             }
         }
     }

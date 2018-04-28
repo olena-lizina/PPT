@@ -17,14 +17,48 @@
 ****************************************************************************/
 
 #include "StudentManager.h"
-#include "SaveManager.h"
-#include "Student.h"
+#include <QDebug>
 
-StudentManager::StudentManager(std::weak_ptr<SaveManager> saveMgr, QObject *parent)
+/*static*/ QQmlApplicationEngine *StudentManager::m_qmlEngine = nullptr;
+/*static*/ std::shared_ptr<SaveManager> StudentManager::mSaveManager = nullptr;
+
+StudentManager::StudentManager(QObject *parent)
     : QObject(parent)
-    , mSaveManager(saveMgr)
+    , mSelectedStudent("", "", "", "")
+    , mSelectedGroupIdx(0)
 {
+    loadStudentsFromDB();
+}
 
+/*static*/ QObject* StudentManager::studentManagerProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
+{
+    Q_UNUSED(engine)
+    Q_UNUSED(scriptEngine)
+
+    StudentManager *studentManager = new StudentManager();
+    return studentManager;
+}
+
+/*static*/ void StudentManager::setQmlEngine(QQmlApplicationEngine *engine)
+{
+    StudentManager::m_qmlEngine = engine;
+}
+
+/*static*/ void StudentManager::setSaveManager(std::shared_ptr<SaveManager> saveMgr)
+{
+    StudentManager::mSaveManager = saveMgr;
+}
+
+void StudentManager::clearComponentCache()
+{
+    StudentManager::m_qmlEngine->clearComponentCache();
+}
+
+void StudentManager::selectedStudent(const QString& student)
+{
+    auto studentInfo = student.split(',');
+    mSelectedStudent = Student(studentInfo.at(0).toLocal8Bit().constData(), studentInfo.at(2).toLocal8Bit().constData(),
+                        studentInfo.at(3).toLocal8Bit().constData(), studentInfo.at(1).toLocal8Bit().constData());
 }
 
 void StudentManager::createStudent(const QString& name, const QString& phone, const QString& email, const QString& group)
@@ -32,59 +66,59 @@ void StudentManager::createStudent(const QString& name, const QString& phone, co
     Student student(name, phone, email, group);
     mStudentList.push_back(student);
 
-    auto saveMgr = mSaveManager.lock();
-
-    if (saveMgr)
+    if (mSaveManager)
         mSaveManager->saveStudent(student);
 }
 
-void StudentManager::deleteStudent(const QString& name, const QString& group)
+void StudentManager::deleteStudent(const QString& student)
 {
-    auto student = std::find_if(mStudentList.cbegin(), mStudentList.cend(),
-                                [&name, &group](const Student& student)
-    { return !name.compare(student.name()) && !group.compare(student.group()); });
+    auto studentInfo = student.split(',');
+    Student toRemove(studentInfo.at(0).toLocal8Bit().constData(), studentInfo.at(2).toLocal8Bit().constData(),
+                        studentInfo.at(3).toLocal8Bit().constData(), studentInfo.at(1).toLocal8Bit().constData());
+    mStudentList.removeOne(toRemove);
 
-    if (mStudentList.cend() != student)
-        mStudentList.removeOne(*student);
-
-    auto saveMgr = mSaveManager.lock();
-
-    if (saveMgr)
-        mSaveManager->removeStudent(*student);
+    if (mSaveManager)
+        mSaveManager->removeStudent(toRemove);
 }
 
-void StudentManager::updateStudent(const QString& oldName, const QString& oldGroup, const QString& name, const QString& phone, const QString& email, const QString& group)
+void StudentManager::updateStudent(const QString& name, const QString& phone, const QString& email, const QString& group)
 {
-    auto student = std::find_if(mStudentList.cbegin(), mStudentList.cend(),
-                                [&oldName, &oldGroup](const Student& student)
-    { return !oldName.compare(student.name()) && !oldGroup.compare(student.group()); });
+    auto student = std::find(mStudentList.begin(), mStudentList.end(), mSelectedStudent);
 
     if (mStudentList.cend() != student)
-        mStudentList.removeOne(*student);
+    {
+        Student newStudent(name, phone, email, group);
 
-    auto saveMgr = mSaveManager.lock();
+        if (mSaveManager)
+            mSaveManager->updateStudent(*student, newStudent);
 
-    if (saveMgr)
-        mSaveManager->removeStudent(*student);
+        *student = newStudent;
+    }
+}
 
-    createStudent(name, phone, email, group);
+QStringList StudentManager::getGroups()
+{
+    return mSaveManager->getGroups();
+}
+
+QStringList StudentManager::getAllStudents()
+{
+    QStringList result;
+
+    for (auto& stud : mStudentList)
+        result << stud.name() + "," + stud.group() + "," + stud.phone() + "," + stud.email();
+
+    return result;
 }
 
 QStringList StudentManager::getStudentsByGroup(const QString& group)
 {
     QStringList result;
 
-    QList<Student>::iterator iter = std::find_if(mStudentList.cbegin(), mStudentList.cend(),
-                                                 [&group](const Student& student)
-    { return !group.compare(student.group()); });
-
-    while (mStudentList.cend() != iter)
+    for (auto& stud : mStudentList)
     {
-        result << *iter.name() + "," + *iter.group();
-
-        iter = std::find_if(mStudentList.cbegin(), mStudentList.cend(),
-                            [&group](const Student& student)
-        { return !group.compare(student.group()); });
+        if (!group.compare(stud.group()))
+            result << stud.name() + "," + stud.group() + "," + stud.phone() + "," + stud.email();
     }
 
     return result;
@@ -94,17 +128,10 @@ QStringList StudentManager::getStudentsByName(const QString& name)
 {
     QStringList result;
 
-    QList<Student>::iterator iter = std::find_if(mStudentList.cbegin(), mStudentList.cend(),
-                                                 [&name](const Student& student)
-    { return !name.compare(student.name()); });
-
-    while (mStudentList.cend() != iter)
+    for (auto& stud : mStudentList)
     {
-        result << *iter.name() + "," + *iter.group();
-
-        iter = std::find_if(mStudentList.cbegin(), mStudentList.cend(),
-                            [&name](const Student& student)
-        { return !name.compare(student.name()); });
+        if (stud.name().contains(name))
+            result << stud.name() + "," + stud.group() + "," + stud.phone() + "," + stud.email();
     }
 
     return result;
@@ -114,17 +141,10 @@ QStringList StudentManager::getStudentsByNameAndGroup(const QString& name, const
 {
     QStringList result;
 
-    QList<Student>::iterator iter = std::find_if(mStudentList.cbegin(), mStudentList.cend(),
-                                                 [&name, &group](const Student& student)
-    { return !name.compare(student.name()) && !group.compare(student.group()); });
-
-    while (mStudentList.cend() != iter)
+    for (auto& stud : mStudentList)
     {
-        result << *iter.name() + "," + *iter.group();
-
-        iter = std::find_if(mStudentList.cbegin(), mStudentList.cend(),
-                            [&name](const Student& student)
-        { return !name.compare(student.group()); });
+        if (stud.name().contains(name) && !stud.group().compare(group))
+            result << stud.name() + "," + stud.group() + "," + stud.phone() + "," + stud.email();
     }
 
     return result;
@@ -132,11 +152,39 @@ QStringList StudentManager::getStudentsByNameAndGroup(const QString& name, const
 
 void StudentManager::loadStudentsFromDB()
 {
-    auto saveMgr = mSaveManager.lock();
-
-    if (saveMgr)
+    if (mSaveManager)
     {
         mStudentList.clear();
-        mStudentList = saveMgr->loadAllStudents();
+        mStudentList = mSaveManager->loadAllStudents();
     }
+}
+
+QString StudentManager::selectedStudentName() const
+{
+    return mSelectedStudent.name();
+}
+
+QString StudentManager::selectedStudentPhone() const
+{
+    return mSelectedStudent.phone();
+}
+
+QString StudentManager::selectedStudentEmail() const
+{
+    return mSelectedStudent.email();
+}
+
+QString StudentManager::selectedStudentGroup() const
+{
+    return mSelectedStudent.group();
+}
+
+void StudentManager::selectedGroupIdx(const int& group)
+{
+    mSelectedGroupIdx = group;
+}
+
+int StudentManager::selectedGroupIdx() const
+{
+    return mSelectedGroupIdx;
 }

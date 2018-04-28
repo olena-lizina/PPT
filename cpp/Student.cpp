@@ -8,9 +8,26 @@ Student::Student(const QString& name, const QString& phone, const QString& email
 {
 }
 
-/*virtual*/ ~Student()
+Student Student::operator=(const Student& rhs)
 {
+    if (this != &rhs)
+    {
+        mName = rhs.name();
+        mPhone = rhs.phone();
+        mEmail = rhs.email();
+        mGroup = rhs.group();
+    }
+    return *this;
+}
 
+bool Student::operator==(const Student& rhs)
+{
+    return !name().compare(rhs.name()) && !phone().compare(rhs.phone())
+            && !email().compare(rhs.email()) && !group().compare(rhs.group());
+}
+
+/*virtual*/ Student::~Student()
+{
 }
 
 QString Student::name() const

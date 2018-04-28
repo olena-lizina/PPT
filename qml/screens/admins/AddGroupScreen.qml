@@ -7,7 +7,7 @@
 import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.2
-import ProjectManager 1.1
+import StudentManager 1.1
 import "../../components"
 import "../"
 
@@ -46,16 +46,19 @@ BlankScreen {
             anchors.right: parent.right
 
             CInputField{
+                id: groupId
                 labelText: qsTr("Group ID")
                 placeholder: qsTr("Enter group id")
             }
 
             CInputField{
+                id: faculty
                 labelText: qsTr("Faculty")
                 placeholder: qsTr("Enter faculty")
             }
 
             CInputField{
+                id: year
                 labelText: qsTr("Year")
                 placeholder: qsTr("Enter year")
             }

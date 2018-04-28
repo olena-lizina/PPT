@@ -28,12 +28,14 @@ Item {
     anchors.right: parent.right
     implicitHeight: 18.5 * settings.pixelDensity
 
-    signal rightClicked()
+    signal findBtnClicked()
 
     property alias comboLabelText: comboLabel.text
     property alias textFieldLabelText: textLabel.text
     property alias textFieldVisibility: textFieldIt.visible
     property alias textLabelVisibility: textLabel.visible
+    property alias comboBox: groupComboBox
+    property alias textItem: textFieldIt.text
 
     CHorizontalSeparator {
         anchors.left: parent.left
@@ -63,6 +65,7 @@ Item {
             ComboBox {
                 id: groupComboBox
                 width: 0.15 * Screen.width
+
                 anchors {
                     left: comboLabel.right
                     top: parent.top
@@ -119,7 +122,7 @@ Item {
             MouseArea {
                 id: rightButtonMouseArea
                 anchors.fill: parent
-                onClicked: cFilterItem.rightClicked()
+                onClicked: cFilterItem.findBtnClicked()
             }
         }
     }

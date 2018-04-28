@@ -22,6 +22,7 @@
 #include <QtSql/QSqlDatabase>
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
+#include <QVariant>
 
 SaveManager::SaveManager()
 {
@@ -37,8 +38,7 @@ SaveManager::SaveManager()
     else
         isInitialized = false;
 
-    mQuery->prepare("CREATE TABLE IF NOT EXISTS Students (Id int, Name string, Phone string, Email string, Group string, PRIMARY KEY(Id))");
-    mQuery->exec();
+    initTables();
 }
 
 /*virtual*/ SaveManager::~SaveManager()
@@ -58,30 +58,81 @@ void SaveManager::saveStudent(const Student& student)
     if (!isInitialized)
         return;
 
-    // get the current student index
-    mQuery->prepare("SELECT COUNT(*) FROM Students");
-    mQuery->exec();
-
-    int idx = 0;
-
-    if (mQuery->next())
-        idx = mQuery->value(0).toInt();
-
-    // get the current student index
-
-    mQuery->prepare(QString("INSERT INTO Students (Id, Name, Phone, Email, Group) VALUES (%1, '%2', '%3', '%4', '%5')")
-                    .arg(idx).arg(student.name()).arg(student.phone()).arg(student.email()).arg(student.group()));
+    mQuery->prepare(QString("INSERT INTO Students (Name, Phone, Email, InstGroup) VALUES ('%1', '%2', '%3', '%4')")
+                    .arg(student.name()).arg(student.phone()).arg(student.email()).arg(student.group()));
     mQuery->exec();
 }
 
-void SaveManager::removeStudent(const Student&)
+void SaveManager::removeStudent(const Student& student)
 {
     if (!isInitialized)
         return;
+
+    mQuery->prepare(QString("DELETE FROM Students WHERE Name='%1' AND InstGroup='%2'").arg(student.name()).arg(student.group()));
+    mQuery->exec();
+}
+
+void SaveManager::updateStudent(const Student& oldStudent, const Student& newStudent)
+{
+    if (!isInitialized)
+        return;
+
+    mQuery->prepare(QString("UPDATE Students SET Name='%1', Phone='%2', Email='%3', InstGroup='%4' WHERE Name='%5' AND InstGroup='%6'")
+                    .arg(newStudent.name()).arg(newStudent.phone()).arg(newStudent.email()).arg(newStudent.group()).arg(oldStudent.name()).arg(oldStudent.group()));
+    mQuery->exec();
 }
 
 QList<Student> SaveManager::loadAllStudents()
 {
     if (!isInitialized)
+        return QList<Student>();
+
+    mQuery->prepare("SELECT * FROM Students");
+    mQuery->exec();
+
+    QList<Student> students;
+
+    while (mQuery->next())
+    {
+        QString name(mQuery->value(0).toString());
+        QString phone(mQuery->value(1).toString());
+        QString email(mQuery->value(2).toString());
+        QString group(mQuery->value(3).toString());
+
+        students << Student(name, phone, email, group);
+    }
+
+    return students;
+}
+
+QStringList SaveManager::getGroups()
+{
+    if (!isInitialized)
+        return QList<QString>();
+
+    mQuery->prepare("SELECT InstGroup FROM Students");
+    mQuery->exec();
+
+    QStringList groups;
+
+    groups << "------";
+
+    while (mQuery->next())
+    {
+        QString group(mQuery->value(0).toString());
+
+        if (!groups.count(group))
+            groups << group;
+    }
+
+    return groups;
+}
+
+void SaveManager::initTables()
+{
+    if (!isInitialized)
         return;
+
+    mQuery->prepare("CREATE TABLE IF NOT EXISTS Students (Name string, Phone string, Email string, InstGroup string)");
+    mQuery->exec();
 }
