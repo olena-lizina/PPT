@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
 
     qmlRegisterType<SyntaxHighlighter>("SyntaxHighlighter", 1, 1, "SyntaxHighlighter");
 
-    std::shared_ptr<SaveManager> saveManager(new SaveManager());
+    SaveManager::Ptr saveManager(new SaveManager());
     StudentManager::setSaveManager(saveManager);
     LecturesManager::setSaveManager(saveManager);
 

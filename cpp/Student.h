@@ -22,7 +22,7 @@
 
 class Student {
 public:
-    explicit Student(const QString&, const QString&, const QString&, const QString&);
+    explicit Student(const QString& name, const QString& phone, const QString& email, const QString& group);
     Student operator=(const Student& rhs);
     bool operator==(const Student& rhs);
     virtual ~Student();

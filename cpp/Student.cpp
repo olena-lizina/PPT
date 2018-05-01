@@ -1,6 +1,7 @@
 #include "Student.h"
 
 Student::Student(const QString& name, const QString& phone, const QString& email, const QString& group)
+
     : mName(name)
     , mPhone(phone)
     , mEmail(email)
@@ -22,8 +23,7 @@ Student Student::operator=(const Student& rhs)
 
 bool Student::operator==(const Student& rhs)
 {
-    return !name().compare(rhs.name()) && !phone().compare(rhs.phone())
-            && !email().compare(rhs.email()) && !group().compare(rhs.group());
+    return !name().compare(rhs.name()) && !group().compare(rhs.group());
 }
 
 /*virtual*/ Student::~Student()

@@ -15,20 +15,19 @@
 ** limitations under the License.
 **
 ****************************************************************************/
-
 import QtQuick 2.5
 import QtGraphicalEffects 1.0
-import ProjectManager 1.1
 import ".."
 
 BaseDialog {
-    id: newProjectDialog
+    id: confirmationDialog
 
     property alias title: titleLabel.text
+    property alias text: message.text
 
     function initialize(parameters) {
         for (var attr in parameters) {
-            newProjectDialog[attr] = parameters[attr]
+            confirmationDialog[attr] = parameters[attr]
         }
     }
 
@@ -81,64 +80,26 @@ BaseDialog {
 
         CFlickable {
             id: flickable
-
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: header.bottom
             anchors.bottom: footer.top
-            boundsBehavior: Flickable.StopAtBounds
             clip: true
 
-            property double margin: 3 * settings.pixelDensity
+            contentHeight: message.contentHeight
+            boundsBehavior: Flickable.StopAtBounds
 
-            leftMargin: margin
-            rightMargin: margin
-            topMargin: margin
-            bottomMargin: margin
+            TextEdit {
+                id: message
 
-            contentWidth: width - margin * 2
-            contentHeight: column.height
+                anchors.fill: parent
+                textMargin: 3 * settings.pixelDensity
 
-            Column {
-                id: column
-                anchors.left: parent.left
-                anchors.right: parent.right
-                spacing: 2 * settings.pixelDensity
-
-                CLabel {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    text: qsTr("Project name") + ":"
-                }
-
-                CTextField {
-                    id: projectNameTextField
-
-                    validator: RegExpValidator {
-                        regExp: new RegExp("[a-zA-Z0-9_-]*")
-                    }
-
-                    onTextChanged: {
-                        if (warningLabel.visible)
-                            warningLabel.visible = false
-                    }
-                }
-
-                CLabel {
-                    id: warningLabel
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    wrapMode: Text.WordWrap
-                    color: palette.warning
-                    visible: false
-                }
-
-                CLabel {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    text: qsTr("Note: the project name cannot contain spaces (e.g., My_Project)")
-                    wrapMode: Text.Wrap
-                }
+                wrapMode: Text.Wrap
+                font.family: "Roboto"
+                font.pixelSize: 6 * settings.pixelDensity
+                color: palette.label
+                readOnly: true
             }
         }
 
@@ -151,7 +112,7 @@ BaseDialog {
             anchors.right: footer.left
             anchors.bottom: parent.bottom
             text: qsTr("Cancel")
-            onClicked: newProjectDialog.close()
+            onClicked: confirmationDialog.process(false)
         }
 
         CVerticalSeparator {
@@ -165,27 +126,7 @@ BaseDialog {
             anchors.right: parent.right
             anchors.bottom: parent.bottom
             text: qsTr("OK")
-            onClicked: {
-                var projectName = projectNameTextField.text
-
-                if (projectName.length === 0)
-                {
-                    warningLabel.text = qsTr("The project name cannot be left blank")
-                    warningLabel.visible = true
-                }
-                else
-                {
-                    if (ProjectManager.projectExists(projectName))
-                    {
-                        warningLabel.text = qsTr("The project already exists")
-                        warningLabel.visible = true
-                    }
-                    else
-                    {
-                        newProjectDialog.process(projectName)
-                    }
-                }
-            }
+            onClicked: confirmationDialog.process(true)
         }
     }
 }

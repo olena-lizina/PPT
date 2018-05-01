@@ -57,22 +57,10 @@ BlankScreen {
             anchors.right: parent.right
 
             CNavigationButton {
-                text: qsTr("Add new student")
-                icon: "\uf067"
-                onClicked: stackView.push(Qt.resolvedUrl("admins/AddStudentScreen.qml"))
-            }
-
-            CNavigationButton {
-                text: qsTr("Edit existing student")
-                icon: "\u270e"
+                text: qsTr("Students")
+                icon: "\uD83D\uDEB9"
                 onClicked: stackView.push(Qt.resolvedUrl("admins/SelectEditStudentScreen.qml"))
-            }
-
-            CNavigationButton {
-                text: qsTr("Delete existing student")
-                icon: "\u2613"
-                onClicked: stackView.push(Qt.resolvedUrl("admins/SelectDeleteStudentScreen.qml"))
-            }            
+            }                      
         }
     }
 

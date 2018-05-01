@@ -37,17 +37,18 @@ public:
     static void setSaveManager(std::shared_ptr<SaveManager> saveMgr);
     Q_INVOKABLE void clearComponentCache();
 
-    Q_INVOKABLE void createStudent(const QString&, const QString&, const QString&, const QString&);
-    Q_INVOKABLE void deleteStudent(const QString&);
-    Q_INVOKABLE void updateStudent(const QString&, const QString&, const QString&, const QString&);
+    Q_INVOKABLE bool existsStudent(const QString& name, const QString& group);
+    Q_INVOKABLE void createStudent(const QString& name, const QString& phone, const QString& email, const QString& group);
+    Q_INVOKABLE void deleteStudent(const QString& name, const QString& phone, const QString& email, const QString& group);
 
     Q_INVOKABLE QStringList getGroups();
     Q_INVOKABLE QStringList getAllStudents();
-    Q_INVOKABLE QStringList getStudentsByGroup(const QString&);
+    Q_INVOKABLE QStringList getStudentsByGroup(const QString& groupName);
     Q_INVOKABLE QStringList getStudentsByName(const QString&);
     Q_INVOKABLE QStringList getStudentsByNameAndGroup(const QString& name, const QString& group);
 
     Q_INVOKABLE void selectedStudent(const QString&);
+    Q_INVOKABLE void selectedStudent(const QString& name, const QString& phone, const QString& email, const QString& group);
     Q_INVOKABLE QString selectedStudentName() const;
     Q_INVOKABLE QString selectedStudentPhone() const;
     Q_INVOKABLE QString selectedStudentEmail() const;
@@ -63,7 +64,7 @@ protected:
     QList<Student> mStudentList;
     Student mSelectedStudent;
     int mSelectedGroupIdx;
-    static std::shared_ptr<SaveManager> mSaveManager;
+    static SaveManager::Ptr mSaveManager;
     static QQmlApplicationEngine *m_qmlEngine;
 };
 

@@ -30,7 +30,6 @@
         <file>qml/components/dialogs/ListDialog.qml</file>
         <file>qml/components/dialogs/MessageDialog.qml</file>
         <file>qml/components/dialogs/NewFileDialog.qml</file>
-        <file>qml/components/dialogs/NewProjectDialog.qml</file>
         <file>qml/components/palettes/BasePalette.qml</file>
         <file>qml/components/palettes/CutePalette.qml</file>
         <file>qml/components/palettes/DarkPalette.qml</file>
@@ -169,12 +168,17 @@
         <file>qml/screens/EducationalMaterialsScreen.qml</file>
         <file>qml/screens/ProgressScreen.qml</file>
         <file>qml/components/CInputField.qml</file>
-        <file>qml/screens/admins/AddStudentScreen.qml</file>
-        <file>qml/screens/admins/DeleteStudentScreen.qml</file>
-        <file>qml/screens/admins/EditStudentScreen.qml</file>
-        <file>qml/screens/admins/AddGroupScreen.qml</file>
         <file>qml/screens/admins/SelectEditStudentScreen.qml</file>
         <file>qml/components/CFilterItem.qml</file>
-        <file>qml/screens/admins/SelectDeleteStudentScreen.qml</file>
+        <file>qml/screens/education/lectures/SelectLectureScreen.qml</file>
+        <file>qml/components/dialogs/NewLectureDialog.qml</file>
+        <file>qml/screens/education/lectures/ChapterScreen.qml</file>
+        <file>qml/components/dialogs/EditLectureDialog.qml</file>
+        <file>qml/screens/education/lectures/ThemesScreen.qml</file>
+        <file>qml/screens/education/lectures/SubThemesScreen.qml</file>
+        <file>qml/components/CThemeButton.qml</file>
+        <file>qml/components/dialogs/AddEditStudentDialog.qml</file>
+        <file>qml/components/CEditOrRemoveButton.qml</file>
+        <file>qml/components/dialogs/ConfirmationDeleteStudentDialog.qml</file>
     </qresource>
 </RCC>

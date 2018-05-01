@@ -27,19 +27,7 @@ BlankScreen {
     id: selectStudentScreen
 
     signal findByGroup()
-
-    Stack.onStatusChanged: {
-        if (Stack.status === Stack.Activating)
-        {
-            findMenu.comboBox.model = StudentManager.getGroups();
-            findMenu.comboBox.currentIndex = StudentManager.selectedGroupIdx();
-        }        
-        listView.model = StudentManager.getStudentsByGroup(findMenu.comboBox.textAt(findMenu.comboBox.currentIndex));
-    }
-
-    onFindByGroup: {
-        listView.model = StudentManager.getStudentsByGroup(findMenu.comboBox.currentIndex);
-    }
+    signal showExistMsg()
 
     CToolBar {
         id: toolBar
@@ -54,13 +42,21 @@ BlankScreen {
             CBackButton {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                text: qsTr("Edit existing student")
+                text: qsTr("Students")
             }
+        }
+
+        CToolButton {
+            Layout.fillHeight: true
+            anchors.right: parent.right
+            icon: "\uf067"
+            tooltipText: qsTr("Add student")
+            onClicked: addStudentBtnClicked()
         }
     }
 
     Column {
-        id: column
+        id: findMenuItem
 
         anchors {
             left: parent.left
@@ -71,36 +67,36 @@ BlankScreen {
         CFilterItem {
             id: findMenu
 
-            property string dummy: "------"
-
             comboLabelText: qsTr("Select group")
             textFieldLabelText: qsTr("Enter name")
 
-            comboBox.onCurrentIndexChanged:
-            {
-                if (findMenu.comboBox.textAt(findMenu.comboBox.currentIndex) !== dummy)
-                    StudentManager.selectedGroupIdx(findMenu.comboBox.currentIndex);
-                listView.model = StudentManager.getStudentsByGroup(findMenu.comboBox.textAt(findMenu.comboBox.currentIndex));
-            }
-
             onFindBtnClicked: {
-                if (findMenu.comboBox.textAt(findMenu.comboBox.currentIndex) !== dummy && textItem !== "")
-                {
-                    StudentManager.selectedGroupIdx(findMenu.comboBox.currentIndex);
-                    listView.model = StudentManager.getStudentsByNameAndGroup(findMenu.textItem, findMenu.comboBox.textAt(findMenu.comboBox.currentIndex));
-                }
-                if (findMenu.comboBox.textAt(findMenu.comboBox.currentIndex) !== dummy && textItem === "")
-                {
-                    StudentManager.selectedGroupIdx(findMenu.comboBox.currentIndex);
-                    listView.model = StudentManager.getStudentsByGroup(findMenu.comboBox.textAt(findMenu.comboBox.currentIndex));
-                }
-                else if (findMenu.comboBox.textAt(findMenu.comboBox.currentIndex) === dummy && textItem !== "")
-                {
-                    StudentManager.selectedGroupIdx(0);
+                var dummy = "------";
+                StudentManager.selectedGroupIdx(findMenu.comboBox.currentIndex);
+                var currText = findMenu.comboBox.textAt(findMenu.comboBox.currentIndex)
+                if (currText !== dummy && textItem !== "")
+                    listView.model = StudentManager.getStudentsByNameAndGroup(findMenu.textItem, currText);
+                if (currText !== dummy && textItem === "")
+                    listView.model = StudentManager.getStudentsByGroup(currText);
+                if (currText === dummy && textItem !== "")
                     listView.model = StudentManager.getStudentsByName(findMenu.textItem);
-                }
             }
-        }        
+        }
+    }
+
+    function addStudentBtnClicked()
+    {
+        var parameters = {
+            title: qsTr("Add student"),
+            action: "add"
+        }
+
+        var callback = function()
+        {
+            updateView()
+        }
+
+        dialog.open(dialog.types.studentInfoDialog, parameters, callback)
     }
 
     CListView {
@@ -109,22 +105,86 @@ BlankScreen {
         anchors {
             left: parent.left
             right: parent.right
-            top: column.bottom
+            top: findMenuItem.bottom
             bottom: parent.bottom
         }
 
-        delegate: CFileButton {
+        delegate: CEditOrRemoveButton {
             text: modelData
-            rightButtonIcon: "\u270e"
 
-            onRightClicked: {
+            onEditClicked: {
                 StudentManager.selectedStudent(modelData)
-                stackView.push(Qt.resolvedUrl("EditStudentScreen.qml"))
+                editStudent()
             }
+
+            onRemoveClicked: {
+                StudentManager.selectedStudent(modelData)
+
+                var parameters = {
+                    title: qsTr("Delete the student"),
+                    text: qsTr("Are you sure you want to delete \"%1\"?").arg(modelData)
+                }
+
+                var callback = function(value)
+                {
+                    if (value)
+                    {
+                        StudentManager.deleteStudent(StudentManager.selectedStudentName(), StudentManager.selectedStudentPhone(),
+                                                     StudentManager.selectedStudentEmail(), StudentManager.selectedStudentGroup())
+                        updateView()
+                    }
+                }
+
+                dialog.open(dialog.types.confirmation, parameters, callback)
+            }
+
+//            onClicked: {
+
+//            }
         }
     }
 
     CScrollBar {
         flickableItem: listView
+    }
+
+    function editStudent()
+    {
+        var parameters = {
+            title: qsTr("Edit student"),
+            action: "edit",
+            nameTxt: StudentManager.selectedStudentName(),
+            phoneTxt: StudentManager.selectedStudentPhone(),
+            emailTxt: StudentManager.selectedStudentEmail(),
+            groupTxt: StudentManager.selectedStudentGroup()
+        }
+
+        var callback = function()
+        {
+            updateView()
+        }
+
+        dialog.open(dialog.types.studentInfoDialog, parameters, callback)
+    }
+
+    Stack.onStatusChanged:
+    {
+        if (Stack.status === Stack.Activating)
+        {
+            findMenu.comboBox.model = StudentManager.getGroups();
+            findMenu.comboBox.currentIndex = StudentManager.selectedGroupIdx();
+        }
+        listView.model = StudentManager.getAllStudents();
+    }
+
+    function updateView()
+    {
+        findMenu.comboBox.model = StudentManager.getGroups();
+        findMenu.comboBox.currentIndex = StudentManager.selectedGroupIdx();
+
+        if (StudentManager.selectedGroupIdx() !== 0)
+            listView.model = StudentManager.getStudentsByGroup(findMenu.comboBox.textAt(StudentManager.selectedGroupIdx()));
+        else
+            listView.model = StudentManager.getAllStudents();
     }
 }

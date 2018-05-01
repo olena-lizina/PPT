@@ -23,7 +23,8 @@ HEADERS += \
     cpp/StudentManager.h \
     cpp/SaveManager.h \
     cpp/Student.h \
-    cpp/LecturesManager.h
+    cpp/LecturesManager.h \
+    cpp/Lecture.h
 
 SOURCES += \
     cpp/main.cpp \
@@ -34,7 +35,8 @@ SOURCES += \
     cpp/StudentManager.cpp \
     cpp/SaveManager.cpp \
     cpp/Student.cpp \
-    cpp/LecturesManager.cpp
+    cpp/LecturesManager.cpp \
+    cpp/Lecture.cpp
 
 lupdate_only {
 SOURCES += \
@@ -44,6 +46,7 @@ SOURCES += \
     qml/modules/*.qml \
     qml/screens/*.qml \
     qml/screens/admins/*.qml \
+    qml/screens/education/lectures/*.qml \
     qml/*.qml
 }
 

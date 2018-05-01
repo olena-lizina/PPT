@@ -18,13 +18,20 @@
 
 import QtQuick 2.5
 import QtGraphicalEffects 1.0
+import LecturesManager 1.1
 import ".."
 
 BaseDialog {
-    id: messageDialog
+    id: newLectureDialog
 
     property alias title: titleLabel.text
-    property alias text: message.text
+    property alias label: colLabel.text
+
+    function initialize(parameters) {
+        for (var attr in parameters) {
+            newLectureDialog[attr] = parameters[attr]
+        }
+    }
 
     DropShadow {
         anchors.fill: contentBackground
@@ -75,26 +82,53 @@ BaseDialog {
 
         CFlickable {
             id: flickable
+
             anchors.left: parent.left
             anchors.right: parent.right
             anchors.top: header.bottom
             anchors.bottom: footer.top
+            boundsBehavior: Flickable.StopAtBounds
             clip: true
 
-            contentHeight: message.contentHeight
-            boundsBehavior: Flickable.StopAtBounds
+            property double margin: 3 * settings.pixelDensity
 
-            TextEdit {
-                id: message
+            leftMargin: margin
+            rightMargin: margin
+            topMargin: margin
+            bottomMargin: margin
 
-                anchors.fill: parent
-                textMargin: 3 * settings.pixelDensity
+            contentWidth: width - margin * 2
+            contentHeight: column.height
 
-                wrapMode: Text.Wrap
-                font.family: "Roboto"
-                font.pixelSize: 6 * settings.pixelDensity
-                color: palette.label
-                readOnly: true
+            Column {
+                id: column
+                anchors.left: parent.left
+                anchors.right: parent.right
+                spacing: 2 * settings.pixelDensity
+
+                CLabel {
+                    id: colLabel
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                }
+
+                CTextField {
+                    id: partNameTextField
+
+                    onTextChanged: {
+                        if (warningLabel.visible)
+                            warningLabel.visible = false
+                    }
+                }
+
+                CLabel {
+                    id: warningLabel
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    wrapMode: Text.WordWrap
+                    color: palette.warning
+                    visible: false
+                }
             }
         }
 
@@ -103,12 +137,45 @@ BaseDialog {
         }
 
         CDialogButton {
-            id: footer
             anchors.left: parent.left
+            anchors.right: footer.left
+            anchors.bottom: parent.bottom
+            text: qsTr("Cancel")
+            onClicked: newLectureDialog.close()
+        }
+
+        CVerticalSeparator {
+            id: footer
+            anchors.horizontalCenter: parent.horizontalCenter
+            anchors.bottom: parent.bottom
+        }
+
+        CDialogButton {
+            anchors.left: footer.right
             anchors.right: parent.right
             anchors.bottom: parent.bottom
             text: qsTr("OK")
-            onClicked: messageDialog.close()
+            onClicked: {
+                var partName = partNameTextField.text
+
+                if (partName.length === 0)
+                {
+                    warningLabel.text = qsTr("Input field cannot be left blank")
+                    warningLabel.visible = true
+                }
+                else
+                {
+                    if (LecturesManager.partExists(partName))
+                    {
+                        warningLabel.text = qsTr("Such name already exists")
+                        warningLabel.visible = true
+                    }
+                    else
+                    {
+                        newLectureDialog.process(partName)
+                    }
+                }
+            }
         }
     }
 }

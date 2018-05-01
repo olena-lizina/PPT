@@ -38,6 +38,9 @@ Loader {
         property string indentSize: "IndentSizeDialog.qml"
         property string newFile: "NewFileDialog.qml"
         property string newProject: "NewProjectDialog.qml"
+        property string newLecture: "NewLectureDialog.qml"
+        property string editLecture: "EditLectureDialog.qml"
+        property string studentInfoDialog: "AddEditStudentDialog.qml"
     }
 
     function open(type, parameters, callback) {

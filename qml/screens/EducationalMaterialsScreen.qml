@@ -59,10 +59,7 @@ BlankScreen {
             CNavigationButton {
                 text: qsTr("Lectures")
                 icon: "\uf0f6"
-//                onClicked: {
-//                    ProjectManager.baseFolder = ProjectManager.Examples
-//                    stackView.push(Qt.resolvedUrl("ExamplesScreen.qml")) // EducationalMaterials.qml
-//                }
+                onClicked: stackView.push(Qt.resolvedUrl("education/lectures/SelectLectureScreen.qml"))
             }
 
             CNavigationButton {
@@ -89,6 +86,6 @@ BlankScreen {
     }
 
     CScrollBar {
-        flickableItem: listView
+        flickableItem: menuFlickable
     }
 }
