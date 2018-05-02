@@ -27,7 +27,7 @@ BlankScreen {
     id: subThemesScreen
 
     Stack.onStatusChanged: {
-        listView.model = LecturesManager.getSubThemes();
+        listView.model = LecturesManager.getListModel(LecturesManager.SubThemes);
     }
 
     CToolBar {
@@ -43,7 +43,7 @@ BlankScreen {
             CBackButton {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                text: LecturesManager.selectedTheme()
+                text: LecturesManager.selectedItem(LecturesManager.Theme)
             }
 
             CToolButton {
@@ -58,7 +58,7 @@ BlankScreen {
                     var callback = function(value)
                     {
                         LecturesManager.addSubTheme(value)
-                        listView.model = LecturesManager.getSubThemes()
+                        listView.model = LecturesManager.getListModel(LecturesManager.SubThemes)
                     }
 
                     dialog.open(dialog.types.newLecture, parameters, callback)
@@ -83,11 +83,11 @@ BlankScreen {
 
             onClicked: {
                 console.debug(modelData);
-                LecturesManager.selectedSubTheme(modelData);
+                LecturesManager.selectedItem(modelData, LecturesManager.SubThemes);
             }
 
             onRightClicked: {
-                LecturesManager.selectedSubTheme(modelData);
+                LecturesManager.selectedItem(modelData, LecturesManager.SubThemes);
                 var parameters = {
                     title: qsTr("Edit sub theme"),
                     label: qsTr("Sub theme name :"),
@@ -98,11 +98,11 @@ BlankScreen {
                 {
                     if (value === "delete")
                     {
-                        LecturesManager.deleteSubTheme()
+                        LecturesManager.deleteItem(LecturesManager.SubTheme)
                         stackView.pop()
                     }
                     else
-                        LecturesManager.editSubTheme(value)
+                        LecturesManager.editItem(value, LecturesManager.Theme)
                 }
 
                 dialog.open(dialog.types.editLecture, parameters, callback)

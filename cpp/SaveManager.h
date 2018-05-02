@@ -30,7 +30,7 @@ class SaveManager
 {
 public:
 
-    enum LecturePart {
+    enum LecturePartType {
         Part,
         Chapter,
         Theme,
@@ -51,44 +51,11 @@ public:
     QStringList getGroups();
 
     // work for lectures
+    void saveLecturePart(const LecturePart& lecture, const SaveManager::LecturePartType& type);
+    void updateLecturePart(const LecturePart& oldLecture, const LecturePart& newLecture, const SaveManager::LecturePartType& type);
+    void deleteLecturePart(const LecturePart& lecture, const SaveManager::LecturePartType& type);
 
-    void saveLecturePart(const LecturePart& lecture, const SaveManager::LecturePart& part);
-    void updateLecturePart(const LecturePart& oldLecture, const LecturePart& newLecture, const SaveManager::LecturePart& part);
-
-
-
-
-
-
-
-
-
-
-
-
-
-    QStringList getParts();
-    QStringList getChapters(const QString& part);
-    QStringList getThemes(const QString& part, const QString& chapter);
-    QStringList getSubThemes(const QString& part, const QString& chapter, const QString& theme);
-
-    void savePart(const Part& part);
-    void updatePart(const Part& oldPart, const Part& newPart);
-    void deletePart(const Part& part);
-
-    void saveChapter(const Chapter& chapter);
-    void updateChapter(const Chapter& oldChapter, const Chapter& newChapter);
-    void deleteChapter(const Chapter& chapter);
-
-    void saveTheme(const Theme& theme);
-    void updateTheme(const Theme& oldTheme, const Theme& newTheme);
-    void deleteTheme(const Theme& theme);
-    QString getThemeFile(const Theme& theme);
-
-    void saveSubTheme(const SubTheme& subTheme);
-    void updateSubTheme(const SubTheme& oldSubTheme, const SubTheme& newSubTheme);
-    void deleteSubTheme(const SubTheme& subTheme);
-    QString getSubThemeFile(const SubTheme& subTheme);
+    std::list<LecturePart> getLectureParts(const SaveManager::LecturePartType& type);
 
 protected:
     void initTables();
@@ -96,11 +63,6 @@ protected:
     int getPartId(const QString& part);
     int getChapterId(const int& partId, const QString& chapter);
     int getThemeId(const int& chapterId, const QString& theme);
-
-    int getNextPartId();
-    int getNextChapterId();
-    int getNextThemeId();
-    int getNextSubThemeId();
 
 protected:
     std::shared_ptr<QSqlDatabase> mDbConnection;

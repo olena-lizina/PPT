@@ -39,20 +39,21 @@ int main(int argc, char *argv[])
     app.installTranslator(&translator);
 
     qmlRegisterSingletonType<ProjectManager>("ProjectManager", 1, 1, "ProjectManager", &ProjectManager::projectManagerProvider);
-    qmlRegisterSingletonType<StudentManager>("StudentManager", 1, 1, "StudentManager", &StudentManager::studentManagerProvider);
-    qmlRegisterSingletonType<StudentManager>("LecturesManager", 1, 1, "LecturesManager", &LecturesManager::lecturesManagerProvider);
 
-    qmlRegisterType<SyntaxHighlighter>("SyntaxHighlighter", 1, 1, "SyntaxHighlighter");
+    qmlRegisterSingletonType<StudentManager>("StudentManager", 1, 1, "StudentManager", &StudentManager::studentManagerProvider);
+    qmlRegisterSingletonType<LecturesManager>("LecturesManager", 1, 1, "LecturesManager", &LecturesManager::lecturesManagerProvider);
 
     SaveManager::Ptr saveManager(new SaveManager());
     StudentManager::setSaveManager(saveManager);
     LecturesManager::setSaveManager(saveManager);
 
+    qmlRegisterType<SyntaxHighlighter>("SyntaxHighlighter", 1, 1, "SyntaxHighlighter");
+
     QQmlApplicationEngine engine(QUrl("qrc:/qml/main.qml"));
     ProjectManager::setQmlEngine(&engine);
     StudentManager::setQmlEngine(&engine);
     MessageHandler::setQmlEngine(&engine);
-    LecturesManager::setQmlEngine((&engine));
+    LecturesManager::setQmlEngine(&engine);
 
     return app.exec();
 }

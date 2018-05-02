@@ -166,12 +166,12 @@ BaseDialog {
                 }
                 else
                 {
-                    if (LecturesManager.selectedPart() !== partName &&  LecturesManager.partExists(partName))
+                    if (LecturesManager.selectedItem(LecturesManager.Parts) !== partName &&  LecturesManager.itemExists(partName, LecturesManager.Parts))
                     {
                         warningLabel.text = qsTr("Such name name already exists")
                         warningLabel.visible = true
                     }
-                    else if (LecturesManager.selectedPart() === partName)
+                    else if (LecturesManager.selectedItem(LecturesManager.Parts) === partName)
                     {
                         editLectureDialog.close()
                     }

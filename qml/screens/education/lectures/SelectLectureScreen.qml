@@ -28,7 +28,7 @@ BlankScreen {
 
     Stack.onStatusChanged: {
         if (Stack.status === Stack.Activating)
-            listView.model = LecturesManager.getParts();
+            listView.model = LecturesManager.getListModel(LecturesManager.Parts);
     }
 
     CToolBar {
@@ -59,8 +59,8 @@ BlankScreen {
 
                     var callback = function(value)
                     {
-                        LecturesManager.addPart(value)
-                        listView.model = LecturesManager.getParts()
+                        LecturesManager.addItem(value, LecturesManager.Parts)
+                        listView.model = LecturesManager.getListModel(LecturesManager.Parts)
                     }
 
                     dialog.open(dialog.types.newLecture, parameters, callback)
@@ -85,12 +85,12 @@ BlankScreen {
 
             onClicked: {
                 console.debug(modelData);
-                LecturesManager.selectedPart(modelData);
+                LecturesManager.selectedItem(modelData, LecturesManager.Parts)
                 stackView.push(Qt.resolvedUrl("ChapterScreen.qml"))
             }
 
             onRightClicked: {
-                LecturesManager.selectedPart(modelData);
+                LecturesManager.selectedPartName(modelData);
                 var parameters = {
                     title: qsTr("Edit part"),
                     label: qsTr("Part name :"),
@@ -100,10 +100,10 @@ BlankScreen {
                 var callback = function(value)
                 {
                     if (value === "delete")
-                        LecturesManager.deletePart()
+                        LecturesManager.deleteItem(LecturesManager.Parts)
                     else
-                        LecturesManager.editPart(value)
-                    listView.model = LecturesManager.getParts()
+                        LecturesManager.editItem(value, LecturesManager.Parts)
+                    listView.model = LecturesManager.getListModel(LecturesManager.Parts)
                 }
 
                 dialog.open(dialog.types.editLecture, parameters, callback)

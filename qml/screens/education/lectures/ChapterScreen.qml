@@ -27,7 +27,7 @@ BlankScreen {
     id: chapterScreen
 
     Stack.onStatusChanged: {
-        listView.model = LecturesManager.getChapters();
+        listView.model = LecturesManager.getListModel(LecturesManager.Chapters);
     }
 
     CToolBar {
@@ -43,7 +43,7 @@ BlankScreen {
             CBackButton {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                text: LecturesManager.selectedPart()
+                text: LecturesManager.selectedItem(LecturesManager.Parts)
             }
 
             CToolButton {
@@ -57,8 +57,8 @@ BlankScreen {
 
                     var callback = function(value)
                     {
-                        LecturesManager.addChapter(value)
-                        listView.model = LecturesManager.getChapters()
+                        LecturesManager.addItem(value, LecturesManager.Chapters)
+                        listView.model = LecturesManager.getListModel(LecturesManager.Chapters)
                     }
 
                     dialog.open(dialog.types.newLecture, parameters, callback)
@@ -83,7 +83,7 @@ BlankScreen {
 
             onClicked: {
                 console.debug(modelData);
-                LecturesManager.selectedChapter(modelData);
+                LecturesManager.selectedItem(modelData, LecturesManager.Chapters);
                 stackView.push(Qt.resolvedUrl("ThemesScreen.qml"))
             }
 
@@ -98,10 +98,10 @@ BlankScreen {
                 var callback = function(value)
                 {
                     if (value === "delete")
-                        LecturesManager.deleteChapter()
+                        LecturesManager.deleteItem(LecturesManager.Chapters)
                     else
-                        LecturesManager.editChapter(value)
-                    listView.model = LecturesManager.getChapters()
+                        LecturesManager.editItem(value, LecturesManager.Chapters)
+                    listView.model = LecturesManager.getListModel(LecturesManager.Chapters)
                 }
 
                 dialog.open(dialog.types.editLecture, parameters, callback)

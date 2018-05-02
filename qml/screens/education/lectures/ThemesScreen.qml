@@ -28,7 +28,7 @@ BlankScreen {
 
     Stack.onStatusChanged: {
         listView.model = {}
-        listView.model = LecturesManager.getThemes();
+        listView.model = LecturesManager.getListModel(LecturesManager.Themes);
     }
 
     CToolBar {
@@ -44,7 +44,7 @@ BlankScreen {
             CBackButton {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                text: LecturesManager.selectedChapter()
+                text: LecturesManager.selectedItem(LecturesManager.Chapters)
             }
 
             CToolButton {
@@ -58,8 +58,8 @@ BlankScreen {
 
                     var callback = function(value)
                     {
-                        LecturesManager.addTheme(value)
-                        listView.model = LecturesManager.getThemes()
+                        LecturesManager.addItem(value, LecturesManager.Themes)
+                        listView.model = LecturesManager.getListModel(LecturesManager.Themes)
                     }
 
                     dialog.open(dialog.types.newLecture, parameters, callback)
@@ -83,7 +83,7 @@ BlankScreen {
             rightButtonIcon: "\u270e"
 
             onClicked: {
-                LecturesManager.selectedTheme(modelData);
+                LecturesManager.selectedItem(modelData, LecturesManager.Themes);
 //                if (LecturesManager.hasSubThemes(modelData))
 //                    stackView.push(Qt.resolvedUrl("SubThemesScreen.qml"))
 //                else
@@ -92,14 +92,14 @@ BlankScreen {
                 {
                     stackView.push(Qt.resolvedUrl("SubThemesScreen.qml"))
                 }
-                else if (LecturesManager.hasLecture(modelData))
+                else if (LecturesManager.itemHasFile(modelData, LecturesManager.Themes))
                 {
                     stackView.push(Qt.resolvedUrl("TemplateLectureScreen.qml"))
                 }
             }
 
             onRightClicked: {
-                LecturesManager.selectedTheme(modelData);
+                LecturesManager.selectedItem(modelData, LecturesManager.Themes);
                 var parameters = {
                     title: qsTr("Edit theme"),
                     label: qsTr("Theme name :"),
@@ -109,10 +109,10 @@ BlankScreen {
                 var callback = function(value)
                 {
                     if (value === "delete")
-                        LecturesManager.deleteTheme()
+                        LecturesManager.deleteItem(LecturesManager.Theme)
                     else
-                        LecturesManager.editTheme(value)
-                    listView.model = LecturesManager.getThemes()
+                        LecturesManager.editItem(value, LecturesManager.Theme)
+                    listView.model = LecturesManager.getListModel(LecturesManager.Themes)
                 }
 
                 dialog.open(dialog.types.editLecture, parameters, callback)

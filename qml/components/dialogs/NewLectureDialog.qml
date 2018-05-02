@@ -165,7 +165,7 @@ BaseDialog {
                 }
                 else
                 {
-                    if (LecturesManager.partExists(partName))
+                    if (LecturesManager.itemExists(partName, LecturesManager.Parts))
                     {
                         warningLabel.text = qsTr("Such name already exists")
                         warningLabel.visible = true

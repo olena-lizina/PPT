@@ -28,7 +28,7 @@ BlankScreen {
 
     Stack.onStatusChanged: {
         listView.model = {}
-        listView.model = LecturesManager.getThemes();
+        listView.model = LecturesManager.getListModel(LecturesManager.Themes);
     }
 
     CToolBar {
@@ -44,7 +44,7 @@ BlankScreen {
             CBackButton {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                text: LecturesManager.selectedChapter()
+                text: LecturesManager.selectedItem(LecturesManager.Chapters)
             }            
         }
     }

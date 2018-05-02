@@ -30,13 +30,14 @@ public:
     {
         return mId == rhs.getId()
                 && mParentId == rhs.getParentId()
-                && mName.compare(rhs.getName());
+                && !mName.compare(rhs.getName());
     }
 
     QString getName() const { return mName; }
     QString getFileName() const { return mFileName; }
     int getId() const { return mId; }
     int getParentId() const { return mParentId; }
+    void setName(const QString& name) { mName = name; }
     void setFileName(const QString& file) { mFileName = file; }
 
 protected:
