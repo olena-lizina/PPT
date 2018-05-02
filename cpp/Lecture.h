@@ -20,108 +20,30 @@
 #include <QString>
 #include <QList>
 
-class SubTheme;
-class Theme;
-class Chapter;
-class Part;
-
-class Lecture
+class LecturePart
 {
 public:
-    Lecture();
-    Lecture operator=(const Lecture& rhs);
-    bool operator==(const Lecture& rhs);
-    virtual ~Lecture();
+    LecturePart(const QString& name, const int& id, const int& parentId):
+        mName(name), mId(id), mParentId(parentId) {}
 
-    QList<Part> getParts() const;
-    QStringList parts() const;
-    QStringList chapters(const QString& part);
-    QStringList themes(const QString& part, const QString& chapter);
-    QStringList subThemes(const QString& part, const QString& chapter, const QString& theme);
+    bool operator==(const LecturePart& rhs)
+    {
+        return mId == rhs.getId()
+                && mParentId == rhs.getParentId()
+                && mName.compare(rhs.getName());
+    }
 
-    void addPart(const QString& part);
-    void addChapter(const QString& part, const QString& chapter);
-    void addTheme(const QString& part, const QString& chapter, const QString& theme);
-    void addSubTheme(const QString& part, const QString& chapter, const QString& theme, const QString& subTheme);
-
-protected:
-    QList<Part> mParts;
-};
-
-class SubTheme
-{
-public:
-    SubTheme(const QString& subTheme);
-    SubTheme operator=(const SubTheme& rhs);
-    bool operator==(const SubTheme& rhs);
-
-    QString subTheme() const;
+    QString getName() const { return mName; }
+    QString getFileName() const { return mFileName; }
+    int getId() const { return mId; }
+    int getParentId() const { return mParentId; }
+    void setFileName(const QString& file) { mFileName = file; }
 
 protected:
-    QString mSubTheme;
-};
-
-class Theme
-{
-public:
-    Theme(const QString& theme);
-    Theme operator=(const Theme& rhs);
-    bool operator==(const Theme& rhs);
-
-    QString theme() const;
-
-    void subTheme(const QString& subTheme);
-    QStringList subThemes() const;
-    QList<SubTheme> getSubThemes() const;
-
-protected:
-    QString mTheme;
-    QList<SubTheme> mSubThemes;
-};
-
-class Chapter
-{
-public:
-    Chapter(const QString& chapter);
-    Chapter operator=(const Chapter& rhs);
-    bool operator==(const Chapter& rhs);
-
-    QString chapter() const;
-
-    void theme(const QString& theme);
-    QStringList themes();
-    QList<Theme> getThemes() const;
-
-    void subTheme(const QString& theme, const QString& subTheme);
-    QStringList subThemes(const QString& theme);
-
-protected:
-    QString mChapter;
-    QList<Theme> mThemes;
-};
-
-class Part
-{
-public:
-    Part(const QString& part);
-    Part operator=(const Part& rhs);
-    bool operator==(const Part& rhs);
-
-    QString part() const;
-
-    void chapter(const QString& chapter);
-    QStringList chapters();
-    QList<Chapter> getChapters() const;
-
-    void theme(const QString& chapter, const QString& theme);
-    QStringList themes(const QString& chapter);
-
-    void subTheme(const QString& chapter, const QString& theme, const QString& subTheme);
-    QStringList subThemes(const QString& chapter, const QString& theme);
-
-protected:
-    QString mPart;
-    QList<Chapter> mChapters;
+    QString mName;
+    QString mFileName;
+    int mId;
+    int mParentId;
 };
 
 #endif // LECTURE_H

@@ -81,14 +81,6 @@ BlankScreen {
             text: modelData
             rightButtonIcon: "\u270e"
 
-            Connections {
-                target: LecturesManager
-
-                onSignalUpdateThemes: {
-
-                }
-            }
-
             onClicked: {
                 console.debug(modelData);
                 LecturesManager.selectedSubTheme(modelData);

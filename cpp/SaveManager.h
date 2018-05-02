@@ -20,6 +20,7 @@
 #define SAVEMANAGER_H
 #include <QList>
 #include <memory>
+#include "Lecture.h"
 
 class Student;
 class QSqlDatabase;
@@ -28,6 +29,14 @@ class QSqlQuery;
 class SaveManager
 {
 public:
+
+    enum LecturePart {
+        Part,
+        Chapter,
+        Theme,
+        SubTheme
+    };
+
     using WPtr = std::weak_ptr<SaveManager>;
     using Ptr = std::shared_ptr<SaveManager>;
 
@@ -42,26 +51,44 @@ public:
     QStringList getGroups();
 
     // work for lectures
+
+    void saveLecturePart(const LecturePart& lecture, const SaveManager::LecturePart& part);
+    void updateLecturePart(const LecturePart& oldLecture, const LecturePart& newLecture, const SaveManager::LecturePart& part);
+
+
+
+
+
+
+
+
+
+
+
+
+
     QStringList getParts();
     QStringList getChapters(const QString& part);
     QStringList getThemes(const QString& part, const QString& chapter);
     QStringList getSubThemes(const QString& part, const QString& chapter, const QString& theme);
 
-    void savePart(const QString& part);
-    void updatePart(const QString& oldPart, const QString& newPart);
-    void deletePart(const QString& part);
+    void savePart(const Part& part);
+    void updatePart(const Part& oldPart, const Part& newPart);
+    void deletePart(const Part& part);
 
-    void saveChapter(const QString& part, const QString& chapter);
-    void updateChapter(const QString& oldChapter, const QString& newChapter, const QString& part);
-    void deleteChapter(const QString& chapter, const QString& part);
+    void saveChapter(const Chapter& chapter);
+    void updateChapter(const Chapter& oldChapter, const Chapter& newChapter);
+    void deleteChapter(const Chapter& chapter);
 
-    void saveTheme(const QString& part, const QString& chapter, const QString& theme);
-    void updateTheme(const QString& oldTheme, const QString& newTheme, const QString& part, const QString& chapter);
-    void deleteTheme(const QString& part, const QString& chapter, const QString& theme);
+    void saveTheme(const Theme& theme);
+    void updateTheme(const Theme& oldTheme, const Theme& newTheme);
+    void deleteTheme(const Theme& theme);
+    QString getThemeFile(const Theme& theme);
 
-    void saveSubTheme(const QString& part, const QString& chapter, const QString& theme, const QString& subTheme);
-    void updateSubTheme(const QString& oldSubTheme, const QString& newSubTheme, const QString& part, const QString& chapter, const QString& theme);
-    void deleteSubTheme(const QString& part, const QString& chapter, const QString& theme, const QString& subTheme);
+    void saveSubTheme(const SubTheme& subTheme);
+    void updateSubTheme(const SubTheme& oldSubTheme, const SubTheme& newSubTheme);
+    void deleteSubTheme(const SubTheme& subTheme);
+    QString getSubThemeFile(const SubTheme& subTheme);
 
 protected:
     void initTables();

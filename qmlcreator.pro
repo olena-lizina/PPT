@@ -35,8 +35,7 @@ SOURCES += \
     cpp/StudentManager.cpp \
     cpp/SaveManager.cpp \
     cpp/Student.cpp \
-    cpp/LecturesManager.cpp \
-    cpp/Lecture.cpp
+    cpp/LecturesManager.cpp
 
 lupdate_only {
 SOURCES += \

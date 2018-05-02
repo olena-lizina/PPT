@@ -68,7 +68,7 @@ void SaveManager::removeStudent(const Student& student)
     if (!isInitialized)
         return;
 
-    mQuery->prepare(QString("DELETE FROM Students WHERE Name='%1' AND InstGroup='%2'").arg(student.name()).arg(student.group()));
+    mQuery->prepare(QString("DELETE FROM Students WHERE Name=\"%1\" AND InstGroup='%2'").arg(student.name()).arg(student.group()));
     mQuery->exec();
 }
 
@@ -127,6 +127,142 @@ QStringList SaveManager::getGroups()
 
     return groups;
 }
+
+void SaveManager::saveLecturePart(const LecturePart& lecture, const SaveManager::LecturePart& part)
+{
+    if (!isInitialized)
+        return;
+
+    switch(part)
+    {
+    case Part:
+    {
+        mQuery->prepare(QString("INSERT INTO Parts (Id, Name) VALUES ('%1', \"%2\")")
+                        .arg(getNextPartId()).arg(lecture.getName()));
+        mQuery->exec();
+        break;
+    }
+    case Chapter:
+    {
+        int partId = getPartId(part);
+        if (-1 == partId)
+            return;
+
+        mQuery->prepare(QString("INSERT INTO Chapters (Id, Name, PartId) VALUES ('%1', \"%2\", '%3')")
+                        .arg(getNextChapterId()).arg(lecture.getName()).arg(lecture.getParentId()));
+        mQuery->exec();
+        break;
+    }
+    case Theme:
+    {
+        int partId = getPartId(part);
+        if (-1 == partId)
+            return;
+        int chapterId = getChapterId(partId, chapter);
+        if (-1 == chapterId)
+            return;
+
+        mQuery->prepare(QString("INSERT INTO Themes (Id, Name, ChapterId, File) VALUES ('%1', \"%2\", '%3', \"%4\")")
+                        .arg(getNextThemeId()).arg(lecture.getName()).arg(lecture.getParentId()).arg(lecture.getFileName()));
+        mQuery->exec();
+        break;
+    }
+    case SubTheme:
+    {
+        int partId = getPartId(part);
+        if (-1 == partId)
+            return;
+        int chapterId = getChapterId(partId, chapter);
+        if (-1 == chapterId)
+            return;
+        int themeId = getThemeId(chapterId, theme);
+        if (-1 == themeId)
+            return;
+
+        mQuery->prepare(QString("INSERT INTO SubThemes (Id, Name, ThemeId, File) VALUES ('%1', \"%2\", '%3', \"%4\")")
+                        .arg(getNextSubThemeId()).arg(lecture.getName()).arg(lecture.getParentId()).arg(lecture.getFileName()));
+        mQuery->exec();
+        break;
+    }
+    }
+}
+
+void SaveManager::updateLecturePart(const LecturePart& oldLecture, const LecturePart& newLecture, const SaveManager::LecturePart& part)
+{
+    if (!isInitialized)
+        return;
+
+    switch(part)
+    {
+    case Part:
+    {
+        mQuery->prepare(QString("INSERT INTO Parts (Id, Name) VALUES ('%1', \"%2\")")
+                        .arg(getNextPartId()).arg(lecture.getName()));
+        mQuery->exec();
+        break;
+    }
+    case Chapter:
+    {
+        int partId = getPartId(part);
+        if (-1 == partId)
+            return;
+
+        mQuery->prepare(QString("UPDATE Chapters Set Name=\"%1\" WHERE Name=\"%2\" AND PartId='%3'")
+                        .arg(newLecture.getName()).arg(oldLecture.getName()).arg(newLecture.getParentId()));
+        mQuery->exec();
+        break;
+    }
+    case Theme:
+    {
+        int partId = getPartId(part);
+        if (-1 == partId)
+            return;
+        int chapterId = getChapterId(partId, chapter);
+        if (-1 == chapterId)
+            return;
+
+        mQuery->prepare(QString("UPDATE Themes Set Name=\"%1\", File=\"%2\" WHERE Name=\"%3\" AND ChapterId='%4'")
+                        .arg(newLecture.getName()).arg(oldLecture.getFileName()).arg(oldLecture.getName()).arg(oldLecture.getParentId()));
+        mQuery->exec();
+        break;
+    }
+    case SubTheme:
+    {
+        int partId = getPartId(part);
+        if (-1 == partId)
+            return;
+        int chapterId = getChapterId(partId, chapter);
+        if (-1 == chapterId)
+            return;
+        int themeId = getThemeId(chapterId, theme);
+        if (-1 == themeId)
+            return;
+
+        mQuery->prepare(QString("UPDATE SubThemes Set Name=\"%1\" WHERE Name=\"%2\" AND ThemeId='%3'")
+                        .arg(newSubTheme).arg(oldSubTheme).arg(themeId));
+
+        mQuery->prepare(QString("INSERT INTO SubThemes (Id, Name, ThemeId, File) VALUES ('%1', \"%2\", '%3', \"%4\")")
+                        .arg(getNextSubThemeId()).arg(lecture.getName()).arg(lecture.getParentId()).arg(lecture.getFileName()));
+        mQuery->exec();
+        break;
+    }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 QStringList SaveManager::getParts()
 {
@@ -290,6 +426,7 @@ int SaveManager::getNextThemeId()
 
     return themeIds.back() + 1;
 }
+
 int SaveManager::getNextSubThemeId()
 {
     std::vector<int> subThemeIds;
@@ -304,13 +441,13 @@ int SaveManager::getNextSubThemeId()
     return subThemeIds.back() + 1;
 }
 
-void SaveManager::savePart(const QString& part)
+void SaveManager::savePart(const Part& part)
 {
     if (!isInitialized)
         return;
 
-    mQuery->prepare(QString("INSERT INTO Parts (Id, Name) VALUES ('%1', '%2')")
-                    .arg(getNextPartId()).arg(part));
+    mQuery->prepare(QString("INSERT INTO Parts (Id, Name) VALUES ('%1', \"%2\")")
+                    .arg(getNextPartId()).arg(part.mPart));
     mQuery->exec();
 }
 
@@ -323,7 +460,7 @@ void SaveManager::saveChapter(const QString& part, const QString& chapter)
     if (-1 == partId)
         return;
 
-    mQuery->prepare(QString("INSERT INTO Chapters (Id, Name, PartId) VALUES ('%1', '%2', '%3')")
+    mQuery->prepare(QString("INSERT INTO Chapters (Id, Name, PartId) VALUES ('%1', \"%2\", '%3')")
                     .arg(getNextChapterId()).arg(chapter).arg(partId));
     mQuery->exec();
 }
@@ -337,7 +474,7 @@ void SaveManager::updateChapter(const QString& oldChapter, const QString& newCha
     if (-1 == partId)
         return;
 
-    mQuery->prepare(QString("UPDATE Chapters Set Name='%1' WHERE Name=\"%2\" AND PartId='%3'")
+    mQuery->prepare(QString("UPDATE Chapters Set Name=\"%1\" WHERE Name=\"%2\" AND PartId='%3'")
                     .arg(newChapter).arg(oldChapter).arg(partId));
     mQuery->exec();
 }
@@ -355,7 +492,7 @@ void SaveManager::deleteChapter(const QString& chapter, const QString& part)
     mQuery->exec();
 }
 
-void SaveManager::saveTheme(const QString& part, const QString& chapter, const QString& theme)
+void SaveManager::saveTheme(const QString& part, const QString& chapter, const QString& theme, const QString& file)
 {
     if (!isInitialized)
         return;
@@ -367,8 +504,8 @@ void SaveManager::saveTheme(const QString& part, const QString& chapter, const Q
     if (-1 == chapterId)
         return;
 
-    mQuery->prepare(QString("INSERT INTO Themes (Id, Name, ChapterId) VALUES ('%1', '%2', '%3')")
-                    .arg(getNextThemeId()).arg(theme).arg(chapterId));
+    mQuery->prepare(QString("INSERT INTO Themes (Id, Name, ChapterId, File) VALUES ('%1', \"%2\", '%3', \"%4\")")
+                    .arg(getNextThemeId()).arg(theme).arg(chapterId).arg(file));
     mQuery->exec();
 }
 
@@ -405,7 +542,7 @@ void SaveManager::deleteTheme(const QString& part, const QString& chapter, const
     mQuery->exec();
 }
 
-void SaveManager::saveSubTheme(const QString& part, const QString& chapter, const QString& theme, const QString& subTheme)
+void SaveManager::saveSubTheme(const QString& part, const QString& chapter, const QString& theme, const QString& subTheme, const QString& file)
 {
     if (!isInitialized)
         return;
@@ -420,8 +557,8 @@ void SaveManager::saveSubTheme(const QString& part, const QString& chapter, cons
     if (-1 == themeId)
         return;
 
-    mQuery->prepare(QString("INSERT INTO SubThemes (Id, Name, ThemeId) VALUES ('%1', '%2', '%3')")
-                    .arg(getNextSubThemeId()).arg(subTheme).arg(themeId));
+    mQuery->prepare(QString("INSERT INTO SubThemes (Id, Name, ThemeId) VALUES ('%1', \"%2\", '%3', \"%4\")")
+                    .arg(getNextSubThemeId()).arg(subTheme).arg(themeId).arg(file));
     mQuery->exec();
 }
 
@@ -498,9 +635,9 @@ void SaveManager::initTables()
     mQuery->prepare("CREATE TABLE IF NOT EXISTS Chapters (Id int, Name string, PartId int)");
     mQuery->exec();
 
-    mQuery->prepare("CREATE TABLE IF NOT EXISTS Themes (Id int, Name string, ChapterId int)");
+    mQuery->prepare("CREATE TABLE IF NOT EXISTS Themes (Id int, Name string, ChapterId int, File string)");
     mQuery->exec();
 
-    mQuery->prepare("CREATE TABLE IF NOT EXISTS SubThemes (Id int, Name string, ThemeId int)");
+    mQuery->prepare("CREATE TABLE IF NOT EXISTS SubThemes (Id int, Name string, ThemeId int, File string)");
     mQuery->exec();
 }

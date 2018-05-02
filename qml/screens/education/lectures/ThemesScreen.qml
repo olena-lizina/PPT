@@ -78,17 +78,24 @@ BlankScreen {
             bottom: parent.bottom
         }
 
-        delegate: CThemeButton {
+        delegate: CFileButton {
             text: modelData
             rightButtonIcon: "\u270e"
 
             onClicked: {
-                console.debug(modelData);
                 LecturesManager.selectedTheme(modelData);
+//                if (LecturesManager.hasSubThemes(modelData))
+//                    stackView.push(Qt.resolvedUrl("SubThemesScreen.qml"))
+//                else
+//                    console.debug("You have to show file here");
                 if (LecturesManager.hasSubThemes(modelData))
+                {
                     stackView.push(Qt.resolvedUrl("SubThemesScreen.qml"))
-                else
-                    console.debug("You have to show file here");
+                }
+                else if (LecturesManager.hasLecture(modelData))
+                {
+                    stackView.push(Qt.resolvedUrl("TemplateLectureScreen.qml"))
+                }
             }
 
             onRightClicked: {
@@ -109,22 +116,6 @@ BlankScreen {
                 }
 
                 dialog.open(dialog.types.editLecture, parameters, callback)
-            }
-
-            onAddSubThemeClicked: {
-                LecturesManager.selectedTheme(modelData);
-                var parameters = {
-                    title: qsTr("Add sub theme"),
-                    label: qsTr("Sub theme name :")
-                }
-
-                var callback = function(value)
-                {
-                    LecturesManager.addSubTheme(value)
-                    stackView.push(Qt.resolvedUrl("SubThemesScreen.qml"))
-                }
-
-                dialog.open(dialog.types.newLecture, parameters, callback)
             }
         }
     }

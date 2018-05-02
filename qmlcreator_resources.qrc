@@ -168,7 +168,6 @@
         <file>qml/screens/EducationalMaterialsScreen.qml</file>
         <file>qml/screens/ProgressScreen.qml</file>
         <file>qml/components/CInputField.qml</file>
-        <file>qml/screens/admins/SelectEditStudentScreen.qml</file>
         <file>qml/components/CFilterItem.qml</file>
         <file>qml/screens/education/lectures/SelectLectureScreen.qml</file>
         <file>qml/components/dialogs/NewLectureDialog.qml</file>
@@ -180,5 +179,7 @@
         <file>qml/components/dialogs/AddEditStudentDialog.qml</file>
         <file>qml/components/CEditOrRemoveButton.qml</file>
         <file>qml/components/dialogs/ConfirmationDeleteStudentDialog.qml</file>
+        <file>qml/screens/admins/StudentScreen.qml</file>
+        <file>qml/screens/education/lectures/TemplateLectureScreen.qml</file>
     </qresource>
 </RCC>

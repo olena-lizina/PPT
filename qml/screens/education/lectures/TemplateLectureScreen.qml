@@ -19,11 +19,17 @@
 import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.2
-import ProjectManager 1.1
-import "../components"
+import LecturesManager 1.1
+import "../../../components"
+import "../.."
 
 BlankScreen {
-    id: administrationScreen
+    id: themesScreen
+
+    Stack.onStatusChanged: {
+        listView.model = {}
+        listView.model = LecturesManager.getThemes();
+    }
 
     CToolBar {
         id: toolBar
@@ -38,33 +44,12 @@ BlankScreen {
             CBackButton {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                text: qsTr("Administration")
-            }
+                text: LecturesManager.selectedChapter()
+            }            
         }
     }
 
-    CFlickable {
-        id: menuFlickable
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: toolBar.bottom
-        anchors.bottom: parent.bottom
-        contentHeight: column.height
-
-        Column {
-            id: column
-            anchors.left: parent.left
-            anchors.right: parent.right
-
-            CNavigationButton {
-                text: qsTr("Students")
-                icon: "\uD83D\uDEB9"
-                onClicked: stackView.push(Qt.resolvedUrl("admins/StudentScreen.qml"))
-            }                      
-        }
-    }
-
-    CScrollBar {
-        flickableItem: menuFlickable
+    CLabel {
+        text: "Here will be displayed lecture file"
     }
 }

@@ -205,3 +205,8 @@ QString LecturesManager::selectedSubTheme()
 {
     return mSelectedSubTheme;
 }
+
+bool LecturesManager::hasLecture(const QString& theme)
+{
+
+}

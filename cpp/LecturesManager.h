@@ -71,6 +71,8 @@ public:
     Q_INVOKABLE void selectedSubTheme(const QString& subTheme);
     Q_INVOKABLE QString selectedSubTheme();
 
+    Q_INVOKABLE bool hasLecture(const QString& theme);
+
 signals:
     void signalUpdateThemes();
 
