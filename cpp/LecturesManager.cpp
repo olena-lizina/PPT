@@ -21,10 +21,6 @@
 
 /*static*/ QQmlApplicationEngine *LecturesManager::m_qmlEngine = nullptr;
 /*static*/ SaveManager::Ptr LecturesManager::mSaveManager;
-/*static*/ LecturesManager::selectedIt LecturesManager::mSelectedPart;
-/*static*/ LecturesManager::selectedIt LecturesManager::mSelectedChapter;
-/*static*/ LecturesManager::selectedIt LecturesManager::mSelectedTheme;
-/*static*/ LecturesManager::selectedIt LecturesManager::mSelectedSubTheme;
 
 LecturesManager::LecturesManager(QObject* parent)
     : QObject(parent)
@@ -46,7 +42,6 @@ LecturesManager::LecturesManager(QObject* parent)
 /*static*/ void LecturesManager::setSaveManager(std::shared_ptr<SaveManager> saveMgr)
 {
     LecturesManager::mSaveManager = saveMgr;
-    loadAllLectures();
 }
 
 void LecturesManager::clearComponentCache()
@@ -56,21 +51,21 @@ void LecturesManager::clearComponentCache()
 
 void LecturesManager::loadAllLectures()
 {
-    LecturesManager::mParts = LecturesManager::mSaveManager->getLectureParts(SaveManager::Part);
-    LecturesManager::mChapters = LecturesManager::mSaveManager->getLectureParts(SaveManager::Chapter);
-    LecturesManager::mThemes = LecturesManager::mSaveManager->getLectureParts(SaveManager::Theme);
-    LecturesManager::mSubThemes = LecturesManager::mSaveManager->getLectureParts(SaveManager::SubTheme);
+    mParts = mSaveManager->getLectureParts(SaveManager::Part);
+    mChapters = mSaveManager->getLectureParts(SaveManager::Chapter);
+    mThemes = mSaveManager->getLectureParts(SaveManager::Theme);
+    mSubThemes = mSaveManager->getLectureParts(SaveManager::SubTheme);
 
-    LecturesManager::mParts.sort([](const LecturePart& lhs, const LecturePart& rhs)
+    mParts.sort([](const LecturePart& lhs, const LecturePart& rhs)
                 { return lhs.getId() < rhs.getId(); });
 
-    LecturesManager::mChapters.sort([](const LecturePart& lhs, const LecturePart& rhs)
+    mChapters.sort([](const LecturePart& lhs, const LecturePart& rhs)
                 { return lhs.getId() < rhs.getId(); });
 
-    LecturesManager::mThemes.sort([](const LecturePart& lhs, const LecturePart& rhs)
+    mThemes.sort([](const LecturePart& lhs, const LecturePart& rhs)
                 { return lhs.getId() < rhs.getId(); });
 
-    LecturesManager::mSubThemes.sort([](const LecturePart& lhs, const LecturePart& rhs)
+    mSubThemes.sort([](const LecturePart& lhs, const LecturePart& rhs)
                 { return lhs.getId() < rhs.getId(); });
 }
 

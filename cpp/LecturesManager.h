@@ -66,7 +66,7 @@ public:
     Q_INVOKABLE bool itemHasFile(const QString& name, const LecturesManager::Type& type);
 
 private:
-    static void loadAllLectures();
+    void loadAllLectures();
 
 private:
     static SaveManager::Ptr mSaveManager;
@@ -77,10 +77,10 @@ private:
     std::list<LecturePart> mThemes;
     std::list<LecturePart> mSubThemes;
 
-    static selectedIt mSelectedPart;
-    static selectedIt mSelectedChapter;
-    static selectedIt mSelectedTheme;
-    static selectedIt mSelectedSubTheme;
+    selectedIt mSelectedPart;
+    selectedIt mSelectedChapter;
+    selectedIt mSelectedTheme;
+    selectedIt mSelectedSubTheme;
 };
 
 #endif // LECTURESMANAGER_H
