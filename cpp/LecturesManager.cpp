@@ -24,7 +24,9 @@
 
 LecturesManager::LecturesManager(QObject* parent)
     : QObject(parent)
-{}
+{
+    loadAllLectures();
+}
 
 /*static*/ QObject* LecturesManager::lecturesManagerProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
 {

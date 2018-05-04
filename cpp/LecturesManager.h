@@ -65,9 +65,7 @@ public:
 
     Q_INVOKABLE bool itemHasFile(const QString& name, const LecturesManager::Type& type);
 
-private:
-    void loadAllLectures();
-
+    Q_INVOKABLE void loadAllLectures();
 private:
     static SaveManager::Ptr mSaveManager;
     static QQmlApplicationEngine *m_qmlEngine;
