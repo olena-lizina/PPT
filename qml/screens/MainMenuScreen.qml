@@ -19,9 +19,12 @@
 import QtQuick 2.5
 import ProjectManager 1.1
 import "../components"
+import LecturesManager 1.1
 
 BlankScreen {
     id: mainMenuScreen
+
+    Component.onCompleted: LecturesManager.loadAllLectures()
 
     CToolBar {
         id: toolBar
