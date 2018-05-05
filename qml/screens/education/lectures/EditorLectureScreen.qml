@@ -18,7 +18,7 @@
 
 import QtQuick 2.5
 import QtQuick.Layouts 1.2
-//import ProjectManager 1.1
+import LecturesManager 1.1
 import "../../../components"
 import "../.."
 
@@ -38,11 +38,12 @@ BlankScreen {
             CBackButton {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                text: ProjectManager.fileName
+                text: LecturesManager.hasSubThemes(LecturesManager.selectedItem(LecturesManager.Themes))
+                      ? LecturesManager.selectedItem(LecturesManager.SubThemes)
+                      : LecturesManager.selectedItem(LecturesManager.Themes)
             }
 
             CToolButton {
-                visible: codeArea.selectedText.length > 0
                 Layout.fillHeight: true
                 icon: "\uf034"
                 tooltipText: qsTr("Select all")
@@ -50,7 +51,7 @@ BlankScreen {
             }
 
             CToolButton {
-                visible: codeArea.selectedText.length > 0
+                visible: true
                 Layout.fillHeight: true
                 icon: "\uf0c5"
                 tooltipText: qsTr("Copy")
@@ -58,7 +59,7 @@ BlankScreen {
             }
 
             CToolButton {
-                visible: codeArea.selectedText.length > 0
+                visible: true
                 Layout.fillHeight: true
                 icon: "\uf0c4"
                 tooltipText: qsTr("Cut")
@@ -66,15 +67,15 @@ BlankScreen {
             }
 
             CToolButton {
-                visible: ProjectManager.fileFormat === "qml" && !codeArea.selectedText.length > 0
+                visible: true
                 Layout.fillHeight: true
-                icon: "\uf04b"
-                tooltipText: qsTr("Run")
+                icon: "\u2714"
+                tooltipText: qsTr("Save lecture")
                 onClicked: {
-                    ProjectManager.saveFileContent(codeArea.text)
-                    ProjectManager.clearComponentCache()
+                    LecturesManager.saveFileContent(codeArea.text)
+                    LecturesManager.clearComponentCache()
                     Qt.inputMethod.hide()
-                    stackView.push(Qt.resolvedUrl("PlaygroundScreen.qml"))
+//                    stackView.push(Qt.resolvedUrl("PlaygroundScreen.qml"))
                 }
             }
         }
@@ -84,7 +85,7 @@ BlankScreen {
         id: codeArea
 
         Component.onDestruction: {
-            ProjectManager.saveFileContent(text)
+            LecturesManager.saveFileContent(text)
         }
 
         anchors.top: toolBar.bottom
@@ -94,6 +95,6 @@ BlankScreen {
 
         indentSize: settings.indentSize
 
-        text: ProjectManager.getFileContent()
+        text: LecturesManager.getFileContent()
     }
 }

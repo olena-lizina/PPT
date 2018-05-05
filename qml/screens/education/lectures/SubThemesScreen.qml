@@ -88,10 +88,12 @@ BlankScreen {
 
                 if (LecturesManager.itemHasFile(modelData, LecturesManager.SubThemes))
                 {
+                    LecturesManager.selectFile()
                     stackView.push(Qt.resolvedUrl("EditorLectureScreen.qml"))
                 }
                 else
                 {
+                    LecturesManager.createFile()
                     stackView.push(Qt.resolvedUrl("EditorLectureScreen.qml"))
                 }
             }

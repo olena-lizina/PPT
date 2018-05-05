@@ -66,6 +66,12 @@ public:
     Q_INVOKABLE bool itemHasFile(const QString& name, const LecturesManager::Type& type);
 
     Q_INVOKABLE void loadAllLectures();
+
+    // work with files
+    Q_INVOKABLE void createFile();
+    Q_INVOKABLE void selectFile();
+    Q_INVOKABLE void saveFileContent(QString);
+    Q_INVOKABLE QString getFileContent();
 private:
     static SaveManager::Ptr mSaveManager;
     static QQmlApplicationEngine *m_qmlEngine;
@@ -79,6 +85,8 @@ private:
     selectedIt mSelectedChapter;
     selectedIt mSelectedTheme;
     selectedIt mSelectedSubTheme;
+
+    QString mSelectedFile;
 };
 
 #endif // LECTURESMANAGER_H

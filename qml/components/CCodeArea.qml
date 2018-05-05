@@ -17,7 +17,7 @@
 ****************************************************************************/
 
 import QtQuick 2.5
-//import ProjectManager 1.1
+import LecturesManager 1.1
 import SyntaxHighlighter 1.1
 
 Item {
@@ -246,20 +246,20 @@ Item {
 
             Component.onCompleted: {
                 syntaxHighlighter.setHighlighter(textEdit)
-                if (ProjectManager.project !== "") {
-                    // add custom components
-                    var files = ProjectManager.files()
-                    for (var i = 0; i < files.length; i++) {
-                        var filename = files[i].split(".")
-                        if (filename[0] !== "main") {
-                            if (filename[1] === "qml")
-                                syntaxHighlighter.addQmlComponent(filename[0])
-                            if (filename[1] === "js")
-                                syntaxHighlighter.addJsComponent(filename[0])
-                        }
-                    }
-                    syntaxHighlighter.rehighlight()
-                }
+//                if (ProjectManager.project !== "") {
+//                    // add custom components
+//                    var files = ProjectManager.files()
+//                    for (var i = 0; i < files.length; i++) {
+//                        var filename = files[i].split(".")
+//                        if (filename[0] !== "main") {
+//                            if (filename[1] === "qml")
+//                                syntaxHighlighter.addQmlComponent(filename[0])
+//                            if (filename[1] === "js")
+//                                syntaxHighlighter.addJsComponent(filename[0])
+//                        }
+//                    }
+//                    syntaxHighlighter.rehighlight()
+//                }
             }
 
             MouseArea {
@@ -437,9 +437,6 @@ Item {
                     }
                 }
             }
-
-            onCursorPositionChanged:
-                textEdit.contextMenu.visible = false
 
             property Item contextMenu: ListView {
                 parent: textEdit

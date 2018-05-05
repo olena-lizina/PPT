@@ -91,6 +91,7 @@ BlankScreen {
                 }
                 else if (LecturesManager.itemHasFile(modelData, LecturesManager.Themes))
                 {
+                    LecturesManager.selectFile()
                     stackView.push(Qt.resolvedUrl("EditorLectureScreen.qml"))
                 }
                 else
@@ -109,6 +110,7 @@ BlankScreen {
                         }
                         else
                         {
+                            LecturesManager.createFile()
                             stackView.push(Qt.resolvedUrl("EditorLectureScreen.qml"))
                         }
                     }

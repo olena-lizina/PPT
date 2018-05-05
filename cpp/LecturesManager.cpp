@@ -22,6 +22,8 @@
 
 #include "LecturesManager.h"
 #include <QDebug>
+#include <QFile>
+#include <QDir>
 
 /*static*/ QQmlApplicationEngine *LecturesManager::m_qmlEngine = nullptr;
 /*static*/ SaveManager::Ptr LecturesManager::mSaveManager;
@@ -73,6 +75,89 @@ void LecturesManager::loadAllLectures()
 
     mSubThemes.sort([](const LecturePart& lhs, const LecturePart& rhs)
                 { return lhs.getId() < rhs.getId(); });
+}
+
+void LecturesManager::createFile()
+{
+    const QString fileExtension {"qppt"};
+    const QString baseFolder {"Lectures"};
+
+    if (!QDir(baseFolder).exists())
+        QDir().mkdir(baseFolder);
+
+    QString filePath(baseFolder + QDir::separator() + QString::number(mSelectedPart.id)
+                  + "_" + QString::number(mSelectedChapter.id)
+                  + "_" + QString::number(mSelectedTheme.id)
+                  + (hasSubThemes(mSelectedTheme.name) ? QString::number(mSelectedSubTheme.id) : "")
+                  + "." + fileExtension);
+
+    QFile file(filePath);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        qDebug() << "Unable to create file " << filePath << file.errorString();
+        return;
+    }
+
+    QTextStream textStream(&file);
+    textStream << filePath;
+    mSelectedFile = filePath;
+
+    if (!hasSubThemes(mSelectedTheme.name))
+        editItem(mSelectedTheme.name, Themes, filePath);
+    else
+        editItem(mSelectedSubTheme.name, SubThemes, filePath);
+
+    file.close();
+}
+
+void LecturesManager::selectFile()
+{
+    const QString fileExtension {"qppt"};
+    const QString baseFolder {"Lectures"};
+
+    if (!QDir(baseFolder).exists())
+        QDir().mkdir(baseFolder);
+
+    QString filePath(baseFolder + QDir::separator() + QString::number(mSelectedPart.id)
+                  + "_" + QString::number(mSelectedChapter.id)
+                  + "_" + QString::number(mSelectedTheme.id)
+                  + (hasSubThemes(mSelectedTheme.name) ? QString::number(mSelectedSubTheme.id) : "")
+                  + "." + fileExtension);
+
+    mSelectedFile = filePath;
+}
+
+void LecturesManager::saveFileContent(QString content)
+{
+    QFile file(mSelectedFile);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        qDebug() << "Unable to open file " << mSelectedFile << file.errorString();
+        return;
+    }
+
+    QTextStream textStream(&file);
+    textStream<<content;
+
+    file.close();
+}
+
+QString LecturesManager::getFileContent()
+{
+    QFile file(mSelectedFile);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qDebug() << "Unable to open file " << mSelectedFile << file.errorString();
+        return QString();
+    }
+
+    QTextStream textStream(&file);
+    QString fileContent = textStream.readAll().trimmed();
+    file.close();
+    return fileContent;
 }
 
 QStringList LecturesManager::getListModel(const LecturesManager::Type& type)
@@ -423,16 +508,20 @@ bool LecturesManager::itemHasFile(const QString& name, const LecturesManager::Ty
 {
     if (LecturesManager::Themes == type)
     {
-        auto themeIt = std::find_if(mThemes.begin(), mThemes.end(), [&name](LecturePart& it)
-        { return !it.getName().compare(name); });
+        int chapterId = mSelectedChapter.id;
+
+        auto themeIt = std::find_if(mThemes.begin(), mThemes.end(), [&name, &chapterId](LecturePart& it)
+        { return chapterId == it.getParentId() && !it.getName().compare(name); });
 
         if (mThemes.end() != themeIt)
             return !themeIt->getFileName().isEmpty();
     }
     else if (LecturesManager::SubThemes == type)
     {
-        auto subThemeIt = std::find_if(mSubThemes.begin(), mSubThemes.end(), [&name](LecturePart& it)
-        { return !it.getName().compare(name); });
+        int themeId = mSelectedTheme.id;
+
+        auto subThemeIt = std::find_if(mSubThemes.begin(), mSubThemes.end(), [&name, &themeId](LecturePart& it)
+        { return themeId == it.getParentId() && !it.getName().compare(name); });
 
         if (mSubThemes.end() != subThemeIt)
             return !subThemeIt->getFileName().isEmpty();
