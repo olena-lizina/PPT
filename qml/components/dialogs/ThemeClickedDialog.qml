@@ -22,16 +22,21 @@ import LecturesManager 1.1
 import ".."
 
 BaseDialog {
-    id: newLectureDialog
+    id: themeClickedDialog
 
     property alias title: titleLabel.text
     property alias label: colLabel.text
-    property real itemType
+
+    signal rightClicked()
 
     function initialize(parameters) {
         for (var attr in parameters) {
-            newLectureDialog[attr] = parameters[attr]
+            themeClickedDialog[attr] = parameters[attr]
         }
+    }
+
+    onRightClicked: {
+        themeClickedDialog.close()
     }
 
     DropShadow {
@@ -75,9 +80,45 @@ BaseDialog {
 
             CLabel {
                 id: titleLabel
-                anchors.fill: parent
+                anchors {
+                    left: parent.left
+                    top: parent.top
+                    bottom: parent.bottom
+                    right: rightButton.left
+                }
+
                 anchors.leftMargin: 5 * settings.pixelDensity
                 font.pixelSize: 10 * settings.pixelDensity
+            }
+
+            Item {
+                id: rightButton
+
+                width: height
+
+                anchors {
+                    right: parent.right
+                    top: parent.top
+                    bottom: parent.bottom
+                }
+
+                Rectangle {
+                    anchors.fill: parent
+                    color: palette.button
+                    visible: rightButtonMouseArea.pressed
+                }
+
+                CIcon {
+                    id: icon
+                    anchors.centerIn: parent
+                    text: "\u2716"
+                }
+
+                MouseArea {
+                    id: rightButtonMouseArea
+                    anchors.fill: parent
+                    onClicked: themeClickedDialog.rightClicked()
+                }
             }
         }
 
@@ -108,27 +149,21 @@ BaseDialog {
                 spacing: 2 * settings.pixelDensity
 
                 CLabel {
-                    id: colLabel
                     anchors.left: parent.left
                     anchors.right: parent.right
-                }
-
-                CTextField {
-                    id: partNameTextField
-
-                    onTextChanged: {
-                        if (warningLabel.visible)
-                            warningLabel.visible = false
-                    }
                 }
 
                 CLabel {
-                    id: warningLabel
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    wrapMode: Text.WordWrap
-                    color: palette.warning
-                    visible: false
+                }
+
+                CLabel {
+                    id: colLabel
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    horizontalAlignment: Text.AlignHCenter
+                    font.pixelSize: 10 * settings.pixelDensity
                 }
             }
         }
@@ -141,8 +176,8 @@ BaseDialog {
             anchors.left: parent.left
             anchors.right: footer.left
             anchors.bottom: parent.bottom
-            text: qsTr("Cancel")
-            onClicked: newLectureDialog.close()
+            text: qsTr("Create sub theme")
+            onClicked: themeClickedDialog.process(LecturesManager.SubThemes)
         }
 
         CVerticalSeparator {
@@ -155,28 +190,8 @@ BaseDialog {
             anchors.left: footer.right
             anchors.right: parent.right
             anchors.bottom: parent.bottom
-            text: qsTr("OK")
-            onClicked: {
-                var partName = partNameTextField.text
-
-                if (partName.length === 0)
-                {
-                    warningLabel.text = qsTr("Input field cannot be left blank")
-                    warningLabel.visible = true
-                }
-                else
-                {
-                    if (LecturesManager.itemExists(partName, itemType))
-                    {
-                        warningLabel.text = qsTr("Such name already exists")
-                        warningLabel.visible = true
-                    }
-                    else
-                    {
-                        newLectureDialog.process(partName)
-                    }
-                }
-            }
+            text: qsTr("Create lecture")
+            onClicked: themeClickedDialog.process(LecturesManager.Themes)
         }
     }
 }

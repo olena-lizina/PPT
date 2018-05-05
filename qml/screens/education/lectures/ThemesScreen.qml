@@ -53,7 +53,9 @@ BlankScreen {
                 tooltipText: qsTr("New theme")
                 onClicked: {
                     var parameters = {
-                        title: qsTr("New theme")
+                        title: qsTr("New theme"),
+                        label: qsTr("Enter theme name :"),
+                        itemType: LecturesManager.Themes
                     }
 
                     var callback = function(value)
@@ -78,44 +80,79 @@ BlankScreen {
             bottom: parent.bottom
         }
 
-        delegate: CFileButton {
+        delegate: CEditOrRemoveButton {
             text: modelData
-            rightButtonIcon: "\u270e"
 
             onClicked: {
                 LecturesManager.selectedItem(modelData, LecturesManager.Themes);
-//                if (LecturesManager.hasSubThemes(modelData))
-//                    stackView.push(Qt.resolvedUrl("SubThemesScreen.qml"))
-//                else
-//                    console.debug("You have to show file here");
                 if (LecturesManager.hasSubThemes(modelData))
                 {
                     stackView.push(Qt.resolvedUrl("SubThemesScreen.qml"))
                 }
                 else if (LecturesManager.itemHasFile(modelData, LecturesManager.Themes))
                 {
-                    stackView.push(Qt.resolvedUrl("TemplateLectureScreen.qml"))
+                    stackView.push(Qt.resolvedUrl("EditorLectureScreen.qml"))
+                }
+                else
+                {
+                    var parameters = {
+                        title: qsTr(modelData),
+                        label: qsTr("Would you like to create subtheme or lecture?")
+                    }
+
+                    var callback = function(value)
+                    {
+                        if (value === LecturesManager.SubThemes)
+                        {
+
+                            stackView.push(Qt.resolvedUrl("SubThemesScreen.qml"))
+                        }
+                        else
+                        {
+                            stackView.push(Qt.resolvedUrl("EditorLectureScreen.qml"))
+                        }
+                    }
+
+                    dialog.open(dialog.types.createLectureOrSubTheme, parameters, callback)
                 }
             }
 
-            onRightClicked: {
+            onEditClicked: {
                 LecturesManager.selectedItem(modelData, LecturesManager.Themes);
                 var parameters = {
                     title: qsTr("Edit theme"),
                     label: qsTr("Theme name :"),
-                    valueEdit: modelData
+                    valueEdit: modelData,
+                    itemType: LecturesManager.Themes
                 }
 
                 var callback = function(value)
                 {
-                    if (value === "delete")
-                        LecturesManager.deleteItem(LecturesManager.Theme)
-                    else
-                        LecturesManager.editItem(value, LecturesManager.Theme)
+                    LecturesManager.editItem(value, LecturesManager.Themes)
                     listView.model = LecturesManager.getListModel(LecturesManager.Themes)
                 }
 
                 dialog.open(dialog.types.editLecture, parameters, callback)
+            }
+
+            onRemoveClicked: {
+                LecturesManager.selectedItem(modelData, LecturesManager.Themes);
+
+                var parameters = {
+                    title: qsTr("Delete the theme"),
+                    text: qsTr("Are you sure you want to delete \"%1\"?").arg(modelData)
+                }
+
+                var callback = function(value)
+                {
+                    if (value)
+                    {
+                        LecturesManager.deleteItem(LecturesManager.Themes)
+                        listView.model = LecturesManager.getListModel(LecturesManager.Themes)
+                    }
+                }
+
+                dialog.open(dialog.types.confirmation, parameters, callback)
             }
         }
     }

@@ -21,7 +21,7 @@ import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Window 2.2
 import Qt.labs.settings 1.0
-import ProjectManager 1.1
+////import ProjectManager 1.1
 import "palettes"
 
 ApplicationWindow {
@@ -29,7 +29,7 @@ ApplicationWindow {
     width: 420
     height: 640
     visible: true
-    title: "QML Creator"
+    title: "Pedagogical Programming Tool"
     visibility: settings.debugMode ? "FullScreen" : "Maximized"
 
     style: ApplicationWindowStyle {
@@ -62,8 +62,8 @@ ApplicationWindow {
             {
                 var parameters = {
                     title: qsTr("New examples"),
-                    text: qsTr("We detected that you had recently updated QML Creator on your device.") + "\n" +
-                          qsTr("We are constantly working on QML Creator improvement, and we may have added some new sample projects in the current release.") + "\n" +
+                    text: qsTr("We detected that you had recently updated Pedagogical Programming Tool on your device.") + "\n" +
+                          qsTr("We are constantly working on Pedagogical Programming Tool improvement, and we may have added some new sample projects in the current release.") + "\n" +
                           qsTr("Press OK if you would like to get them now (notice that all the changes you have made in the Examples section will be removed)") + "\n" +
                           qsTr("Alternatively, you can do it later by pressing the Restore examples button in the Examples screen.")
                 }

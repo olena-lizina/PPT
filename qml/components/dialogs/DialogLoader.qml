@@ -41,6 +41,7 @@ Loader {
         property string newLecture: "NewLectureDialog.qml"
         property string editLecture: "EditLectureDialog.qml"
         property string studentInfoDialog: "AddEditStudentDialog.qml"
+        property string createLectureOrSubTheme: "ThemeClickedDialog.qml"
     }
 
     function open(type, parameters, callback) {

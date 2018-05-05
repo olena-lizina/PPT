@@ -47,7 +47,7 @@ BlankScreen {
                Copyright (C) 2017-2018 <a href=\"https://www.linkedin.com/in/olena-lizina-177729b1/\">Olena Lizina</a><br>
                <a class=\"link\" href=\"mailto:elenalizina90@gmail.com\">elenalizina90@gmail.com</a><br><br>
 
-               QML Creator application is distributed under
+               Pedagogical Programming Tool application is distributed under
                <a href=\"http://www.apache.org/licenses/LICENSE-2.0\">Apache Software License, Version 2</a>.<br><br>
 
                The source code is available at <a href=\"https://github.com/olena-lizina/PPT\">https://github.com/olena-lizina/PPT</a><br><br>

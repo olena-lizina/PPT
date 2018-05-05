@@ -1,12 +1,12 @@
 <?xml version="1.0"?>
-<manifest package="com.wearyinside.qmlcreator" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.2.4" android:versionCode="22" android:installLocation="auto">
-    <application android:label="QML Creator" android:hardwareAccelerated="true" android:name="org.qtproject.qt5.android.bindings.QtApplication" android:icon="@drawable/icon">
-        <activity android:label="QML Creator" android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|locale|fontScale|keyboard|keyboardHidden|navigation" android:name="org.qtproject.qt5.android.bindings.QtActivity" android:screenOrientation="unspecified" android:launchMode="singleTop">
+<manifest package="com.olenalizina.ppt" xmlns:android="http://schemas.android.com/apk/res/android" android:versionName="1.2.4" android:versionCode="22" android:installLocation="auto">
+    <application android:label="PPT" android:hardwareAccelerated="true" android:name="org.qtproject.qt5.android.bindings.QtApplication" android:icon="@drawable/icon">
+        <activity android:label="PPT" android:configChanges="orientation|uiMode|screenLayout|screenSize|smallestScreenSize|locale|fontScale|keyboard|keyboardHidden|navigation" android:name="org.qtproject.qt5.android.bindings.QtActivity" android:screenOrientation="unspecified" android:launchMode="singleTop">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN"/>
                 <category android:name="android.intent.category.LAUNCHER"/>
             </intent-filter>
-            <meta-data android:name="android.app.lib_name" android:value="qmlcreator"/>
+            <meta-data android:name="android.app.lib_name" android:value="ppt"/>
             <meta-data android:name="android.app.qt_sources_resource_id" android:resource="@array/qt_sources"/>
             <meta-data android:name="android.app.repository" android:value="default"/>
             <meta-data android:name="android.app.qt_libs_resource_id" android:resource="@array/qt_libs"/>

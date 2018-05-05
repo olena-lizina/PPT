@@ -17,7 +17,7 @@
 ****************************************************************************/
 
 import QtQuick 2.5
-import ProjectManager 1.1
+//import ProjectManager 1.1
 import SyntaxHighlighter 1.1
 
 Item {

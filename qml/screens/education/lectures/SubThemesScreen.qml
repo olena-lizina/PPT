@@ -43,7 +43,7 @@ BlankScreen {
             CBackButton {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                text: LecturesManager.selectedItem(LecturesManager.Theme)
+                text: LecturesManager.selectedItem(LecturesManager.Themes)
             }
 
             CToolButton {
@@ -52,12 +52,14 @@ BlankScreen {
                 tooltipText: qsTr("New sub theme")
                 onClicked: {
                     var parameters = {
-                        title: qsTr("New sub theme")
+                        title: qsTr("New sub theme"),
+                        label: qsTr("Enter sub theme name :"),
+                        itemType: LecturesManager.SubThemes
                     }
 
                     var callback = function(value)
                     {
-                        LecturesManager.addSubTheme(value)
+                        LecturesManager.addItem(value, LecturesManager.SubThemes)
                         listView.model = LecturesManager.getListModel(LecturesManager.SubThemes)
                     }
 
@@ -77,35 +79,60 @@ BlankScreen {
             bottom: parent.bottom
         }
 
-        delegate: CFileButton {
+        delegate: CEditOrRemoveButton {
             text: modelData
-            rightButtonIcon: "\u270e"
 
             onClicked: {
                 console.debug(modelData);
                 LecturesManager.selectedItem(modelData, LecturesManager.SubThemes);
+
+                if (LecturesManager.itemHasFile(modelData, LecturesManager.SubThemes))
+                {
+                    stackView.push(Qt.resolvedUrl("EditorLectureScreen.qml"))
+                }
+                else
+                {
+                    stackView.push(Qt.resolvedUrl("EditorLectureScreen.qml"))
+                }
             }
 
-            onRightClicked: {
+            onEditClicked: {
                 LecturesManager.selectedItem(modelData, LecturesManager.SubThemes);
+
                 var parameters = {
                     title: qsTr("Edit sub theme"),
                     label: qsTr("Sub theme name :"),
-                    valueEdit: modelData
+                    valueEdit: modelData,
+                    itemType: LecturesManager.SubThemes
                 }
 
                 var callback = function(value)
                 {
-                    if (value === "delete")
-                    {
-                        LecturesManager.deleteItem(LecturesManager.SubTheme)
-                        stackView.pop()
-                    }
-                    else
-                        LecturesManager.editItem(value, LecturesManager.Theme)
+                    LecturesManager.editItem(value, LecturesManager.SubThemes)
+                    listView.model = LecturesManager.getListModel(LecturesManager.SubThemes)
                 }
 
                 dialog.open(dialog.types.editLecture, parameters, callback)
+            }
+
+            onRemoveClicked: {
+                LecturesManager.selectedItem(modelData, LecturesManager.SubThemes);
+
+                var parameters = {
+                    title: qsTr("Delete the sub theme"),
+                    text: qsTr("Are you sure you want to delete \"%1\"?").arg(modelData)
+                }
+
+                var callback = function(value)
+                {
+                    if (value)
+                    {
+                        LecturesManager.deleteItem(LecturesManager.SubThemes)
+                        listView.model = LecturesManager.getListModel(LecturesManager.SubThemes)
+                    }
+                }
+
+                dialog.open(dialog.types.confirmation, parameters, callback)
             }
         }
     }

@@ -17,8 +17,8 @@ RESOURCES += \
 
 HEADERS += \
 #    cpp/ProjectManager.h \
-#    cpp/QMLHighlighter.h \
-#    cpp/SyntaxHighlighter.h \
+    cpp/QMLHighlighter.h \
+    cpp/SyntaxHighlighter.h \
 #    cpp/MessageHandler.h \
     cpp/StudentManager.h \
     cpp/SaveManager.h \
@@ -29,8 +29,8 @@ HEADERS += \
 SOURCES += \
     cpp/main.cpp \
 #    cpp/ProjectManager.cpp \
-#    cpp/QMLHighlighter.cpp \
-#    cpp/SyntaxHighlighter.cpp \
+    cpp/QMLHighlighter.cpp \
+    cpp/SyntaxHighlighter.cpp \
 #    cpp/MessageHandler.cpp \
     cpp/StudentManager.cpp \
     cpp/SaveManager.cpp \

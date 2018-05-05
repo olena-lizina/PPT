@@ -23,7 +23,7 @@
 #include <QtSql/QSqlQuery>
 #include <QtSql/QSqlError>
 #include <QVariant>
-
+#include <QDebug>
 SaveManager::SaveManager()
 {
     mDbConnection.reset(new QSqlDatabase());
@@ -139,28 +139,32 @@ void SaveManager::saveLecturePart(const LecturePart& lecture, const SaveManager:
     {
         mQuery->prepare(QString("INSERT INTO Parts (Id, Name) VALUES ('%1', \"%2\")")
                         .arg(lecture.getId()).arg(lecture.getName()));
-        mQuery->exec();
+        if (!mQuery->exec())
+            qDebug() << "Add Part failed with error: " << mQuery->lastError().text();
         break;
     }
     case Chapter:
     {
         mQuery->prepare(QString("INSERT INTO Chapters (Id, Name, PartId) VALUES ('%1', \"%2\", '%3')")
                         .arg(lecture.getId()).arg(lecture.getName()).arg(lecture.getParentId()));
-        mQuery->exec();
+        if (!mQuery->exec())
+            qDebug() << "Add Chapter failed with error: " << mQuery->lastError().text();
         break;
     }
     case Theme:
     {
         mQuery->prepare(QString("INSERT INTO Themes (Id, Name, ChapterId, File) VALUES ('%1', \"%2\", '%3', \"%4\")")
                         .arg(lecture.getId()).arg(lecture.getName()).arg(lecture.getParentId()).arg(lecture.getFileName()));
-        mQuery->exec();
+        if (!mQuery->exec())
+            qDebug() << "Add Theme failed with error: " << mQuery->lastError().text();
         break;
     }
     case SubTheme:
     {
         mQuery->prepare(QString("INSERT INTO SubThemes (Id, Name, ThemeId, File) VALUES ('%1', \"%2\", '%3', \"%4\")")
                         .arg(lecture.getId()).arg(lecture.getName()).arg(lecture.getParentId()).arg(lecture.getFileName()));
-        mQuery->exec();
+        if (!mQuery->exec())
+            qDebug() << "Add SubTheme failed with error: " << mQuery->lastError().text();
         break;
     }
     }

@@ -17,7 +17,7 @@
 ****************************************************************************/
 
 import QtQuick 2.5
-import ProjectManager 1.1
+////import ProjectManager 1.1
 import "../components"
 import LecturesManager 1.1
 
@@ -35,7 +35,7 @@ BlankScreen {
         CLabel {
             anchors.fill: parent
             anchors.leftMargin: 5 * settings.pixelDensity
-            text: appWindow.title
+            text: qsTr("Pedagogical Programming Tool")
             font.pixelSize: 10 * settings.pixelDensity
         }
     }

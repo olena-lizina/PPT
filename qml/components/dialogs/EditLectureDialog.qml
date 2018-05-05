@@ -27,6 +27,7 @@ BaseDialog {
     property alias title: titleLabel.text
     property alias label: colLabel.text
     property alias valueEdit: partNameTextField.text
+    property real itemType: -1
 
     function initialize(parameters) {
         for (var attr in parameters) {
@@ -141,8 +142,8 @@ BaseDialog {
             anchors.left: parent.left
             anchors.right: footer.left
             anchors.bottom: parent.bottom
-            text: qsTr("Delete")
-            onClicked: editLectureDialog.process("delete")
+            text: qsTr("Cancel")
+            onClicked: editLectureDialog.close()
         }
 
         CVerticalSeparator {
@@ -166,12 +167,12 @@ BaseDialog {
                 }
                 else
                 {
-                    if (LecturesManager.selectedItem(LecturesManager.Parts) !== partName &&  LecturesManager.itemExists(partName, LecturesManager.Parts))
+                    if (LecturesManager.selectedItem(itemType) !== partName &&  LecturesManager.itemExists(partName, itemType))
                     {
                         warningLabel.text = qsTr("Such name name already exists")
                         warningLabel.visible = true
                     }
-                    else if (LecturesManager.selectedItem(LecturesManager.Parts) === partName)
+                    else if (LecturesManager.selectedItem(itemType) === partName)
                     {
                         editLectureDialog.close()
                     }

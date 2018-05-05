@@ -14,6 +14,6 @@ Item {
     MessageDialog {
         id: dialog
         title: "Breaking News!"
-        text: "QML Creator is now available on App Store!"
+        text: "Pedagogical Programming Tool is now available on App Store!"
     }
 }

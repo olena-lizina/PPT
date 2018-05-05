@@ -18,16 +18,17 @@
 
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
+#include <QtQml>
 #include <QTranslator>
-#include "MessageHandler.h"
-#include "ProjectManager.h"
+//#include "MessageHandler.h"
+//#include "ProjectManager.h"
 #include "StudentManager.h"
 #include "LecturesManager.h"
 #include "SyntaxHighlighter.h"
 
 int main(int argc, char *argv[])
 {
-    qInstallMessageHandler(&MessageHandler::handler);
+//    qInstallMessageHandler(&MessageHandler::handler);
     QGuiApplication app(argc, argv);
     app.setApplicationName("Pedagogical program tool");
     app.setApplicationVersion("1.0.1");
@@ -35,10 +36,10 @@ int main(int argc, char *argv[])
     app.setOrganizationDomain("com.lizinaolena.ppz");
 
     QTranslator translator;
-    translator.load("qmlcreator_" + QLocale::system().name(), ":/resources/translations");
+    translator.load("ppt_" + QLocale::system().name(), ":/resources/translations");
     app.installTranslator(&translator);
 
-    qmlRegisterSingletonType<ProjectManager>("ProjectManager", 1, 1, "ProjectManager", &ProjectManager::projectManagerProvider);
+//    qmlRegisterSingletonType<ProjectManager>("ProjectManager", 1, 1, "ProjectManager", &ProjectManager::projectManagerProvider);
 
     qmlRegisterSingletonType<StudentManager>("StudentManager", 1, 1, "StudentManager", &StudentManager::studentManagerProvider);
     qmlRegisterSingletonType<LecturesManager>("LecturesManager", 1, 1, "LecturesManager", &LecturesManager::lecturesManagerProvider);
@@ -50,9 +51,9 @@ int main(int argc, char *argv[])
     qmlRegisterType<SyntaxHighlighter>("SyntaxHighlighter", 1, 1, "SyntaxHighlighter");
 
     QQmlApplicationEngine engine(QUrl("qrc:/qml/main.qml"));
-    ProjectManager::setQmlEngine(&engine);
+//    ProjectManager::setQmlEngine(&engine);
     StudentManager::setQmlEngine(&engine);
-    MessageHandler::setQmlEngine(&engine);
+//    MessageHandler::setQmlEngine(&engine);
     LecturesManager::setQmlEngine(&engine);
 
     return app.exec();

@@ -181,5 +181,7 @@
         <file>qml/screens/admins/StudentScreen.qml</file>
         <file>qml/screens/education/lectures/TemplateLectureScreen.qml</file>
         <file>resources/translations/ppt_ru.qm</file>
+        <file>qml/components/dialogs/ThemeClickedDialog.qml</file>
+        <file>qml/screens/education/lectures/EditorLectureScreen.qml</file>
     </qresource>
 </RCC>
