@@ -24,6 +24,10 @@
 #include <QDebug>
 #include <QFile>
 #include <QDir>
+#include <QClipboard>
+#include <QMimeData>
+#include <QApplication>
+#include <QPixmap>
 
 /*static*/ QQmlApplicationEngine *LecturesManager::m_qmlEngine = nullptr;
 /*static*/ SaveManager::Ptr LecturesManager::mSaveManager;

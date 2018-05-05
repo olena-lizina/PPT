@@ -75,7 +75,7 @@ BlankScreen {
                     LecturesManager.saveFileContent(codeArea.text)
                     LecturesManager.clearComponentCache()
                     Qt.inputMethod.hide()
-//                    stackView.push(Qt.resolvedUrl("PlaygroundScreen.qml"))
+                    //                    stackView.push(Qt.resolvedUrl("PlaygroundScreen.qml"))
                 }
             }
         }

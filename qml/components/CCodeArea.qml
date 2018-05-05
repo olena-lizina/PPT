@@ -59,38 +59,11 @@ Item {
             textEdit.forceActiveFocus()
     }
 
-    Rectangle {
-        id: lineNumbers
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        width: column.width * 1.2
-        color: palette.lineNumbersBackground
-
-        Column {
-            id: column
-            y: 2 * settings.pixelDensity - flickable.contentY
-            anchors.horizontalCenter: parent.horizontalCenter
-
-            Repeater {
-                model: textEdit.lineCount
-                delegate: Text {
-                    anchors.right: column.right
-                    color: index + 1 === textEdit.currentLine ? palette.label : palette.lineNumber
-                    font.family: settings.font
-                    font.pixelSize: settings.fontSize
-                    font.bold: index + 1 === textEdit.currentLine
-                    text: index + 1
-                }
-            }
-        }
-    }
-
     CFlickable {
         id: flickable
         anchors.top: parent.top
         anchors.bottom: parent.bottom
-        anchors.left: lineNumbers.right
+        anchors.left: parent.left
         anchors.right: (scrollBar.visible) ? scrollBar.left : parent.right
 
         interactive: false
@@ -123,7 +96,7 @@ Item {
             font.pixelSize: settings.fontSize
             textMargin: 2 * settings.pixelDensity
             wrapMode: TextEdit.Wrap
-            textFormat: TextEdit.PlainText
+            textFormat: TextEdit.RichText
             inputMethodHints: Qt.ImhNoPredictiveText
             activeFocusOnPress: false
 

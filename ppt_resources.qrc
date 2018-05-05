@@ -183,5 +183,6 @@
         <file>resources/translations/ppt_ru.qm</file>
         <file>qml/components/dialogs/ThemeClickedDialog.qml</file>
         <file>qml/screens/education/lectures/EditorLectureScreen.qml</file>
+        <file>resources/images/lectures/актері.PNG</file>
     </qresource>
 </RCC>
