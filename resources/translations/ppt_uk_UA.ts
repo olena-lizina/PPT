@@ -23,7 +23,7 @@
     <name>EducationalMaterialsScreen</name>
     <message>
         <source>Educational materials</source>
-        <translation type="vanished">Навчальні матераіли</translation>
+        <translation type="vanished">Навчальні матеріали</translation>
     </message>
     <message>
         <source>Lectures</source>
