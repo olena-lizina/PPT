@@ -66,6 +66,10 @@ BlankScreen {
                     dialog.open(dialog.types.newLecture, parameters, callback)
                 }
             }
+
+            CHomeButton {
+                onClicked: stackView.push(Qt.resolvedUrl("../../MainMenuScreen.qml"))
+            }
         }
     }
 

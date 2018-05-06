@@ -17,7 +17,6 @@
 ****************************************************************************/
 
 import QtQuick 2.5
-////import ProjectManager 1.1
 import "../components"
 import LecturesManager 1.1
 
@@ -35,9 +34,9 @@ BlankScreen {
         CLabel {
             anchors.fill: parent
             anchors.leftMargin: 5 * settings.pixelDensity
-            text: qsTr("Pedagogical Programming Tool")
+            text: qsTr("Fable")
             font.pixelSize: 10 * settings.pixelDensity
-        }
+        }        
     }
 
     CFlickable {
@@ -55,19 +54,19 @@ BlankScreen {
 
             CNavigationButton {
                 text: qsTr("Administration")
-                icon: "\uf085"
+                icon: "\uD83D\uDC71"
                 onClicked: stackView.push(Qt.resolvedUrl("AdministrationScreen.qml"))
             }
 
             CNavigationButton {
                 text: qsTr("Educational materials")
-                icon: "\uf0f6"
+                icon: "\uf115"
                 onClicked: stackView.push(Qt.resolvedUrl("EducationalMaterialsScreen.qml"))
             }
 
             CNavigationButton {
                 text: qsTr("Learning progress")
-                icon: "\u2611"
+                icon: "\uf080"
                 onClicked: stackView.push(Qt.resolvedUrl("ProgressScreen.qml"))
             }
 

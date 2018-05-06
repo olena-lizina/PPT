@@ -44,15 +44,18 @@ BlankScreen {
                 Layout.fillHeight: true
                 text: qsTr("Students")
             }
-        }
 
-        CToolButton {
-            Layout.fillHeight: true
-            anchors.right: parent.right
-            icon: "\uf067"
-            tooltipText: qsTr("Add student")
-            onClicked: addStudentBtnClicked()
-        }
+            CToolButton {
+                Layout.fillHeight: true
+                icon: "\uf067"
+                tooltipText: qsTr("Add student")
+                onClicked: addStudentBtnClicked()
+            }
+
+            CHomeButton {
+                onClicked: stackView.push(Qt.resolvedUrl("../MainMenuScreen.qml"))
+            }
+        }        
     }
 
     Column {
@@ -80,6 +83,8 @@ BlankScreen {
                     listView.model = StudentManager.getStudentsByGroup(currText);
                 if (currText === dummy && textItem !== "")
                     listView.model = StudentManager.getStudentsByName(findMenu.textItem);
+                if (currText === dummy && textItem === "")
+                    listView.model = StudentManager.getAllStudents();
             }
         }
     }
@@ -137,10 +142,6 @@ BlankScreen {
 
                 dialog.open(dialog.types.confirmation, parameters, callback)
             }
-
-//            onClicked: {
-
-//            }
         }
     }
 

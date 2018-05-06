@@ -49,7 +49,7 @@ SOURCES += \
     qml/*.qml
 }
 
-TRANSLATIONS = resources/translations/ppt_ru.ts
+TRANSLATIONS = resources/translations/ppt_ru.ts resources/translations/ppt_uk_UA.ts
 
 android {
     OTHER_FILES += platform-specific/android/AndroidManifest.xml

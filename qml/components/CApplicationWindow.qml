@@ -29,7 +29,7 @@ ApplicationWindow {
     width: 420
     height: 640
     visible: true
-    title: "Pedagogical Programming Tool"
+    title: "PPT"
     visibility: settings.debugMode ? "FullScreen" : "Maximized"
 
     style: ApplicationWindowStyle {

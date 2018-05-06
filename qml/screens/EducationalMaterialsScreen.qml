@@ -40,6 +40,10 @@ BlankScreen {
                 Layout.fillHeight: true
                 text: qsTr("Educational materials")
             }
+
+            CHomeButton {
+                onClicked: stackView.push(Qt.resolvedUrl("MainMenuScreen.qml"))
+            }
         }
     }
 
@@ -64,23 +68,17 @@ BlankScreen {
 
             CNavigationButton {
                 text: qsTr("Laboratory works")
-                icon: "\u26A0"
-//                onClicked: {
-//                    ProjectManager.baseFolder = ProjectManager.Projects
-//                    stackView.push(Qt.resolvedUrl("AdministrationScreen.qml")) //
-//                }
+                icon:"\uD83D\uDCDA"
             }
 
             CNavigationButton {
                 text: qsTr("Individual works")
-                icon: "\u26A1"
-                //onClicked: stackView.push(Qt.resolvedUrl("SettingsScreen.qml"))
+                icon: "\uD83D\uDCD6"
             }
 
             CNavigationButton {
                 text: qsTr("Tests")
-                icon: "\u261D"
-                //onClicked: stackView.push(Qt.resolvedUrl("ModulesScreen.qml"))
+                icon: "\uD83D\uDCDD"
             }            
         }
     }

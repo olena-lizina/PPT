@@ -19,6 +19,7 @@
 import QtQuick 2.5
 import LecturesManager 1.1
 import SyntaxHighlighter 1.1
+import QtQuick.Controls 1.4
 
 Item {
     id: cCodeArea
@@ -64,7 +65,7 @@ Item {
         anchors.top: parent.top
         anchors.bottom: parent.bottom
         anchors.left: parent.left
-        anchors.right: (scrollBar.visible) ? scrollBar.left : parent.right
+        anchors.right: parent.right
 
         interactive: false
 
@@ -83,14 +84,12 @@ Item {
             }
         }
 
-        TextEdit {
+        TextArea {
             id: textEdit
+            anchors.top: parent.top
             anchors.left: parent.left
             anchors.right: parent.right
-
-            color: palette.editorNormal
-            selectionColor: palette.editorSelection
-            selectedTextColor: palette.editorSelectedText
+            anchors.bottom: parent.bottom
 
             font.family: settings.font
             font.pixelSize: settings.fontSize
@@ -103,9 +102,6 @@ Item {
             property string indentString: ""
 
             property int currentLine: cursorRectangle.y / cursorRectangle.height + 1
-
-            onContentHeightChanged:
-                flickable.contentHeight = contentHeight
 
             property bool textChangedManually: false
             property string previousText: ""
@@ -217,23 +213,7 @@ Item {
                 propertyColor: palette.editorProperty
             }
 
-            Component.onCompleted: {
-                syntaxHighlighter.setHighlighter(textEdit)
-//                if (ProjectManager.project !== "") {
-//                    // add custom components
-//                    var files = ProjectManager.files()
-//                    for (var i = 0; i < files.length; i++) {
-//                        var filename = files[i].split(".")
-//                        if (filename[0] !== "main") {
-//                            if (filename[1] === "qml")
-//                                syntaxHighlighter.addQmlComponent(filename[0])
-//                            if (filename[1] === "js")
-//                                syntaxHighlighter.addJsComponent(filename[0])
-//                        }
-//                    }
-//                    syntaxHighlighter.rehighlight()
-//                }
-            }
+            Component.onCompleted: syntaxHighlighter.setHighlighter(textEdit)
 
             MouseArea {
                 anchors.fill: parent
@@ -494,15 +474,5 @@ Item {
                 }
             }
         }
-    }
-
-    CNavigationScrollBar {
-        id: scrollBar
-
-        anchors.top: parent.top
-        anchors.bottom: parent.bottom
-        anchors.right: parent.right
-
-        flickableItem: flickable
     }
 }

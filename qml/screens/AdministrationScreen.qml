@@ -19,7 +19,6 @@
 import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.2
-//import ProjectManager 1.1
 import "../components"
 
 BlankScreen {
@@ -40,6 +39,10 @@ BlankScreen {
                 Layout.fillHeight: true
                 text: qsTr("Administration")
             }
+
+            CHomeButton {
+                onClicked: stackView.push(Qt.resolvedUrl("MainMenuScreen.qml"))
+            }
         }
     }
 
@@ -58,7 +61,7 @@ BlankScreen {
 
             CNavigationButton {
                 text: qsTr("Students")
-                icon: "\uD83D\uDEB9"
+                icon: "\uD83D\uDC65"
                 onClicked: stackView.push(Qt.resolvedUrl("admins/StudentScreen.qml"))
             }                      
         }

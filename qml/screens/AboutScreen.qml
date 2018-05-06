@@ -17,6 +17,7 @@
 ****************************************************************************/
 
 import QtQuick 2.5
+import QtQuick.Layouts 1.2
 import "../components"
 
 BlankScreen {
@@ -28,9 +29,19 @@ BlankScreen {
         anchors.right: parent.right
         anchors.top: parent.top
 
-        CBackButton {
+        RowLayout {
             anchors.fill: parent
-            text: qsTr("About")
+            spacing: 0
+
+            CBackButton {
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                text: qsTr("About")
+            }
+
+            CHomeButton {
+                onClicked: stackView.push(Qt.resolvedUrl("MainMenuScreen.qml"))
+            }
         }
     }
 

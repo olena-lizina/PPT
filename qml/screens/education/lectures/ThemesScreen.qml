@@ -67,6 +67,10 @@ BlankScreen {
                     dialog.open(dialog.types.newLecture, parameters, callback)
                 }
             }
+
+            CHomeButton {
+                onClicked: stackView.push(Qt.resolvedUrl("../../MainMenuScreen.qml"))
+            }
         }
     }
 
@@ -92,7 +96,7 @@ BlankScreen {
                 else if (LecturesManager.itemHasFile(modelData, LecturesManager.Themes))
                 {
                     LecturesManager.selectFile()
-                    stackView.push(Qt.resolvedUrl("EditorLectureScreen.qml"))
+                    stackView.push(Qt.resolvedUrl("LectureScreen.qml"))
                 }
                 else
                 {
@@ -105,8 +109,7 @@ BlankScreen {
                     {
                         if (value === LecturesManager.SubThemes)
                         {
-
-                            stackView.push(Qt.resolvedUrl("SubThemesScreen.qml"))
+                            stackView.push(Qt.resolvedUrl("LectureScreen.qml"))
                         }
                         else
                         {

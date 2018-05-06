@@ -66,6 +66,10 @@ BlankScreen {
                     dialog.open(dialog.types.newLecture, parameters, callback)
                 }
             }
+
+            CHomeButton {
+                onClicked: stackView.push(Qt.resolvedUrl("../../MainMenuScreen.qml"))
+            }
         }
     }
 
@@ -89,7 +93,7 @@ BlankScreen {
                 if (LecturesManager.itemHasFile(modelData, LecturesManager.SubThemes))
                 {
                     LecturesManager.selectFile()
-                    stackView.push(Qt.resolvedUrl("EditorLectureScreen.qml"))
+                    stackView.push(Qt.resolvedUrl("LectureScreen.qml"))
                 }
                 else
                 {

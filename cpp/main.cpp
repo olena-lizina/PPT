@@ -30,14 +30,15 @@ int main(int argc, char *argv[])
 {
 //    qInstallMessageHandler(&MessageHandler::handler);
     QGuiApplication app(argc, argv);
+
+    QTranslator translator;
+    translator.load("ppt_" + QLocale::system().name(), QCoreApplication::applicationDirPath());
+    app.installTranslator(&translator);
+
     app.setApplicationName("Pedagogical program tool");
     app.setApplicationVersion("1.0.1");
     app.setOrganizationName("lizinaolena");
     app.setOrganizationDomain("com.lizinaolena.ppz");
-
-    QTranslator translator;
-    translator.load("ppt_" + QLocale::system().name(), ":/resources/translations");
-    app.installTranslator(&translator);
 
 //    qmlRegisterSingletonType<ProjectManager>("ProjectManager", 1, 1, "ProjectManager", &ProjectManager::projectManagerProvider);
 
@@ -51,6 +52,7 @@ int main(int argc, char *argv[])
     qmlRegisterType<SyntaxHighlighter>("SyntaxHighlighter", 1, 1, "SyntaxHighlighter");
 
     QQmlApplicationEngine engine(QUrl("qrc:/qml/main.qml"));
+    //engine.setContextForObject((QObject*)&translator, "rootItem");
 //    ProjectManager::setQmlEngine(&engine);
     StudentManager::setQmlEngine(&engine);
 //    MessageHandler::setQmlEngine(&engine);

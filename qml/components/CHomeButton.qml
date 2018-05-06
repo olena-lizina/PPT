@@ -17,39 +17,10 @@
 ****************************************************************************/
 
 import QtQuick 2.5
-import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.2
-import LecturesManager 1.1
-import "../../../components"
-import "../.."
 
-BlankScreen {
-    id: themesScreen
-
-    Stack.onStatusChanged: {
-        listView.model = {}
-        listView.model = LecturesManager.getListModel(LecturesManager.Themes);
-    }
-
-    CToolBar {
-        id: toolBar
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
-
-        RowLayout {
-            anchors.fill: parent
-            spacing: 0
-
-            CBackButton {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                text: LecturesManager.selectedItem(LecturesManager.Chapters)
-            }            
-        }
-    }
-
-    CLabel {
-        text: "Here will be displayed lecture file"
-    }
+CToolButton {
+    Layout.fillHeight: true
+    icon: "\uD83C\uDFE0"
+    tooltipText: qsTr("Home")    
 }

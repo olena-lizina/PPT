@@ -179,10 +179,13 @@
         <file>qml/components/CEditOrRemoveButton.qml</file>
         <file>qml/components/dialogs/ConfirmationDeleteStudentDialog.qml</file>
         <file>qml/screens/admins/StudentScreen.qml</file>
-        <file>qml/screens/education/lectures/TemplateLectureScreen.qml</file>
         <file>resources/translations/ppt_ru.qm</file>
         <file>qml/components/dialogs/ThemeClickedDialog.qml</file>
         <file>qml/screens/education/lectures/EditorLectureScreen.qml</file>
         <file>resources/images/lectures/актері.PNG</file>
+        <file>qml/screens/education/lectures/LectureScreen.qml</file>
+        <file>qml/components/CReadyCodeArea.qml</file>
+        <file>qml/components/CHomeButton.qml</file>
+        <file>resources/translations/ppt_uk_UA.qm</file>
     </qresource>
 </RCC>

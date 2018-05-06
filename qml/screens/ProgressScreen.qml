@@ -40,6 +40,10 @@ BlankScreen {
                 Layout.fillHeight: true
                 text: qsTr("Learning progress")
             }
+
+            CHomeButton {
+                onClicked: stackView.push(Qt.resolvedUrl("MainMenuScreen.qml"))
+            }
         }
     }
 
@@ -76,7 +80,7 @@ BlankScreen {
 
             CNavigationButton {
                 text: qsTr("Gradebook")
-                icon: "\u2696"
+                icon: "\uD83D\uDCCA"
                 //onClicked: stackView.push(Qt.resolvedUrl("SettingsScreen.qml"))
             }
 

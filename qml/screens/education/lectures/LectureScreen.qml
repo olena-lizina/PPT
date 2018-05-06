@@ -45,38 +45,9 @@ BlankScreen {
 
             CToolButton {
                 Layout.fillHeight: true
-                icon: "\uf034"
+                icon: "\u270e"
                 tooltipText: qsTr("Select all")
-                onClicked: codeArea.selectAll()
-            }
-
-            CToolButton {
-                visible: true
-                Layout.fillHeight: true
-                icon: "\uf0c5"
-                tooltipText: qsTr("Copy")
-                onClicked: codeArea.copy()
-            }
-
-            CToolButton {
-                visible: true
-                Layout.fillHeight: true
-                icon: "\uf0c4"
-                tooltipText: qsTr("Cut")
-                onClicked: codeArea.cut()
-            }
-
-            CToolButton {
-                visible: true
-                Layout.fillHeight: true
-                icon: "\u2714"
-                tooltipText: qsTr("Save lecture")
-                onClicked: {
-                    LecturesManager.saveFileContent(codeArea.text)
-                    LecturesManager.clearComponentCache()
-                    Qt.inputMethod.hide()
-                    stackView.push(Qt.resolvedUrl("LectureScreen.qml"))
-                }
+                onClicked: stackView.push(Qt.resolvedUrl("EditorLectureScreen.qml"))
             }
 
             CHomeButton {
@@ -85,19 +56,13 @@ BlankScreen {
         }
     }
 
-    CCodeArea {
+    CReadyCodeArea {
         id: codeArea
-
-        Component.onDestruction: {
-            LecturesManager.saveFileContent(text)
-        }
 
         anchors.top: toolBar.bottom
         anchors.bottom: parent.bottom
         anchors.left: parent.left
         anchors.right: parent.right
-
-        indentSize: settings.indentSize
 
         text: LecturesManager.getFileContent()
     }
