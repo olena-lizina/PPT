@@ -27,8 +27,6 @@ import "../.."
 BlankScreen {
     id: chapterScreen
 
-    Component.onCompleted: console.log("Screen completed")
-
     CToolBar {
         id: toolBar
         anchors.left: parent.left
@@ -84,8 +82,6 @@ BlankScreen {
             left: parent.left
             bottom: parent.bottom
         }
-
-        model: LecturesManager.getListModel(LecturesManager.Chapters)
 
         onClicked: {
             stackView.push(Qt.resolvedUrl("ThemesScreen.qml"))

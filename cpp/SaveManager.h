@@ -54,7 +54,8 @@ public:
     // work for lectures
     void saveLecturePart(const LecturePart& lecture, const SaveManager::LecturePartType& type);
     void updateLecturePart(const LecturePart& oldLecture, const LecturePart& newLecture, const SaveManager::LecturePartType& type);
-    void deleteLecturePart(const LecturePart& lecture, const SaveManager::LecturePartType& type);
+    void deleteLecturePart(const int& id, const int& parentId, const SaveManager::LecturePartType& type);
+    void deleteLecturePartByParentId(const int& parentId, const SaveManager::LecturePartType& type);
 
     std::list<LecturePart> getLectureParts(const SaveManager::LecturePartType& type);
 

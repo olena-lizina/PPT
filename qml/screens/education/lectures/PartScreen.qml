@@ -26,11 +26,6 @@ import "../.."
 BlankScreen {
     id: selectLectureScreen
 
-    Stack.onStatusChanged: {
-        if (Stack.status === Stack.Activating)
-            listView.model = LecturesManager.getListModel(LecturesManager.Parts);
-    }
-
     CToolBar {
         id: toolBar
         anchors.left: parent.left
@@ -61,7 +56,7 @@ BlankScreen {
                     var callback = function(value)
                     {
                         LecturesManager.addItem(value, LecturesManager.Parts)
-                        listView.model = LecturesManager.getListModel(LecturesManager.Parts)
+                        listModel.model = LecturesManager.getListModel(LecturesManager.Parts)
                     }
 
                     dialog.open(dialog.types.newLecture, parameters, callback)
@@ -74,71 +69,57 @@ BlankScreen {
         }
     }
 
-    CListView {
-        id: listView
+    CDragAndDropList {
+
+        id: listModel
+
+        selectedItem: LecturesManager.Parts
 
         anchors {
-            left: parent.left
-            right: parent.right
             top: toolBar.bottom
+            right: parent.right
+            left: parent.left
             bottom: parent.bottom
         }
 
-        delegate: CEditOrRemoveButton {
-
-            anchors.left: parent.left
-            anchors.right: parent.right
-
-            text: modelData
-
-            onEditClicked: {
-                LecturesManager.selectedItem(modelData, LecturesManager.Parts);
-
-                var parameters = {
-                    title: qsTr("Edit part"),
-                    label: qsTr("Part name :"),
-                    valueEdit: modelData,
-                    itemType: LecturesManager.Parts
-                }
-
-                var callback = function(value)
-                {
-                    LecturesManager.editItem(value, LecturesManager.Parts)
-                    listView.model = LecturesManager.getListModel(LecturesManager.Parts)
-                }
-
-                dialog.open(dialog.types.editLecture, parameters, callback)
-            }
-
-            onClicked: {
-                console.debug(modelData);
-                LecturesManager.selectedItem(modelData, LecturesManager.Parts)
-                stackView.push(Qt.resolvedUrl("ChapterScreen.qml"))
-            }
-
-            onRemoveClicked: {
-                LecturesManager.selectedItem(modelData, LecturesManager.Parts)
-
-                var parameters = {
-                    title: qsTr("Delete the part"),
-                    text: qsTr("Are you sure you want to delete \"%1\"?").arg(modelData)
-                }
-
-                var callback = function(value)
-                {
-                    if (value)
-                    {
-                        LecturesManager.deleteItem(LecturesManager.Parts)
-                        listView.model = LecturesManager.getListModel(LecturesManager.Parts)
-                    }
-                }
-
-                dialog.open(dialog.types.confirmation, parameters, callback)
-            }
+        onClicked: {
+            stackView.push(Qt.resolvedUrl("ChapterScreen.qml"))
         }
-    }
 
-    CScrollBar {
-        flickableItem: listView
+        onEditClicked: {
+            var parameters = {
+                title: qsTr("Edit part"),
+                label: qsTr("Part name :"),
+                valueEdit: LecturesManager.selectedItem(LecturesManager.Parts),
+                itemType: LecturesManager.Parts
+            }
+
+
+            var callback = function(value)
+            {
+                LecturesManager.editItem(value, LecturesManager.Parts)
+                model = LecturesManager.getListModel(LecturesManager.Parts)
+            }
+
+            dialog.open(dialog.types.editLecture, parameters, callback)
+        }
+
+        onRemoveClicked: {
+            var parameters = {
+                title: qsTr("Delete the part"),
+                text: qsTr("Are you sure you want to delete \"%1\"?").arg(LecturesManager.selectedItem(LecturesManager.Parts))
+            }
+
+            var callback = function(value)
+            {
+                if (value)
+                {
+                    LecturesManager.deleteItem(LecturesManager.Parts)
+                    model = LecturesManager.getListModel(LecturesManager.Parts)
+                }
+            }
+
+            dialog.open(dialog.types.confirmation, parameters, callback)
+        }
     }
 }

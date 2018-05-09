@@ -316,8 +316,8 @@ void LecturesManager::editItem(const QString& name, const LecturesManager::Type&
         if (mDisciplines.end() == it)
             break;
 
-        it->setName(name);
         mSaveManager->updateLecturePart(*it, discipline, SaveManager::Discipline);
+        it->setName(name);
     }
     break;
     case Parts:
@@ -332,8 +332,8 @@ void LecturesManager::editItem(const QString& name, const LecturesManager::Type&
         if (mParts.end() == it)
             break;
 
-        it->setName(name);
         mSaveManager->updateLecturePart(*it, part, SaveManager::Part);
+        it->setName(name);
     }
     break;
     case Chapters:
@@ -348,8 +348,8 @@ void LecturesManager::editItem(const QString& name, const LecturesManager::Type&
         if (mChapters.end() == it)
             break;
 
-        it->setName(name);
         mSaveManager->updateLecturePart(*it, chapt, SaveManager::Chapter);
+        it->setName(name);
     }
     break;
     case Themes:
@@ -364,12 +364,11 @@ void LecturesManager::editItem(const QString& name, const LecturesManager::Type&
         if (mThemes.end() == it)
             break;
 
+        mSaveManager->updateLecturePart(*it, theme, SaveManager::Theme);
         it->setName(name);
 
         if (!fileName.isEmpty())
             it->setFileName(fileName);
-
-        mSaveManager->updateLecturePart(*it, theme, SaveManager::Theme);
     }
     break;
     case SubThemes:
@@ -384,12 +383,11 @@ void LecturesManager::editItem(const QString& name, const LecturesManager::Type&
         if (mSubThemes.end() == it)
             break;
 
+        mSaveManager->updateLecturePart(*it, subTheme, SaveManager::SubTheme);
         it->setName(name);
 
         if (!fileName.isEmpty())
             it->setFileName(fileName);
-
-        mSaveManager->updateLecturePart(*it, subTheme, SaveManager::SubTheme);
     }
     break;
     }
@@ -402,74 +400,231 @@ void LecturesManager::deleteItem(const LecturesManager::Type& type)
     case Disciplines:
     {
         int id = mSelectedDisciplines.id;
-        auto it = std::find_if(mDisciplines.begin(), mDisciplines.end(),
-                               [&id](LecturePart& item){ return item.getId() == id; });
-
-        if (mDisciplines.end() == it)
-            break;
-
-        mSaveManager->deleteLecturePart(*it, SaveManager::Discipline);
-        mDisciplines.erase(it);
+        mSaveManager->deleteLecturePart(id, 0, SaveManager::Discipline);
+        mDisciplines.remove_if([&id](LecturePart it){ return it.getId() == id; });
+        removeRelatedParts(id);
     }
     break;
     case Parts:
     {
         int id = mSelectedPart.id;
         int parentId = mSelectedDisciplines.id;
-        auto it = std::find_if(mParts.begin(), mParts.end(),
-                               [&id, &parentId](LecturePart& item)
-        { return item.getId() == id && parentId == item.getParentId(); });
-
-        if (mParts.end() == it)
-            break;
-
-        mSaveManager->deleteLecturePart(*it, SaveManager::Part);
-        mParts.erase(it);
+        mSaveManager->deleteLecturePart(id, parentId, SaveManager::Part);
+        mParts.remove_if([&id, &parentId](LecturePart it){ return it.getId() == id && it.getParentId() == parentId; });
+        removeRelatedChapters(id);
     }
     break;
     case Chapters:
     {
         int id = mSelectedChapter.id;
         int parentId = mSelectedPart.id;
-        auto it = std::find_if(mChapters.begin(), mChapters.end(),
-                               [&id, &parentId](LecturePart& item)
-        { return id == item.getId() && parentId == item.getParentId(); });
-
-        if (mChapters.end() == it)
-            break;
-
-        mSaveManager->deleteLecturePart(*it, SaveManager::Chapter);
-        mChapters.erase(it);
+        mSaveManager->deleteLecturePart(id, parentId, SaveManager::Chapter);
+        mChapters.remove_if([&id, &parentId](LecturePart it){ return it.getId() == id && it.getParentId() == parentId; });
+        removeRelatedThemes(id);
     }
     break;
     case Themes:
     {
         int id = mSelectedTheme.id;
         int parentId = mSelectedChapter.id;
-        auto it = std::find_if(mThemes.begin(), mThemes.end(),
-                               [&id, &parentId](LecturePart& item)
-        { return id == item.getId() && parentId == item.getParentId(); });
-
-        if (mThemes.end() == it)
-            break;
-
-        mSaveManager->deleteLecturePart(*it, SaveManager::Theme);
-        mThemes.erase(it);
+        mSaveManager->deleteLecturePart(id, parentId, SaveManager::Theme);
+        mThemes.remove_if([&id, &parentId](LecturePart it){ return it.getId() == id && it.getParentId() == parentId; });
+        removeRelatedSubThemes(id);
     }
     break;
     case SubThemes:
     {
         int id = mSelectedSubTheme.id;
         int parentId = mSelectedTheme.id;
+        mSaveManager->deleteLecturePart(id, parentId, SaveManager::SubTheme);
+        mSubThemes.remove_if([&id, &parentId](LecturePart it){ return it.getId() == id && it.getParentId() == parentId; });
+    }
+    break;
+    }
+}
+
+void LecturesManager::removeRelatedSubThemes(const int& themeId)
+{
+    for (auto it : mSubThemes)
+        if (it.getParentId() == themeId)
+            mSaveManager->deleteLecturePartByParentId(themeId, SaveManager::SubTheme);
+
+    mSubThemes.remove_if([&themeId](LecturePart item)
+    { return item.getParentId() == themeId; });
+}
+
+void LecturesManager::removeRelatedThemes(const int& chapterId)
+{
+    for (auto it : mThemes)
+    {
+        if (it.getParentId() == chapterId)
+        {
+            removeRelatedSubThemes(it.getId());
+            mSaveManager->deleteLecturePartByParentId(it.getId(), SaveManager::Theme);
+        }
+    }
+    mThemes.remove_if([&chapterId](LecturePart item)
+    { return item.getParentId() == chapterId; });
+}
+
+void LecturesManager::removeRelatedChapters(const int& partId)
+{
+    for (auto it : mChapters)
+    {
+        if (it.getParentId() == partId)
+        {
+            removeRelatedThemes(it.getId());
+            mSaveManager->deleteLecturePartByParentId(it.getId(), SaveManager::Chapter);
+        }
+    }
+    mChapters.remove_if([&partId](LecturePart item)
+    { return item.getParentId() == partId; });
+}
+
+void LecturesManager::removeRelatedParts(const int& disciplineId)
+{
+    for (auto it : mParts)
+    {
+        if (it.getParentId() == disciplineId)
+        {
+            removeRelatedChapters(it.getId());
+            mSaveManager->deleteLecturePartByParentId(it.getId(), SaveManager::Part);
+        }
+    }
+    mParts.remove_if([&disciplineId](LecturePart item)
+    { return item.getParentId() == disciplineId; });
+}
+
+void LecturesManager::updateIndex(const int newIdx, const QString& name, const LecturesManager::Type& type)
+{
+    switch(type)
+    {
+    case Disciplines:
+    {
+        LecturePart discipline(name, newIdx, 0);
+        auto it = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                               [&name](LecturePart& item){ return item.getName() == name; });
+
+        if (mDisciplines.end() == it)
+            break;
+
+        for (auto part : mParts)
+        {
+            if (part.getParentId() == it->getId())
+            {
+                LecturePart newPart(part.getName(), part.getId(), newIdx);
+                mSaveManager->updateLecturePart(part, newPart, SaveManager::Part);
+                part.setParentId(newIdx);
+            }
+        }
+
+        mSaveManager->updateLecturePart(*it, discipline, SaveManager::Discipline);
+        it->setId(newIdx);
+
+        mDisciplines.sort([](const LecturePart& lhs, const LecturePart& rhs)
+                    { return lhs.getId() < rhs.getId(); });
+    }
+    break;
+    case Parts:
+    {
+        LecturePart part(name, newIdx, 0);
+        int parentId = mSelectedDisciplines.id;
+        auto it = std::find_if(mParts.begin(), mParts.end(),
+                               [&name, &parentId](LecturePart& item)
+        { return !item.getName().compare(name) && parentId == item.getParentId(); });
+
+        if (mParts.end() == it)
+            break;
+
+        for (auto ch : mChapters)
+        {
+            if (ch.getParentId() == it->getId())
+            {
+                LecturePart newChapt(ch.getName(), ch.getId(), newIdx);
+                mSaveManager->updateLecturePart(ch, newChapt, SaveManager::Chapter);
+                ch.setParentId(newIdx);
+            }
+        }
+
+        mSaveManager->updateLecturePart(*it, part, SaveManager::Part);
+        it->setId(newIdx);
+
+        mParts.sort([](const LecturePart& lhs, const LecturePart& rhs)
+                    { return lhs.getId() < rhs.getId(); });
+    }
+    break;
+    case Chapters:
+    {
+        LecturePart chapt(name, newIdx, mSelectedPart.id);
+        int parentId = mSelectedPart.id;
+        auto it = std::find_if(mChapters.begin(), mChapters.end(),
+                               [&name, &parentId](LecturePart& item)
+        { return !item.getName().compare(name) && parentId == item.getParentId(); });
+
+        if (mChapters.end() == it)
+            break;
+
+        for (auto th : mThemes)
+        {
+            if (th.getParentId() == it->getId())
+            {
+                LecturePart newTheme(th.getName(), th.getId(), newIdx);
+                mSaveManager->updateLecturePart(th, newTheme, SaveManager::Theme);
+                th.setParentId(newIdx);
+            }
+        }
+
+        mSaveManager->updateLecturePart(*it, chapt, SaveManager::Chapter);
+        it->setId(newIdx);
+
+        mChapters.sort([](const LecturePart& lhs, const LecturePart& rhs)
+                    { return lhs.getId() < rhs.getId(); });
+    }
+    break;
+    case Themes:
+    {
+        LecturePart theme(name, newIdx, mSelectedChapter.id);
+        int parentId = mSelectedChapter.id;
+        auto it = std::find_if(mThemes.begin(), mThemes.end(),
+                               [&name, &parentId](LecturePart& item)
+        { return !item.getName().compare(name) && parentId == item.getParentId(); });
+
+        if (mThemes.end() == it)
+            break;
+
+        for (auto sub : mSubThemes)
+        {
+            if (sub.getParentId() == it->getId())
+            {
+                LecturePart newSub(sub.getName(), sub.getId(), newIdx);
+                mSaveManager->updateLecturePart(sub, newSub, SaveManager::SubTheme);
+                sub.setParentId(newIdx);
+            }
+        }
+
+        mSaveManager->updateLecturePart(*it, theme, SaveManager::Theme);
+        it->setId(newIdx);
+
+        mThemes.sort([](const LecturePart& lhs, const LecturePart& rhs)
+                    { return lhs.getId() < rhs.getId(); });
+    }
+    break;
+    case SubThemes:
+    {
+        LecturePart subTheme(name, newIdx, mSelectedTheme.id);
+        int parentId = mSelectedTheme.id;
         auto it = std::find_if(mSubThemes.begin(), mSubThemes.end(),
-                               [&id, &parentId](LecturePart& item)
-        { return id == item.getId() && parentId == item.getParentId(); });
+                               [&name, &parentId](LecturePart& item)
+        { return !item.getName().compare(name) && parentId == item.getParentId(); });
 
         if (mSubThemes.end() == it)
             break;
 
-        mSaveManager->deleteLecturePart(*it, SaveManager::SubTheme);
-        mSubThemes.erase(it);
+        mSaveManager->updateLecturePart(*it, subTheme, SaveManager::SubTheme);
+        it->setId(newIdx);
+
+        mSubThemes.sort([](const LecturePart& lhs, const LecturePart& rhs)
+                    { return lhs.getId() < rhs.getId(); });
     }
     break;
     }

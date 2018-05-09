@@ -139,40 +139,35 @@ void SaveManager::saveLecturePart(const LecturePart& lecture, const SaveManager:
     {
         mQuery->prepare(QString("INSERT INTO Disciplines (Id, Name) VALUES ('%1', \"%2\")")
                         .arg(lecture.getId()).arg(lecture.getName()));
-        if (!mQuery->exec())
-            qDebug() << "Add Discipline failed with error: " << mQuery->lastError().text();
+        mQuery->exec();
         break;
     }
     case Part:
     {
         mQuery->prepare(QString("INSERT INTO Parts (Id, Name, DisciplineId) VALUES ('%1', \"%2\", '%3')")
                         .arg(lecture.getId()).arg(lecture.getName()).arg(lecture.getParentId()));
-        if (!mQuery->exec())
-            qDebug() << "Add Part failed with error: " << mQuery->lastError().text();
+        mQuery->exec();
         break;
     }
     case Chapter:
     {
         mQuery->prepare(QString("INSERT INTO Chapters (Id, Name, PartId) VALUES ('%1', \"%2\", '%3')")
                         .arg(lecture.getId()).arg(lecture.getName()).arg(lecture.getParentId()));
-        if (!mQuery->exec())
-            qDebug() << "Add Chapter failed with error: " << mQuery->lastError().text();
+        mQuery->exec();
         break;
     }
     case Theme:
     {
         mQuery->prepare(QString("INSERT INTO Themes (Id, Name, ChapterId, File) VALUES ('%1', \"%2\", '%3', \"%4\")")
                         .arg(lecture.getId()).arg(lecture.getName()).arg(lecture.getParentId()).arg(lecture.getFileName()));
-        if (!mQuery->exec())
-            qDebug() << "Add Theme failed with error: " << mQuery->lastError().text();
+        mQuery->exec();
         break;
     }
     case SubTheme:
     {
         mQuery->prepare(QString("INSERT INTO SubThemes (Id, Name, ThemeId, File) VALUES ('%1', \"%2\", '%3', \"%4\")")
                         .arg(lecture.getId()).arg(lecture.getName()).arg(lecture.getParentId()).arg(lecture.getFileName()));
-        if (!mQuery->exec())
-            qDebug() << "Add SubTheme failed with error: " << mQuery->lastError().text();
+        mQuery->exec();
         break;
     }
     }
@@ -187,43 +182,43 @@ void SaveManager::updateLecturePart(const LecturePart& oldLecture, const Lecture
     {
     case Discipline:
     {
-        mQuery->prepare(QString("UPDATE Disciplines Set Name=\"%1\" WHERE Name=\"%2\"")
-                        .arg(newLecture.getName()).arg(oldLecture.getName()));
+        mQuery->prepare(QString("UPDATE Disciplines Set Name=\"%1\", Id='%2' WHERE Name=\"%3\"")
+                        .arg(newLecture.getName()).arg(newLecture.getId()).arg(oldLecture.getName()));
         mQuery->exec();
         break;
     }
     case Part:
     {
-        mQuery->prepare(QString("UPDATE Parts Set Name=\"%1\" WHERE Name=\"%2\" AND DisciplineId='%3'")
-                        .arg(newLecture.getName()).arg(oldLecture.getName()).arg(oldLecture.getParentId()));
+        mQuery->prepare(QString("UPDATE Parts Set Name=\"%1\", Id='%2' WHERE Name=\"%3\" AND DisciplineId='%4'")
+                        .arg(newLecture.getName()).arg(newLecture.getId()).arg(oldLecture.getName()).arg(oldLecture.getParentId()));
         mQuery->exec();
         break;
     }
     case Chapter:
     {
-        mQuery->prepare(QString("UPDATE Chapters Set Name=\"%1\" WHERE Name=\"%2\" AND PartId='%3'")
-                        .arg(newLecture.getName()).arg(oldLecture.getName()).arg(newLecture.getParentId()));
+        mQuery->prepare(QString("UPDATE Chapters Set Name=\"%1\", Id='%2' WHERE Name=\"%3\" AND PartId='%4'")
+                        .arg(newLecture.getName()).arg(newLecture.getId()).arg(oldLecture.getName()).arg(newLecture.getParentId()));
         mQuery->exec();
         break;
     }
     case Theme:
     {
-        mQuery->prepare(QString("UPDATE Themes Set Name=\"%1\", File=\"%2\" WHERE Name=\"%3\" AND ChapterId='%4'")
-                        .arg(newLecture.getName()).arg(oldLecture.getFileName()).arg(oldLecture.getName()).arg(oldLecture.getParentId()));
+        mQuery->prepare(QString("UPDATE Themes Set Name=\"%1\", Id='%2', File=\"%3\" WHERE Name=\"%4\" AND ChapterId='%5'")
+                        .arg(newLecture.getName()).arg(newLecture.getId()).arg(oldLecture.getFileName()).arg(oldLecture.getName()).arg(oldLecture.getParentId()));
         mQuery->exec();
         break;
     }
     case SubTheme:
     {
-        mQuery->prepare(QString("UPDATE SubThemes Set Name=\"%1\", File=\"%2\" WHERE Name=\"%3\" AND ThemeId='%4'")
-                        .arg(newLecture.getName()).arg(oldLecture.getFileName()).arg(oldLecture.getName()).arg(oldLecture.getParentId()));
+        mQuery->prepare(QString("UPDATE SubThemes Set Name=\"%1\", Id='%2', File=\"%3\" WHERE Name=\"%4\" AND ThemeId='%5'")
+                        .arg(newLecture.getName()).arg(newLecture.getId()).arg(oldLecture.getFileName()).arg(oldLecture.getName()).arg(oldLecture.getParentId()));
         mQuery->exec();
         break;
     }
     }
 }
 
-void SaveManager::deleteLecturePart(const LecturePart& lecture, const SaveManager::LecturePartType& type)
+void SaveManager::deleteLecturePart(const int& id, const int& parentId, const SaveManager::LecturePartType& type)
 {
     if (!isInitialized)
         return;
@@ -231,39 +226,51 @@ void SaveManager::deleteLecturePart(const LecturePart& lecture, const SaveManage
     switch(type)
     {
     case Discipline:
-    {
-        mQuery->prepare(QString("DELETE FROM Disciplines WHERE Name=\"%1\"").arg(lecture.getName()));
+        mQuery->prepare(QString("DELETE FROM Disciplines WHERE Id='%1'").arg(id));
         mQuery->exec();
         break;
-    }
     case Part:
-    {
-        mQuery->prepare(QString("DELETE FROM Parts WHERE Name=\"%1\" AND DisciplineId='%2'")
-                        .arg(lecture.getName()).arg(lecture.getParentId()));
+        mQuery->prepare(QString("DELETE FROM Parts WHERE Id='%1' AND DisciplineId='%2'").arg(id).arg(parentId));
         mQuery->exec();
         break;
-    }
     case Chapter:
-    {
-        mQuery->prepare(QString("DELETE FROM Chapters WHERE Name=\"%1\" AND PartId='%2'")
-                        .arg(lecture.getName()).arg(lecture.getParentId()));
+        mQuery->prepare(QString("DELETE FROM Chapters WHERE Id='%1' AND PartId='%2'").arg(id).arg(parentId));
         mQuery->exec();
         break;
-    }
     case Theme:
-    {
-        mQuery->prepare(QString("DELETE FROM Themes WHERE Name=\"%1\" AND ChapterId='%2'")
-                        .arg(lecture.getName()).arg(lecture.getParentId()));
+        mQuery->prepare(QString("DELETE FROM Themes WHERE Id='%1' AND ChapterId='%2'").arg(id).arg(parentId));
         mQuery->exec();
         break;
-    }
     case SubTheme:
-    {
-        mQuery->prepare(QString("DELETE FROM SubThemes WHERE Name=\"%1\" AND ThemeId='%2'")
-                        .arg(lecture.getName()).arg(lecture.getParentId()));
+        mQuery->prepare(QString("DELETE FROM SubThemes WHERE Id='%1' AND ThemeId='%2'").arg(id).arg(parentId));
         mQuery->exec();
         break;
     }
+}
+
+void SaveManager::deleteLecturePartByParentId(const int& parentId, const SaveManager::LecturePartType& type)
+{
+    if (!isInitialized)
+        return;
+
+    switch(type)
+    {
+    case Part:
+        mQuery->prepare(QString("DELETE FROM Parts WHERE DisciplineId='%1'").arg(parentId));
+        mQuery->exec();
+        break;
+    case Chapter:
+        mQuery->prepare(QString("DELETE FROM Chapters WHERE PartId='%1'").arg(parentId));
+        mQuery->exec();
+        break;
+    case Theme:
+        mQuery->prepare(QString("DELETE FROM Themes WHERE ChapterId='%1'").arg(parentId));
+        mQuery->exec();
+        break;
+    case SubTheme:
+        mQuery->prepare(QString("DELETE FROM SubThemes WHERE ThemeId='%1'").arg(parentId));
+        mQuery->exec();
+        break;
     }
 }
 

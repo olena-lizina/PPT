@@ -52,18 +52,17 @@ Item {
             drag.axis: Drag.YAxis
 
             onPressAndHold: held = true
-            onReleased: held = false
+
+            onReleased: {
+                held = false
+                console.log("onReleased: " + modelData + ", new idx: " + dragArea.DelegateModel.itemsIndex)
+                LecturesManager.updateIndex(dragArea.DelegateModel.itemsIndex, modelData, selectedItem);
+            }
 
             onClicked: {
                 LecturesManager.selectedItem(modelData, selectedItem)
                 root.clicked()
-            }
-
-            CHorizontalSeparator {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                anchors.bottom: parent.bottom
-            }
+            }            
 
             Rectangle {
                 id: content
@@ -76,13 +75,19 @@ Item {
                 width: dragArea.width;
                 height: parent.implicitHeight
 
-                color: palette.background/*dragArea.held ? palette.button : palette.highlight*/
+                color: palette.background
                 Behavior on color { ColorAnimation { duration: 100 } }
 
                 Drag.active: dragArea.held
                 Drag.source: dragArea
                 Drag.hotSpot.x: width / 2
                 Drag.hotSpot.y: height / 2
+
+                CHorizontalSeparator {
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    anchors.bottom: parent.bottom
+                }
 
                 states: State {
                     when: dragArea.held
@@ -187,6 +192,7 @@ Item {
         id: visualModel
 
         delegate: dragDelegate
+        model: LecturesManager.getListModel(selectedItem)
     }
 
     ListView {
@@ -197,6 +203,7 @@ Item {
         model: visualModel
 
         cacheBuffer: 50
+
     }
 }
 

@@ -58,6 +58,7 @@ public:
     Q_INVOKABLE void addItem(const QString& name, const LecturesManager::Type&, const QString& fileName = "");
     Q_INVOKABLE void editItem(const QString& name, const LecturesManager::Type&, const QString& fileName = "");
     Q_INVOKABLE void deleteItem(const LecturesManager::Type& type);
+    Q_INVOKABLE void updateIndex(const int newIdx, const QString& name, const LecturesManager::Type&);
 
     Q_INVOKABLE bool hasSubThemes(const QString& theme);
 
@@ -73,6 +74,13 @@ public:
     Q_INVOKABLE void selectFile();
     Q_INVOKABLE void saveFileContent(QString);
     Q_INVOKABLE QString getFileContent();
+
+private:
+    void removeRelatedSubThemes(const int& themeId);
+    void removeRelatedThemes(const int& chapterId);
+    void removeRelatedChapters(const int& partId);
+    void removeRelatedParts(const int& disciplineId);
+
 private:
     static SaveManager::Ptr mSaveManager;
     static QQmlApplicationEngine *m_qmlEngine;

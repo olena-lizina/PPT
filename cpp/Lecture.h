@@ -38,6 +38,9 @@ public:
     int getId() const { return mId; }
     int getParentId() const { return mParentId; }
     void setName(const QString& name) { mName = name; }
+    void setId(const int& id) { mId = id; }
+    void incrementId() { ++mId; }
+    void setParentId(const int& id) { mParentId = id; }
     void setFileName(const QString& file) { mFileName = file; }
 
 protected:

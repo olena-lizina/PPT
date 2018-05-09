@@ -26,11 +26,6 @@ import "../.."
 BlankScreen {
     id: selectLectureScreen
 
-    Stack.onStatusChanged: {
-        if (Stack.status === Stack.Activating)
-            listView.model = LecturesManager.getListModel(LecturesManager.Disciplines);
-    }
-
     CToolBar {
         id: toolBar
         anchors.left: parent.left
@@ -61,7 +56,7 @@ BlankScreen {
                     var callback = function(value)
                     {
                         LecturesManager.addItem(value, LecturesManager.Disciplines)
-                        listView.model = LecturesManager.getListModel(LecturesManager.Disciplines)
+                        listModel.model = LecturesManager.getListModel(LecturesManager.Disciplines)
                     }
 
                     dialog.open(dialog.types.newLecture, parameters, callback)
@@ -74,71 +69,58 @@ BlankScreen {
         }
     }
 
-    CListView {
-        id: listView
+    CDragAndDropList {
+
+        id: listModel
+
+        selectedItem: LecturesManager.Disciplines
 
         anchors {
-            left: parent.left
-            right: parent.right
             top: toolBar.bottom
+            right: parent.right
+            left: parent.left
             bottom: parent.bottom
         }
 
-        delegate: CEditOrRemoveButton {
+        model: LecturesManager.getListModel(LecturesManager.Disciplines)
 
-            anchors.left: parent.left
-            anchors.right: parent.right
-
-            text: modelData
-
-            onEditClicked: {
-                LecturesManager.selectedItem(modelData, LecturesManager.Disciplines);
-
-                var parameters = {
-                    title: qsTr("Edit discipline"),
-                    label: qsTr("Discipline name :"),
-                    valueEdit: modelData,
-                    itemType: LecturesManager.Disciplines
-                }
-
-                var callback = function(value)
-                {
-                    LecturesManager.editItem(value, LecturesManager.Disciplines)
-                    listView.model = LecturesManager.getListModel(LecturesManager.Disciplines)
-                }
-
-                dialog.open(dialog.types.editLecture, parameters, callback)
-            }
-
-            onClicked: {
-                console.debug(modelData);
-                LecturesManager.selectedItem(modelData, LecturesManager.Disciplines)
-                stackView.push(Qt.resolvedUrl("PartScreen.qml"))
-            }
-
-            onRemoveClicked: {
-                LecturesManager.selectedItem(modelData, LecturesManager.Disciplines)
-
-                var parameters = {
-                    title: qsTr("Delete the discipline"),
-                    text: qsTr("Are you sure you want to delete \"%1\"?").arg(modelData)
-                }
-
-                var callback = function(value)
-                {
-                    if (value)
-                    {
-                        LecturesManager.deleteItem(LecturesManager.Disciplines)
-                        listView.model = LecturesManager.getListModel(LecturesManager.Disciplines)
-                    }
-                }
-
-                dialog.open(dialog.types.confirmation, parameters, callback)
-            }
+        onClicked: {
+            stackView.push(Qt.resolvedUrl("PartScreen.qml"))
         }
-    }
 
-    CScrollBar {
-        flickableItem: listView
+        onEditClicked: {
+            var parameters = {
+                title: qsTr("Edit discipline"),
+                label: qsTr("Discipline name :"),
+                valueEdit: LecturesManager.selectedItem(LecturesManager.Disciplines),
+                itemType: LecturesManager.Disciplines
+            }
+
+            var callback = function(value)
+            {
+                LecturesManager.editItem(value, LecturesManager.Disciplines)
+                model = LecturesManager.getListModel(LecturesManager.Disciplines)
+            }
+
+            dialog.open(dialog.types.editLecture, parameters, callback)
+        }
+
+        onRemoveClicked: {
+            var parameters = {
+                title: qsTr("Delete the discipline"),
+                text: qsTr("Are you sure you want to delete \"%1\"?").arg(LecturesManager.selectedItem(LecturesManager.Disciplines))
+            }
+
+            var callback = function(value)
+            {
+                if (value)
+                {
+                    LecturesManager.deleteItem(LecturesManager.Disciplines)
+                    model = LecturesManager.getListModel(LecturesManager.Disciplines)
+                }
+            }
+
+            dialog.open(dialog.types.confirmation, parameters, callback)
+        }
     }
 }
