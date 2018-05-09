@@ -24,11 +24,11 @@ import "../../../components"
 import "../.."
 
 BlankScreen {
-    id: themesScreen
+    id: selectLectureScreen
 
     Stack.onStatusChanged: {
-        listView.model = {}
-        listView.model = LecturesManager.getListModel(LecturesManager.Themes);
+        if (Stack.status === Stack.Activating)
+            listView.model = LecturesManager.getListModel(LecturesManager.Parts);
     }
 
     CToolBar {
@@ -44,24 +44,24 @@ BlankScreen {
             CBackButton {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                text: LecturesManager.selectedItem(LecturesManager.Chapters)
+                text: LecturesManager.selectedItem(LecturesManager.Disciplines)
             }
 
             CToolButton {
                 Layout.fillHeight: true
                 icon: "\uf067"
-                tooltipText: qsTr("New theme")
+                tooltipText: qsTr("New part")
                 onClicked: {
                     var parameters = {
-                        title: qsTr("New theme"),
-                        label: qsTr("Enter theme name :"),
-                        itemType: LecturesManager.Themes
+                        title: qsTr("New part"),
+                        label: qsTr("Enter part name :"),
+                        itemType: LecturesManager.Parts
                     }
 
                     var callback = function(value)
                     {
-                        LecturesManager.addItem(value, LecturesManager.Themes)
-                        listView.model = LecturesManager.getListModel(LecturesManager.Themes)
+                        LecturesManager.addItem(value, LecturesManager.Parts)
+                        listView.model = LecturesManager.getListModel(LecturesManager.Parts)
                     }
 
                     dialog.open(dialog.types.newLecture, parameters, callback)
@@ -85,66 +85,42 @@ BlankScreen {
         }
 
         delegate: CEditOrRemoveButton {
+
+            anchors.left: parent.left
+            anchors.right: parent.right
+
             text: modelData
 
-            onClicked: {
-                LecturesManager.selectedItem(modelData, LecturesManager.Themes);
-                if (LecturesManager.hasSubThemes(modelData))
-                {
-                    stackView.push(Qt.resolvedUrl("SubThemesScreen.qml"))
-                }
-                else if (LecturesManager.itemHasFile(modelData, LecturesManager.Themes))
-                {
-                    LecturesManager.selectFile()
-                    stackView.push(Qt.resolvedUrl("LectureScreen.qml"))
-                }
-                else
-                {
-                    var parameters = {
-                        title: qsTr(modelData),
-                        label: qsTr("Would you like to create subtheme or lecture?")
-                    }
-
-                    var callback = function(value)
-                    {
-                        if (value === LecturesManager.SubThemes)
-                        {
-                            stackView.push(Qt.resolvedUrl("SubThemesScreen.qml"))
-                        }
-                        else
-                        {
-                            LecturesManager.createFile()
-                            stackView.push(Qt.resolvedUrl("EditorLectureScreen.qml"))
-                        }
-                    }
-
-                    dialog.open(dialog.types.createLectureOrSubTheme, parameters, callback)
-                }
-            }
-
             onEditClicked: {
-                LecturesManager.selectedItem(modelData, LecturesManager.Themes);
+                LecturesManager.selectedItem(modelData, LecturesManager.Parts);
+
                 var parameters = {
-                    title: qsTr("Edit theme"),
-                    label: qsTr("Theme name :"),
+                    title: qsTr("Edit part"),
+                    label: qsTr("Part name :"),
                     valueEdit: modelData,
-                    itemType: LecturesManager.Themes
+                    itemType: LecturesManager.Parts
                 }
 
                 var callback = function(value)
                 {
-                    LecturesManager.editItem(value, LecturesManager.Themes)
-                    listView.model = LecturesManager.getListModel(LecturesManager.Themes)
+                    LecturesManager.editItem(value, LecturesManager.Parts)
+                    listView.model = LecturesManager.getListModel(LecturesManager.Parts)
                 }
 
                 dialog.open(dialog.types.editLecture, parameters, callback)
             }
 
+            onClicked: {
+                console.debug(modelData);
+                LecturesManager.selectedItem(modelData, LecturesManager.Parts)
+                stackView.push(Qt.resolvedUrl("ChapterScreen.qml"))
+            }
+
             onRemoveClicked: {
-                LecturesManager.selectedItem(modelData, LecturesManager.Themes);
+                LecturesManager.selectedItem(modelData, LecturesManager.Parts)
 
                 var parameters = {
-                    title: qsTr("Delete the theme"),
+                    title: qsTr("Delete the part"),
                     text: qsTr("Are you sure you want to delete \"%1\"?").arg(modelData)
                 }
 
@@ -152,8 +128,8 @@ BlankScreen {
                 {
                     if (value)
                     {
-                        LecturesManager.deleteItem(LecturesManager.Themes)
-                        listView.model = LecturesManager.getListModel(LecturesManager.Themes)
+                        LecturesManager.deleteItem(LecturesManager.Parts)
+                        listView.model = LecturesManager.getListModel(LecturesManager.Parts)
                     }
                 }
 

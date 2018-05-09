@@ -63,7 +63,7 @@ BlankScreen {
             CNavigationButton {
                 text: qsTr("Lectures")
                 icon: "\uf0f6"
-                onClicked: stackView.push(Qt.resolvedUrl("education/lectures/SelectLectureScreen.qml"))
+                onClicked: stackView.push(Qt.resolvedUrl("education/lectures/DisciplineScreen.qml"))
             }
 
             CNavigationButton {

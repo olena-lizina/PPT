@@ -23,11 +23,10 @@ import LecturesManager 1.1
 Item {
     id: cButton
 
-    anchors.left: parent.left
-    anchors.right: parent.right
     implicitHeight: 18.5 * settings.pixelDensity
 
     property alias text: buttonLabel.text
+    property alias color: btnRect.color
 
     signal clicked()
     signal editClicked()
@@ -48,6 +47,7 @@ Item {
             Layout.fillHeight: true
 
             Rectangle {
+                id: btnRect
                 anchors.fill: parent
                 color: palette.button
                 visible: buttonMouseArea.pressed

@@ -31,6 +31,7 @@ class SaveManager
 public:
 
     enum LecturePartType {
+        Discipline,
         Part,
         Chapter,
         Theme,

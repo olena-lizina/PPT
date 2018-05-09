@@ -28,7 +28,7 @@ SaveManager::SaveManager()
 {
     mDbConnection.reset(new QSqlDatabase());
     *mDbConnection = QSqlDatabase::addDatabase("QSQLITE");
-    mDbConnection->setDatabaseName("students.db");
+    mDbConnection->setDatabaseName("ppt.db");
 
     if (mDbConnection->open())
     {
@@ -135,10 +135,18 @@ void SaveManager::saveLecturePart(const LecturePart& lecture, const SaveManager:
 
     switch(type)
     {
+    case Discipline:
+    {
+        mQuery->prepare(QString("INSERT INTO Disciplines (Id, Name) VALUES ('%1', \"%2\")")
+                        .arg(lecture.getId()).arg(lecture.getName()));
+        if (!mQuery->exec())
+            qDebug() << "Add Discipline failed with error: " << mQuery->lastError().text();
+        break;
+    }
     case Part:
     {
-        mQuery->prepare(QString("INSERT INTO Parts (Id, Name) VALUES ('%1', \"%2\")")
-                        .arg(lecture.getId()).arg(lecture.getName()));
+        mQuery->prepare(QString("INSERT INTO Parts (Id, Name, DisciplineId) VALUES ('%1', \"%2\", '%3')")
+                        .arg(lecture.getId()).arg(lecture.getName()).arg(lecture.getParentId()));
         if (!mQuery->exec())
             qDebug() << "Add Part failed with error: " << mQuery->lastError().text();
         break;
@@ -177,10 +185,17 @@ void SaveManager::updateLecturePart(const LecturePart& oldLecture, const Lecture
 
     switch(type)
     {
+    case Discipline:
+    {
+        mQuery->prepare(QString("UPDATE Disciplines Set Name=\"%1\" WHERE Name=\"%2\"")
+                        .arg(newLecture.getName()).arg(oldLecture.getName()));
+        mQuery->exec();
+        break;
+    }
     case Part:
     {
-        mQuery->prepare(QString("UPDATE Parts Set Name=\"%1\" WHERE Name=\"%2\"")
-                        .arg(newLecture.getName()).arg(oldLecture.getName()));
+        mQuery->prepare(QString("UPDATE Parts Set Name=\"%1\" WHERE Name=\"%2\" AND DisciplineId='%3'")
+                        .arg(newLecture.getName()).arg(oldLecture.getName()).arg(oldLecture.getParentId()));
         mQuery->exec();
         break;
     }
@@ -215,9 +230,16 @@ void SaveManager::deleteLecturePart(const LecturePart& lecture, const SaveManage
 
     switch(type)
     {
+    case Discipline:
+    {
+        mQuery->prepare(QString("DELETE FROM Disciplines WHERE Name=\"%1\"").arg(lecture.getName()));
+        mQuery->exec();
+        break;
+    }
     case Part:
     {
-        mQuery->prepare(QString("DELETE FROM Parts WHERE Name=\"%1\"").arg(lecture.getName()));
+        mQuery->prepare(QString("DELETE FROM Parts WHERE Name=\"%1\" AND DisciplineId='%2'")
+                        .arg(lecture.getName()).arg(lecture.getParentId()));
         mQuery->exec();
         break;
     }
@@ -254,13 +276,23 @@ std::list<LecturePart> SaveManager::getLectureParts(const SaveManager::LecturePa
 
     switch(type)
     {
-    case Part:
+    case Discipline:
     {
-        mQuery->prepare("SELECT Id, Name FROM Parts");
+        mQuery->prepare("SELECT Id, Name FROM Disciplines");
         mQuery->exec();
 
         while(mQuery->next())
             result.push_back(LecturePart(mQuery->value(1).toString(), mQuery->value(0).toInt(), 0));
+
+        break;
+    }
+    case Part:
+    {
+        mQuery->prepare("SELECT Id, Name, DisciplineId FROM Parts");
+        mQuery->exec();
+
+        while(mQuery->next())
+            result.push_back(LecturePart(mQuery->value(1).toString(), mQuery->value(0).toInt(), mQuery->value(2).toInt()));
 
         break;
     }
@@ -315,7 +347,10 @@ void SaveManager::initTables()
     mQuery->prepare("CREATE TABLE IF NOT EXISTS Students (Name string, Phone string, Email string, InstGroup string)");
     mQuery->exec();
 
-    mQuery->prepare("CREATE TABLE IF NOT EXISTS Parts (Id int, Name string)");
+    mQuery->prepare("CREATE TABLE IF NOT EXISTS Disciplines (Id int, Name string)");
+    mQuery->exec();
+
+    mQuery->prepare("CREATE TABLE IF NOT EXISTS Parts (Id int, Name string, DisciplineId int)");
     mQuery->exec();
 
     mQuery->prepare("CREATE TABLE IF NOT EXISTS Chapters (Id int, Name string, PartId int)");

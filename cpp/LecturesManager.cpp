@@ -63,10 +63,14 @@ void LecturesManager::clearComponentCache()
 
 void LecturesManager::loadAllLectures()
 {
+    mDisciplines = mSaveManager->getLectureParts(SaveManager::Discipline);
     mParts = mSaveManager->getLectureParts(SaveManager::Part);
     mChapters = mSaveManager->getLectureParts(SaveManager::Chapter);
     mThemes = mSaveManager->getLectureParts(SaveManager::Theme);
     mSubThemes = mSaveManager->getLectureParts(SaveManager::SubTheme);
+
+    mDisciplines.sort([](const LecturePart& lhs, const LecturePart& rhs)
+                { return lhs.getId() < rhs.getId(); });
 
     mParts.sort([](const LecturePart& lhs, const LecturePart& rhs)
                 { return lhs.getId() < rhs.getId(); });
@@ -170,6 +174,10 @@ QStringList LecturesManager::getListModel(const LecturesManager::Type& type)
 
     switch(type)
     {
+    case Disciplines:
+        for (auto& it : mDisciplines)
+            result << it.getName();
+        break;
     case Parts:
         for (auto& it : mParts)
             result << it.getName();
@@ -198,8 +206,16 @@ bool LecturesManager::itemExists(const QString& name, const LecturesManager::Typ
 {
     switch(type)
     {
-    case Parts: return (mParts.end() != std::find_if(mParts.begin(), mParts.end(),
-                                              [&name](LecturePart& it){ return !it.getName().compare(name); }));
+    case Disciplines:
+        return (mDisciplines.end() != std::find_if(mDisciplines.begin(), mDisciplines.end(),
+        [&name](LecturePart& it){ return !it.getName().compare(name); }));
+    case Parts:
+    {
+        int discId = mSelectedDisciplines.id;
+        return (mParts.end() != std::find_if(mParts.begin(), mParts.end(),
+                                             [&name, &discId](LecturePart& it)
+        { return !it.getName().compare(name) && discId == it.getParentId(); }));
+    }
     case Chapters:
     {
         int partId = mSelectedPart.id;
@@ -229,16 +245,26 @@ void LecturesManager::addItem(const QString& name, const LecturesManager::Type& 
 {
     switch(type)
     {
+    case Disciplines:
+    {
+        int id = 0;
+        if (!mDisciplines.empty())
+            id = mDisciplines.back().getId() + 1;
+        LecturePart discipline(name, id, 0);
+        mDisciplines.push_back(discipline);
+        mSaveManager->saveLecturePart(discipline, SaveManager::Discipline);
+    }
+    break;
     case Parts:
     {
         int id = 0;
         if (!mParts.empty())
             id = mParts.back().getId() + 1;
-        LecturePart part(name, id, 0);
+        LecturePart part(name, id, mSelectedDisciplines.id);
         mParts.push_back(part);
         mSaveManager->saveLecturePart(part, SaveManager::Part);
     }
-        break;
+    break;
     case Chapters:
     {
         int id = 0;
@@ -248,7 +274,7 @@ void LecturesManager::addItem(const QString& name, const LecturesManager::Type& 
         mChapters.push_back(chapt);
         mSaveManager->saveLecturePart(chapt, SaveManager::Chapter);
     }
-        break;
+    break;
     case Themes:
     {
         int id = 0;
@@ -280,12 +306,28 @@ void LecturesManager::editItem(const QString& name, const LecturesManager::Type&
 {
     switch(type)
     {
+    case Disciplines:
+    {
+        LecturePart discipline(name, mSelectedDisciplines.id, 0);
+        int id = mSelectedDisciplines.id;
+        auto it = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                               [&id](LecturePart& item){ return item.getId() == id; });
+
+        if (mDisciplines.end() == it)
+            break;
+
+        it->setName(name);
+        mSaveManager->updateLecturePart(*it, discipline, SaveManager::Discipline);
+    }
+    break;
     case Parts:
     {
         LecturePart part(name, mSelectedPart.id, 0);
         int id = mSelectedPart.id;
+        int parentId = mSelectedDisciplines.id;
         auto it = std::find_if(mParts.begin(), mParts.end(),
-                               [&id](LecturePart& item){ return item.getId() == id; });
+                               [&id, &parentId](LecturePart& item)
+        { return item.getId() == id && parentId == item.getParentId(); });
 
         if (mParts.end() == it)
             break;
@@ -357,11 +399,26 @@ void LecturesManager::deleteItem(const LecturesManager::Type& type)
 {
     switch(type)
     {
+    case Disciplines:
+    {
+        int id = mSelectedDisciplines.id;
+        auto it = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                               [&id](LecturePart& item){ return item.getId() == id; });
+
+        if (mDisciplines.end() == it)
+            break;
+
+        mSaveManager->deleteLecturePart(*it, SaveManager::Discipline);
+        mDisciplines.erase(it);
+    }
+    break;
     case Parts:
     {
         int id = mSelectedPart.id;
+        int parentId = mSelectedDisciplines.id;
         auto it = std::find_if(mParts.begin(), mParts.end(),
-                               [&id](LecturePart& item){ return item.getId() == id; });
+                               [&id, &parentId](LecturePart& item)
+        { return item.getId() == id && parentId == item.getParentId(); });
 
         if (mParts.end() == it)
             break;
@@ -441,6 +498,19 @@ void LecturesManager::selectedItem(const QString& name, const LecturesManager::T
 {
     switch(type)
     {
+    case Disciplines:
+    {
+        mSelectedDisciplines.name = name;
+
+        auto discIt = std::find_if(mDisciplines.begin(), mDisciplines.end(), [&name](LecturePart& it)
+        { return !it.getName().compare(name); });
+
+        if (mDisciplines.end() == discIt)
+            break;
+
+        mSelectedDisciplines.id = discIt->getId();
+    }
+        break;
     case Parts:
     {
         mSelectedPart.name = name;
@@ -500,6 +570,7 @@ QString LecturesManager::selectedItem(const LecturesManager::Type& type)
 {
     switch(type)
     {
+    case Disciplines: return mSelectedDisciplines.name;
     case Parts: return mSelectedPart.name;
     case Chapters: return mSelectedChapter.name;
     case Themes: return mSelectedTheme.name;

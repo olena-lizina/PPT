@@ -117,6 +117,9 @@ BlankScreen {
         delegate: CEditOrRemoveButton {
             text: modelData
 
+            anchors.left: parent.left
+            anchors.right: parent.right
+
             onEditClicked: {
                 StudentManager.selectedStudent(modelData)
                 editStudent()

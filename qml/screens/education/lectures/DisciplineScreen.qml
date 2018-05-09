@@ -28,7 +28,7 @@ BlankScreen {
 
     Stack.onStatusChanged: {
         if (Stack.status === Stack.Activating)
-            listView.model = LecturesManager.getListModel(LecturesManager.Parts);
+            listView.model = LecturesManager.getListModel(LecturesManager.Disciplines);
     }
 
     CToolBar {
@@ -44,24 +44,24 @@ BlankScreen {
             CBackButton {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                text: qsTr("Select lecture")
+                text: qsTr("Disciplines")
             }
 
             CToolButton {
                 Layout.fillHeight: true
                 icon: "\uf067"
-                tooltipText: qsTr("New part")
+                tooltipText: qsTr("New discipline")
                 onClicked: {
                     var parameters = {
-                        title: qsTr("New part"),
-                        label: qsTr("Enter part name :"),
-                        itemType: LecturesManager.Parts
+                        title: qsTr("New discipline"),
+                        label: qsTr("Enter discipline name :"),
+                        itemType: LecturesManager.Disciplines
                     }
 
                     var callback = function(value)
                     {
-                        LecturesManager.addItem(value, LecturesManager.Parts)
-                        listView.model = LecturesManager.getListModel(LecturesManager.Parts)
+                        LecturesManager.addItem(value, LecturesManager.Disciplines)
+                        listView.model = LecturesManager.getListModel(LecturesManager.Disciplines)
                     }
 
                     dialog.open(dialog.types.newLecture, parameters, callback)
@@ -85,22 +85,26 @@ BlankScreen {
         }
 
         delegate: CEditOrRemoveButton {
+
+            anchors.left: parent.left
+            anchors.right: parent.right
+
             text: modelData
 
             onEditClicked: {
-                LecturesManager.selectedItem(modelData, LecturesManager.Parts);
+                LecturesManager.selectedItem(modelData, LecturesManager.Disciplines);
 
                 var parameters = {
-                    title: qsTr("Edit part"),
-                    label: qsTr("Part name :"),
+                    title: qsTr("Edit discipline"),
+                    label: qsTr("Discipline name :"),
                     valueEdit: modelData,
-                    itemType: LecturesManager.Parts
+                    itemType: LecturesManager.Disciplines
                 }
 
                 var callback = function(value)
                 {
-                    LecturesManager.editItem(value, LecturesManager.Parts)
-                    listView.model = LecturesManager.getListModel(LecturesManager.Parts)
+                    LecturesManager.editItem(value, LecturesManager.Disciplines)
+                    listView.model = LecturesManager.getListModel(LecturesManager.Disciplines)
                 }
 
                 dialog.open(dialog.types.editLecture, parameters, callback)
@@ -108,15 +112,15 @@ BlankScreen {
 
             onClicked: {
                 console.debug(modelData);
-                LecturesManager.selectedItem(modelData, LecturesManager.Parts)
-                stackView.push(Qt.resolvedUrl("ChapterScreen.qml"))
+                LecturesManager.selectedItem(modelData, LecturesManager.Disciplines)
+                stackView.push(Qt.resolvedUrl("PartScreen.qml"))
             }
 
             onRemoveClicked: {
-                LecturesManager.selectedItem(modelData, LecturesManager.Parts)
+                LecturesManager.selectedItem(modelData, LecturesManager.Disciplines)
 
                 var parameters = {
-                    title: qsTr("Delete the part"),
+                    title: qsTr("Delete the discipline"),
                     text: qsTr("Are you sure you want to delete \"%1\"?").arg(modelData)
                 }
 
@@ -124,8 +128,8 @@ BlankScreen {
                 {
                     if (value)
                     {
-                        LecturesManager.deleteItem(LecturesManager.Parts)
-                        listView.model = LecturesManager.getListModel(LecturesManager.Parts)
+                        LecturesManager.deleteItem(LecturesManager.Disciplines)
+                        listView.model = LecturesManager.getListModel(LecturesManager.Disciplines)
                     }
                 }
 

@@ -38,6 +38,7 @@ class LecturesManager: public QObject
 public:
 
     enum Type {
+        Disciplines,
         Parts,
         Chapters,
         Themes,
@@ -76,11 +77,13 @@ private:
     static SaveManager::Ptr mSaveManager;
     static QQmlApplicationEngine *m_qmlEngine;
 
+    std::list<LecturePart> mDisciplines;
     std::list<LecturePart> mParts;
     std::list<LecturePart> mChapters;
     std::list<LecturePart> mThemes;
     std::list<LecturePart> mSubThemes;
 
+    selectedIt mSelectedDisciplines;
     selectedIt mSelectedPart;
     selectedIt mSelectedChapter;
     selectedIt mSelectedTheme;

@@ -25,6 +25,7 @@ Item {
     anchors.left: parent.left
     anchors.right: parent.right
     implicitHeight: 18.5 * settings.pixelDensity
+    property alias color: btnRect.color
     property alias icon: buttonIcon.text
     property alias text: buttonLabel.text
 
@@ -37,6 +38,8 @@ Item {
     }
 
     Rectangle {
+        id: btnRect
+
         anchors.fill: parent
         color: palette.button
         visible: mouseArea.pressed

@@ -168,7 +168,6 @@
         <file>qml/screens/ProgressScreen.qml</file>
         <file>qml/components/CInputField.qml</file>
         <file>qml/components/CFilterItem.qml</file>
-        <file>qml/screens/education/lectures/SelectLectureScreen.qml</file>
         <file>qml/components/dialogs/NewLectureDialog.qml</file>
         <file>qml/screens/education/lectures/ChapterScreen.qml</file>
         <file>qml/components/dialogs/EditLectureDialog.qml</file>
@@ -187,5 +186,8 @@
         <file>qml/components/CReadyCodeArea.qml</file>
         <file>qml/components/CHomeButton.qml</file>
         <file>resources/translations/ppt_uk_UA.qm</file>
+        <file>qml/screens/education/lectures/PartScreen.qml</file>
+        <file>qml/screens/education/lectures/DisciplineScreen.qml</file>
+        <file>qml/components/CDragAndDropList.qml</file>
     </qresource>
 </RCC>

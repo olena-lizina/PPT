@@ -20,15 +20,14 @@ import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.2
 import LecturesManager 1.1
+import QtQml.Models 2.1
 import "../../../components"
 import "../.."
 
 BlankScreen {
     id: chapterScreen
 
-    Stack.onStatusChanged: {
-        listView.model = LecturesManager.getListModel(LecturesManager.Chapters);
-    }
+    Component.onCompleted: console.log("Screen completed")
 
     CToolBar {
         id: toolBar
@@ -60,7 +59,7 @@ BlankScreen {
                     var callback = function(value)
                     {
                         LecturesManager.addItem(value, LecturesManager.Chapters)
-                        listView.model = LecturesManager.getListModel(LecturesManager.Chapters)
+                        listModel.model = LecturesManager.getListModel(LecturesManager.Chapters)
                     }
 
                     dialog.open(dialog.types.newLecture, parameters, callback)
@@ -73,66 +72,58 @@ BlankScreen {
         }
     }
 
-    CListView {
-        id: listView
+    CDragAndDropList {
+
+        id: listModel
+
+        selectedItem: LecturesManager.Chapters
 
         anchors {
-            left: parent.left
-            right: parent.right
             top: toolBar.bottom
+            right: parent.right
+            left: parent.left
             bottom: parent.bottom
         }
 
-        delegate: CEditOrRemoveButton {
-            text: modelData
+        model: LecturesManager.getListModel(LecturesManager.Chapters)
 
-            onClicked: {
-                console.debug(modelData);
-                LecturesManager.selectedItem(modelData, LecturesManager.Chapters);
-                stackView.push(Qt.resolvedUrl("ThemesScreen.qml"))
-            }
-
-            onEditClicked: {
-                LecturesManager.selectedItem(modelData, LecturesManager.Chapters);
-                var parameters = {
-                    title: qsTr("Edit chapter"),
-                    label: qsTr("Chapter name :"),
-                    valueEdit: modelData,
-                    itemType: LecturesManager.Chapters
-                }
-
-                var callback = function(value)
-                {
-                    LecturesManager.editItem(value, LecturesManager.Chapters)
-                    listView.model = LecturesManager.getListModel(LecturesManager.Chapters)
-                }
-
-                dialog.open(dialog.types.editLecture, parameters, callback)
-            }
-
-            onRemoveClicked: {
-                LecturesManager.selectedItem(modelData, LecturesManager.Chapters)
-
-                var parameters = {
-                    title: qsTr("Delete the chapter"),
-                    text: qsTr("Are you sure you want to delete \"%1\"?").arg(modelData)
-                }
-
-                var callback = function(value)
-                {
-                    if (value)
-                    {
-                        LecturesManager.deleteItem(LecturesManager.Chapters)
-                        listView.model = LecturesManager.getListModel(LecturesManager.Chapters)
-                    }
-                }
-
-                dialog.open(dialog.types.confirmation, parameters, callback)
-            }
+        onClicked: {
+            stackView.push(Qt.resolvedUrl("ThemesScreen.qml"))
         }
-    }
 
-    CScrollBar {
-        flickableItem: listView
+        onEditClicked: {
+            var parameters = {
+                title: qsTr("Edit chapter"),
+                label: qsTr("Chapter name :"),
+                valueEdit: LecturesManager.selectedItem(LecturesManager.Chapters),
+                itemType: LecturesManager.Chapters
+            }
+
+            var callback = function(value)
+            {
+                LecturesManager.editItem(value, LecturesManager.Chapters)
+                model = LecturesManager.getListModel(LecturesManager.Chapters)
+            }
+
+            dialog.open(dialog.types.editLecture, parameters, callback)
+        }
+
+        onRemoveClicked: {
+            var parameters = {
+                title: qsTr("Delete the chapter"),
+                text: qsTr("Are you sure you want to delete \"%1\"?").arg(LecturesManager.selectedItem(LecturesManager.Chapters))
+            }
+
+            var callback = function(value)
+            {
+                if (value)
+                {
+                    LecturesManager.deleteItem(LecturesManager.Chapters)
+                    model = LecturesManager.getListModel(LecturesManager.Chapters)
+                }
+            }
+
+            dialog.open(dialog.types.confirmation, parameters, callback)
+        }
     }
 }
