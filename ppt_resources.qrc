@@ -181,7 +181,6 @@
         <file>resources/translations/ppt_ru.qm</file>
         <file>qml/components/dialogs/ThemeClickedDialog.qml</file>
         <file>qml/screens/education/lectures/EditorLectureScreen.qml</file>
-        <file>resources/images/lectures/актері.PNG</file>
         <file>qml/screens/education/lectures/LectureScreen.qml</file>
         <file>qml/components/CReadyCodeArea.qml</file>
         <file>qml/components/CHomeButton.qml</file>
