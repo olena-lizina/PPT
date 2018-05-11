@@ -21,7 +21,7 @@
 #include <QObject>
 #include <memory>
 #include "SaveManager.h"
-#include "Student.h"
+#include "Lecture.h"
 #include <QQmlApplicationEngine>
 
 class StudentManager: public QObject

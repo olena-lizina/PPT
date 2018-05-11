@@ -50,4 +50,126 @@ protected:
     int mParentId;
 };
 
+struct Chapter {
+    int id;
+    QString name;
+    int orderId;
+    int disciplineId;
+};
+
+struct DisciplineStud {
+    int id;
+    QString name;
+    QString literPath;
+};
+
+struct DisciplineTeach {
+    int id;
+    QString name;
+    QString literPath;
+    QString educPlanPath;
+    QString educProgPath;
+};
+
+struct Group {
+    int id;
+    QString name;
+};
+
+struct LabWork {
+    int id;
+    int themeId;
+    int finishDate;
+    QString name;
+    QString path;
+};
+struct relLabWork {
+    int disciplineId;
+    int chapterId;
+    LabWork labWork;
+};
+
+struct ThemeLectureFile {
+    int id;
+    int themeId;
+    QString path;
+};
+struct relThemeLectureFile {
+    int disciplineId;
+    int chapterId;
+    ThemeLectureFile themeLectureFile;
+};
+
+struct SubthemeLectureFile {
+    int id;
+    int subthemeId;
+    QString path;
+};
+struct relSubthemeLectureFile {
+    int disciplineId;
+    int chapterId;
+    int themeId;
+    SubthemeLectureFile subthemeLectureFile;
+};
+
+struct Report {
+    int id;
+    int labId;
+    int delivDate;
+    QString mark;
+    int evalDate;
+    int studId;
+};
+struct relReport {
+    int disciplineId;
+    int chapterId;
+    int themeId;
+    Report report;
+};
+
+struct ReportFile {
+    int id;
+    int reportId;
+    QString path;
+};
+struct relReportFile {
+    int disciplineId;
+    int chapterId;
+    int themeId;
+    int labId;
+    ReportFile reportFile;
+};
+
+struct Student {
+    int id;
+    QString name;
+    QString phone;
+    QString email;
+    QString photoPath;
+    int groupId;
+};
+
+struct Subtheme {
+    int id;
+    QString name;
+    int orderId;
+    int themeId;
+};
+struct relSubtheme {
+    int disciplineId;
+    int chapterId;
+    Subtheme subtheme;
+};
+
+struct Theme {
+    int id;
+    QString name;
+    int orderId;
+    int chapterId;
+};
+struct relTheme {
+    int disciplineId;
+    Theme theme;
+};
+
 #endif // LECTURE_H

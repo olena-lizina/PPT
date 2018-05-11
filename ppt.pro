@@ -22,9 +22,9 @@ HEADERS += \
 #    cpp/MessageHandler.h \
     cpp/StudentManager.h \
     cpp/SaveManager.h \
-    cpp/Student.h \
     cpp/LecturesManager.h \
-    cpp/Lecture.h
+    cpp/Lecture.h \
+    cpp/DBManager.h
 
 SOURCES += \
     cpp/main.cpp \
@@ -34,8 +34,8 @@ SOURCES += \
 #    cpp/MessageHandler.cpp \
     cpp/StudentManager.cpp \
     cpp/SaveManager.cpp \
-    cpp/Student.cpp \
-    cpp/LecturesManager.cpp
+    cpp/LecturesManager.cpp \
+    cpp/DBManager.cpp
 
 lupdate_only {
 SOURCES += \

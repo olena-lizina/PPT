@@ -23,6 +23,7 @@
 #include <memory>
 #include "SaveManager.h"
 #include "Lecture.h"
+#include <QMap>
 
 class LecturesManager: public QObject
 {
@@ -46,6 +47,7 @@ public:
     };
 
     explicit LecturesManager(QObject* parent = nullptr);
+    ~LecturesManager();
 
     // singleton type provider function
     static QObject* lecturesManagerProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
@@ -58,7 +60,7 @@ public:
     Q_INVOKABLE void addItem(const QString& name, const LecturesManager::Type&, const QString& fileName = "");
     Q_INVOKABLE void editItem(const QString& name, const LecturesManager::Type&, const QString& fileName = "");
     Q_INVOKABLE void deleteItem(const LecturesManager::Type& type);
-    Q_INVOKABLE void updateIndex(const int newIdx, const QString& name, const LecturesManager::Type&);
+    Q_INVOKABLE void updateIndexes(const LecturesManager::Type& type);
 
     Q_INVOKABLE bool hasSubThemes(const QString& theme);
 
@@ -68,6 +70,8 @@ public:
     Q_INVOKABLE bool itemHasFile(const QString& name, const LecturesManager::Type& type);
 
     Q_INVOKABLE void loadAllLectures();
+
+    Q_INVOKABLE void saveCurrentIdxs(const QString& name, const int& id, const LecturesManager::Type& type);
 
     // work with files
     Q_INVOKABLE void createFile();
@@ -98,6 +102,12 @@ private:
     selectedIt mSelectedSubTheme;
 
     QString mSelectedFile;
+
+    QMap<QString, int> mDisciplinesIds;
+    QMap<QString, int> mPartsIds;
+    QMap<QString, int> mChaptersIds;
+    QMap<QString, int> mThemesIds;
+    QMap<QString, int> mSubThemesIds;
 };
 
 #endif // LECTURESMANAGER_H

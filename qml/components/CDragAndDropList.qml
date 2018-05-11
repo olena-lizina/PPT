@@ -56,7 +56,7 @@ Item {
             onReleased: {
                 held = false
                 console.log("onReleased: " + modelData + ", new idx: " + dragArea.DelegateModel.itemsIndex)
-                LecturesManager.updateIndex(dragArea.DelegateModel.itemsIndex, modelData, selectedItem);
+                LecturesManager.updateIndexes(selectedItem);
             }
 
             onClicked: {
@@ -183,6 +183,7 @@ Item {
                     visualModel.items.move(
                                 drag.source.DelegateModel.itemsIndex,
                                 dragArea.DelegateModel.itemsIndex)
+                    LecturesManager.saveCurrentIdxs(modelData, dragArea.DelegateModel.itemsIndex, selectedItem);
                 }
             }
         }
