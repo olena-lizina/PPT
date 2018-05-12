@@ -75,19 +75,18 @@ BlankScreen {
 
             comboBox.model: StudentManager.getGroups()
 
-//            onFindBtnClicked: {
-//                var dummy = "------";
-//                StudentManager.selectedGroupIdx(findMenu.comboBox.currentIndex);
-//                var currText = findMenu.comboBox.textAt(findMenu.comboBox.currentIndex)
-//                if (currText !== dummy && textItem !== "")
-//                    listView.model = StudentManager.getStudentsByNameAndGroup(findMenu.textItem, currText);
-//                if (currText !== dummy && textItem === "")
-//                    listView.model = StudentManager.getStudentsByGroup(currText);
-//                if (currText === dummy && textItem !== "")
-//                    listView.model = StudentManager.getStudentsByName(findMenu.textItem);
-//                if (currText === dummy && textItem === "")
-//                    listView.model = StudentManager.getAllStudents();
-//            }
+            onFindBtnClicked: {
+                var currText = findMenu.comboBox.textAt(findMenu.comboBox.currentIndex)
+                if (findMenu.textItem !== "")
+                    listView.model = StudentManager.getStudentsByName(findMenu.textItem);
+                else
+                {
+                    if (currText !== qsTr("All groups"))
+                        listView.model = StudentManager.getStudentsByGroup(currText);
+                    else
+                        listView.model = StudentManager.getAllStudents();
+                }
+            }
         }
     }
 
