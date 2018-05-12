@@ -20,36 +20,6 @@
 #include <QString>
 #include <QList>
 
-class LecturePart
-{
-public:
-    LecturePart(const QString& name, const int& id, const int& parentId):
-        mName(name), mId(id), mParentId(parentId) {}
-
-    bool operator==(const LecturePart& rhs)
-    {
-        return mId == rhs.getId()
-                && mParentId == rhs.getParentId()
-                && !mName.compare(rhs.getName());
-    }
-
-    QString getName() const { return mName; }
-    QString getFileName() const { return mFileName; }
-    int getId() const { return mId; }
-    int getParentId() const { return mParentId; }
-    void setName(const QString& name) { mName = name; }
-    void setId(const int& id) { mId = id; }
-    void incrementId() { ++mId; }
-    void setParentId(const int& id) { mParentId = id; }
-    void setFileName(const QString& file) { mFileName = file; }
-
-protected:
-    QString mName;
-    QString mFileName;
-    int mId;
-    int mParentId;
-};
-
 struct Chapter {
     int id;
     QString name;
@@ -83,33 +53,17 @@ struct LabWork {
     QString name;
     QString path;
 };
-struct relLabWork {
-    int disciplineId;
-    int chapterId;
-    LabWork labWork;
-};
 
 struct ThemeLectureFile {
     int id;
     int themeId;
     QString path;
 };
-struct relThemeLectureFile {
-    int disciplineId;
-    int chapterId;
-    ThemeLectureFile themeLectureFile;
-};
 
 struct SubthemeLectureFile {
     int id;
     int subthemeId;
     QString path;
-};
-struct relSubthemeLectureFile {
-    int disciplineId;
-    int chapterId;
-    int themeId;
-    SubthemeLectureFile subthemeLectureFile;
 };
 
 struct Report {
@@ -120,24 +74,11 @@ struct Report {
     int evalDate;
     int studId;
 };
-struct relReport {
-    int disciplineId;
-    int chapterId;
-    int themeId;
-    Report report;
-};
 
 struct ReportFile {
     int id;
     int reportId;
     QString path;
-};
-struct relReportFile {
-    int disciplineId;
-    int chapterId;
-    int themeId;
-    int labId;
-    ReportFile reportFile;
 };
 
 struct Student {
@@ -155,21 +96,12 @@ struct Subtheme {
     int orderId;
     int themeId;
 };
-struct relSubtheme {
-    int disciplineId;
-    int chapterId;
-    Subtheme subtheme;
-};
 
 struct Theme {
     int id;
     QString name;
     int orderId;
     int chapterId;
-};
-struct relTheme {
-    int disciplineId;
-    Theme theme;
 };
 
 #endif // LECTURE_H

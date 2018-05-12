@@ -25,7 +25,8 @@ Item {
 
     implicitHeight: 18.5 * settings.pixelDensity
 
-    property alias text: buttonLabel.text
+    property alias label_1: firstLable.text
+    property alias label_2: secondLabel.text
     property alias color: btnRect.color
 
     signal clicked()
@@ -43,6 +44,7 @@ Item {
         spacing: 0
 
         Item {
+            id: btnBody
             Layout.fillWidth: true
             Layout.fillHeight: true
 
@@ -53,21 +55,34 @@ Item {
                 visible: buttonMouseArea.pressed
             }
 
-            CLabel {
-                id: buttonLabel
-                anchors.fill: parent
-                anchors.leftMargin: 5 * settings.pixelDensity
-                anchors.rightMargin: 3 * settings.pixelDensity
-            }
-
             MouseArea {
                 id: buttonMouseArea
                 anchors.fill: parent
                 onClicked: cButton.clicked()
             }
+
+            CLabel {
+                id: firstLable
+                anchors {                    
+                    left: parent.left
+                    top: parent.top
+                    bottom: parent.bottom
+                }
+            }
+
+            CLabel {
+                id: secondLabel
+                anchors {
+                    right: parent.right
+                    top: parent.top
+                    bottom: parent.bottom
+                }
+            }
         }
 
         Item {
+            id: editBtn
+
             Layout.fillHeight: true
             Layout.minimumWidth: height
 
@@ -90,6 +105,7 @@ Item {
         }
 
         Item {
+            id: removeBtn
             Layout.fillHeight: true
             Layout.minimumWidth: height
 

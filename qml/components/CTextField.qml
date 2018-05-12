@@ -27,6 +27,7 @@ Item {
     anchors.right: parent.right
 
     property alias text: textInput.text
+    property alias readonlyText: textInput.readOnly
     property alias placeholder: placeholderTextInput.text
     property alias validator: textInput.validator
 
@@ -72,6 +73,10 @@ Item {
                     textInput.forceActiveFocus(Qt.MouseFocusReason)
                     Qt.inputMethod.show()
                 }
+            }
+
+            onDoubleClicked: {
+                textInput.selectAll()
             }
         }
     }

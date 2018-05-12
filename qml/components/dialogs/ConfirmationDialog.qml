@@ -84,6 +84,7 @@ BaseDialog {
             anchors.right: parent.right
             anchors.top: header.bottom
             anchors.bottom: footer.top
+
             clip: true
 
             contentHeight: message.contentHeight
@@ -92,13 +93,13 @@ BaseDialog {
             TextEdit {
                 id: message
 
-                anchors.fill: parent
+                anchors.centerIn: parent
                 textMargin: 3 * settings.pixelDensity
 
                 wrapMode: Text.Wrap
                 font.family: "Roboto"
                 font.pixelSize: 6 * settings.pixelDensity
-                color: palette.label
+                color: "red"
                 readOnly: true
             }
         }

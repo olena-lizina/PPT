@@ -73,19 +73,21 @@ BlankScreen {
             comboLabelText: qsTr("Select group")
             textFieldLabelText: qsTr("Enter name")
 
-            onFindBtnClicked: {
-                var dummy = "------";
-                StudentManager.selectedGroupIdx(findMenu.comboBox.currentIndex);
-                var currText = findMenu.comboBox.textAt(findMenu.comboBox.currentIndex)
-                if (currText !== dummy && textItem !== "")
-                    listView.model = StudentManager.getStudentsByNameAndGroup(findMenu.textItem, currText);
-                if (currText !== dummy && textItem === "")
-                    listView.model = StudentManager.getStudentsByGroup(currText);
-                if (currText === dummy && textItem !== "")
-                    listView.model = StudentManager.getStudentsByName(findMenu.textItem);
-                if (currText === dummy && textItem === "")
-                    listView.model = StudentManager.getAllStudents();
-            }
+            comboBox.model: StudentManager.getGroups()
+
+//            onFindBtnClicked: {
+//                var dummy = "------";
+//                StudentManager.selectedGroupIdx(findMenu.comboBox.currentIndex);
+//                var currText = findMenu.comboBox.textAt(findMenu.comboBox.currentIndex)
+//                if (currText !== dummy && textItem !== "")
+//                    listView.model = StudentManager.getStudentsByNameAndGroup(findMenu.textItem, currText);
+//                if (currText !== dummy && textItem === "")
+//                    listView.model = StudentManager.getStudentsByGroup(currText);
+//                if (currText === dummy && textItem !== "")
+//                    listView.model = StudentManager.getStudentsByName(findMenu.textItem);
+//                if (currText === dummy && textItem === "")
+//                    listView.model = StudentManager.getAllStudents();
+//            }
         }
     }
 
@@ -93,15 +95,15 @@ BlankScreen {
     {
         var parameters = {
             title: qsTr("Add student"),
-            action: "add"
+            addNew: true
         }
 
         var callback = function()
         {
-            updateView()
+            updateScreenContent()
         }
 
-        dialog.open(dialog.types.studentInfoDialog, parameters, callback)
+        dialog.open(dialog.types.editStudentDialog, parameters, callback)
     }
 
     CListView {
@@ -114,32 +116,64 @@ BlankScreen {
             bottom: parent.bottom
         }
 
+        model: StudentManager.getAllStudents();
+
         delegate: CEditOrRemoveButton {
-            text: modelData
+
+            label_1: modelData.name
+            label_2: modelData.group
 
             anchors.left: parent.left
             anchors.right: parent.right
 
+            onClicked: {
+                var parameters = {
+                    title: qsTr("Information about student"),
+                    name: modelData.name,
+                    phone: modelData.phone,
+                    group: modelData.group,
+                    email: modelData.email,
+                    imagePath: modelData.photo,
+                    studentId: modelData.id,
+                    readOnly: true
+                }
+
+                var callback = function() {}
+
+                dialog.open(dialog.types.editStudentDialog, parameters, callback)
+            }
+
             onEditClicked: {
-                StudentManager.selectedStudent(modelData)
-                editStudent()
+                var parameters = {
+                    title: qsTr("Edit student"),
+                    name: modelData.name,
+                    phone: modelData.phone,
+                    group: modelData.group,
+                    email: modelData.email,
+                    imagePath: modelData.photo,
+                    studentId: modelData.id
+                }
+
+                var callback = function()
+                {
+                    updateScreenContent()
+                }
+
+                dialog.open(dialog.types.editStudentDialog, parameters, callback)
             }
 
             onRemoveClicked: {
-                StudentManager.selectedStudent(modelData)
-
                 var parameters = {
                     title: qsTr("Delete the student"),
-                    text: qsTr("Are you sure you want to delete \"%1\"?").arg(modelData)
+                    text: qsTr("Are you sure you want to delete \"%1\"?").arg(modelData.name)
                 }
 
                 var callback = function(value)
                 {
                     if (value)
                     {
-                        StudentManager.deleteStudent(StudentManager.selectedStudentName(), StudentManager.selectedStudentPhone(),
-                                                     StudentManager.selectedStudentEmail(), StudentManager.selectedStudentGroup())
-                        updateView()
+                        StudentManager.deleteStudent(modelData.id)
+                        updateScreenContent()
                     }
                 }
 
@@ -152,43 +186,9 @@ BlankScreen {
         flickableItem: listView
     }
 
-    function editStudent()
+    function updateScreenContent()
     {
-        var parameters = {
-            title: qsTr("Edit student"),
-            action: "edit",
-            nameTxt: StudentManager.selectedStudentName(),
-            phoneTxt: StudentManager.selectedStudentPhone(),
-            emailTxt: StudentManager.selectedStudentEmail(),
-            groupTxt: StudentManager.selectedStudentGroup()
-        }
-
-        var callback = function()
-        {
-            updateView()
-        }
-
-        dialog.open(dialog.types.studentInfoDialog, parameters, callback)
-    }
-
-    Stack.onStatusChanged:
-    {
-        if (Stack.status === Stack.Activating)
-        {
-            findMenu.comboBox.model = StudentManager.getGroups();
-            findMenu.comboBox.currentIndex = StudentManager.selectedGroupIdx();
-        }
-        listView.model = StudentManager.getAllStudents();
-    }
-
-    function updateView()
-    {
+        listView.model = StudentManager.getAllStudents()
         findMenu.comboBox.model = StudentManager.getGroups();
-        findMenu.comboBox.currentIndex = StudentManager.selectedGroupIdx();
-
-        if (StudentManager.selectedGroupIdx() !== 0)
-            listView.model = StudentManager.getStudentsByGroup(findMenu.comboBox.textAt(StudentManager.selectedGroupIdx()));
-        else
-            listView.model = StudentManager.getAllStudents();
     }
 }

@@ -19,11 +19,15 @@
 import QtQuick 2.5
 import "../components"
 import LecturesManager 1.1
+import StudentManager 1.1
 
 BlankScreen {
     id: mainMenuScreen
 
-    Component.onCompleted: LecturesManager.loadAllLectures()
+    Component.onCompleted: {
+        StudentManager.loadStudentsFromDB()
+        LecturesManager.loadAllLectures()
+    }
 
     CToolBar {
         id: toolBar

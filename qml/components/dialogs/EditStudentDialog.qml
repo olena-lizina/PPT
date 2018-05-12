@@ -19,24 +19,33 @@
 import QtQuick 2.5
 import QtGraphicalEffects 1.0
 import StudentManager 1.1
+import QtQuick.Layouts 1.2
+import QtQuick.Dialogs 1.0
+
 import ".."
 
 BaseDialog {
     id: studentDialog
 
     property alias title: titleLabel.text
-    property alias nameTxt: nameTextField.text
-    property alias phoneTxt: phoneTextField.text
-    property alias emailTxt: emailTextField.text
-    property alias groupTxt: groupTextField.text
 
-    property string action: ""
+    property alias name: nameTextField.text
+    property alias phone: phoneTextField.text
+    property alias email: emailTextField.text
+    property alias group: groupTextField.text
+
+    property bool readOnly: false
+    property string imagePath
+    property int studentId
+    property bool addNew: false
 
     function initialize(parameters) {
         for (var attr in parameters) {
             studentDialog[attr] = parameters[attr]
         }
     }
+
+    signal saveClicked()
 
     DropShadow {
         anchors.fill: contentBackground
@@ -85,13 +94,51 @@ BaseDialog {
             }
         }
 
+        Image {
+            id: img
+            width: popupWidth * 0.3
+            height: popupHeight * 0.6
+
+            source: imagePath === "" ? "/resources/images/dummy.jpg" : ("file:///" + applicationDirPath + "/" + imagePath)
+
+            anchors {
+                left: parent.left
+                leftMargin: 10
+                top: header.bottom
+                topMargin: 10
+            }
+
+            MouseArea {
+                anchors.fill: parent
+                onEntered: img.opacity = 0.5
+
+                onClicked: {
+                    getFileDialog.source = "SelectFileDialog.qml"
+                }
+
+                enabled: !readOnly
+            }
+        }
+
+        Rectangle {
+            id: shadow
+            anchors.fill: img
+            radius: 5 * settings.pixelDensity
+            color: palette.dialogShadow
+            opacity: 0.5
+            visible: false
+        }
+
         CFlickable {
             id: flickable
 
-            anchors.left: parent.left
-            anchors.right: parent.right
-            anchors.top: header.bottom
-            anchors.bottom: footer.top
+            anchors {
+                left: img.right
+                right: parent.right
+                top: header.bottom
+                bottom: footer.top
+            }
+
             boundsBehavior: Flickable.StopAtBounds
             clip: true
 
@@ -105,14 +152,14 @@ BaseDialog {
             contentWidth: width - margin * 2
             contentHeight: column.height
 
-            Column {
+            Column{
                 id: column
+
                 anchors.left: parent.left
                 anchors.right: parent.right
                 spacing: 2 * settings.pixelDensity
 
                 CLabel {
-                    id: nameLabel
                     anchors.left: parent.left
                     anchors.right: parent.right
                     text: qsTr("Student name :")
@@ -121,6 +168,7 @@ BaseDialog {
                 CTextField {
                     id: nameTextField
 
+                    readonlyText: readOnly
                     onTextChanged: {
                         if (nameWarningLabel.visible)
                             nameWarningLabel.visible = false
@@ -138,7 +186,6 @@ BaseDialog {
                 }
 
                 CLabel {
-                    id: phoneLabel
                     anchors.left: parent.left
                     anchors.right: parent.right
                     text: qsTr("Phone :")
@@ -147,7 +194,7 @@ BaseDialog {
                 CTextField {
                     id: phoneTextField
 
-
+                    readonlyText: readOnly
                     onTextChanged: {
                         if (phoneWarningLabel.visible)
                             phoneWarningLabel.visible = false
@@ -165,7 +212,6 @@ BaseDialog {
                 }
 
                 CLabel {
-                    id: emailLabel
                     anchors.left: parent.left
                     anchors.right: parent.right
                     text: qsTr("Email :")
@@ -174,6 +220,7 @@ BaseDialog {
                 CTextField {
                     id: emailTextField
 
+                    readonlyText: readOnly
                     onTextChanged: {
                         if (emailWarningLabel.visible)
                             emailWarningLabel.visible = false
@@ -200,6 +247,7 @@ BaseDialog {
                 CTextField {
                     id: groupTextField
 
+                    readonlyText: readOnly
                     onTextChanged: {
                         if (groupWarningLabel.visible)
                             groupWarningLabel.visible = false
@@ -243,52 +291,47 @@ BaseDialog {
             text: qsTr("OK")
 
             onClicked: {
-                var name = nameTextField.text.toString()
-                var phone = phoneTextField.text.toString()
-                var email = emailTextField.text.toString()
-                var group = groupTextField.text.toString()
+
+                if (readOnly)
+                    studentDialog.close()
 
                 if (name.length === 0)
-                {
                     nameWarningLabel.visible = true
-                }
                 if (phone.length === 0)
-                {
                     phoneWarningLabel.visible = true
-                }
                 if (email.length === 0)
-                {
                     emailWarningLabel.visible = true
-                }
                 if (group.length === 0)
-                {
                     groupWarningLabel.visible = true
-                }
 
                 if (name.length > 0 && phone.length > 0 && email.length > 0 && group.length > 0)
                 {
-                    if (action === "add")
-                    {
-                        if (StudentManager.existsStudent(name, group))
-                        {
-                            nameWarningLabel.text = "Student with such name already exists";
-                            nameWarningLabel.visible = true
-                        }
-                        else
-                        {
-                            StudentManager.createStudent(name, phone, email, group)
-                            studentDialog.process(name)
-                        }
-                    }
-                    else if (action === "edit")
-                    {
-                        StudentManager.deleteStudent(StudentManager.selectedStudentName(), StudentManager.selectedStudentPhone(),
-                                                     StudentManager.selectedStudentEmail(), StudentManager.selectedStudentGroup())
-                        StudentManager.createStudent(name, phone, email, group)
-                        studentDialog.process(name)
-                    }
+                    if(addNew)
+                        StudentManager.addStudent(name, phone, group, email, imagePath)
+                    else
+                        StudentManager.updateStudent(studentId, name, phone, group, email, imagePath)
+                    studentDialog.process(name)
                 }
             }
         }
     }
+
+    Loader {
+        id: getFileDialog
+        focus: true
+    }
+
+    Connections {
+           target: getFileDialog.item
+           onProcess: {
+               img.opacity = 1
+               getFileDialog.source = ""
+               studentDialog.imagePath = "/photos/" + StudentManager.copyExternalPhoto(value)
+               img.source = ("file:///" + applicationDirPath + studentDialog.imagePath)
+           }
+           onClose: {
+               img.opacity = 1
+               getFileDialog.source = ""
+           }
+       }
 }
