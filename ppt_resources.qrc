@@ -11,11 +11,6 @@
         <file>resources/fonts/ui/robotobolditalic.ttf</file>
         <file>resources/fonts/ui/robotoitalic.ttf</file>
         <file>resources/fonts/ui/robotoregular.ttf</file>
-        <file>resources/images/icon128.png</file>
-        <file>resources/images/icon256.png</file>
-        <file>resources/images/icon512.png</file>
-        <file>resources/images/particle1.png</file>
-        <file>resources/images/particle2.png</file>
         <file>resources/meshes/logo.obj</file>
         <file>resources/templates/JsFile.js</file>
         <file>resources/templates/MainFile.qml</file>
@@ -162,9 +157,7 @@
         <file>qml/modules/WebView.qml</file>
         <file>qml/modules/Window.qml</file>
         <file>qml/modules/XmlListModel.qml</file>
-        <file>resources/images/admin.PNG</file>
         <file>qml/screens/AdministrationScreen.qml</file>
-        <file>qml/screens/EducationalMaterialsScreen.qml</file>
         <file>qml/screens/ProgressScreen.qml</file>
         <file>qml/components/CInputField.qml</file>
         <file>qml/components/CFilterItem.qml</file>
@@ -174,9 +167,7 @@
         <file>qml/screens/education/lectures/ThemesScreen.qml</file>
         <file>qml/screens/education/lectures/SubThemesScreen.qml</file>
         <file>qml/components/CThemeButton.qml</file>
-        <file>qml/components/dialogs/AddEditStudentDialog.qml</file>
         <file>qml/components/CEditOrRemoveButton.qml</file>
-        <file>qml/components/dialogs/ConfirmationDeleteStudentDialog.qml</file>
         <file>qml/screens/admins/StudentScreen.qml</file>
         <file>resources/translations/ppt_ru.qm</file>
         <file>qml/components/dialogs/ThemeClickedDialog.qml</file>
@@ -188,5 +179,12 @@
         <file>qml/screens/education/lectures/PartScreen.qml</file>
         <file>qml/screens/education/lectures/DisciplineScreen.qml</file>
         <file>qml/components/CDragAndDropList.qml</file>
+        <file>qml/components/dialogs/EditStudentDialog.qml</file>
+        <file>resources/images/dummy.jpg</file>
+        <file>qml/components/dialogs/SelectFileDialog.qml</file>
+        <file>qml/screens/BaseLecturesScreen.qml</file>
+        <file>qml/components/CTreeItem.qml</file>
+        <file>qml/components/CTreeChildItem.qml</file>
+        <file>qml/components/CTreeEmptyItem.qml</file>
     </qresource>
 </RCC>

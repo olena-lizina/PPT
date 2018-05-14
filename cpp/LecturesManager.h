@@ -22,29 +22,29 @@
 #include <QQmlApplicationEngine>
 #include <memory>
 #include "SaveManager.h"
-#include "Lecture.h"
+#include "DataTypes.h"
 #include <QMap>
 
 class LecturesManager: public QObject
 {
     Q_OBJECT
 
-    Q_ENUMS(Type)
+//    Q_ENUMS(Type)
 
-    struct selectedIt {
-        QString name;
-        int id;
-    };
+//    struct selectedIt {
+//        QString name;
+//        int id;
+//    };
 
 public:
 
-    enum Type {
-        Disciplines,
-        Parts,
-        Chapters,
-        Themes,
-        SubThemes
-    };
+//    enum Type {
+//        Disciplines,
+//        Parts,
+//        Chapters,
+//        Themes,
+//        SubThemes
+//    };
 
     explicit LecturesManager(QObject* parent = nullptr);
     ~LecturesManager();
@@ -55,59 +55,61 @@ public:
     static void setSaveManager(std::shared_ptr<SaveManager> saveMgr);
     Q_INVOKABLE void clearComponentCache();
 
-    Q_INVOKABLE QStringList getListModel(const LecturesManager::Type&);
-    Q_INVOKABLE bool itemExists(const QString& name, const LecturesManager::Type&);
-    Q_INVOKABLE void addItem(const QString& name, const LecturesManager::Type&, const QString& fileName = "");
-    Q_INVOKABLE void editItem(const QString& name, const LecturesManager::Type&, const QString& fileName = "");
-    Q_INVOKABLE void deleteItem(const LecturesManager::Type& type);
-    Q_INVOKABLE void updateIndexes(const LecturesManager::Type& type);
 
-    Q_INVOKABLE bool hasSubThemes(const QString& theme);
+//    Q_INVOKABLE QStringList getListModel(const LecturesManager::Type&);
+//    Q_INVOKABLE bool itemExists(const QString& name, const LecturesManager::Type&);
+//    Q_INVOKABLE void addItem(const QString& name, const LecturesManager::Type&, const QString& fileName = "");
+//    Q_INVOKABLE void editItem(const QString& name, const LecturesManager::Type&, const QString& fileName = "");
+//    Q_INVOKABLE void deleteItem(const LecturesManager::Type& type);
+//    Q_INVOKABLE void updateIndexes(const LecturesManager::Type& type);
 
-    Q_INVOKABLE void selectedItem(const QString& name, const LecturesManager::Type& type);
-    Q_INVOKABLE QString selectedItem(const LecturesManager::Type& type);
+//    Q_INVOKABLE bool hasSubThemes(const QString& theme);
 
-    Q_INVOKABLE bool itemHasFile(const QString& name, const LecturesManager::Type& type);
+//    Q_INVOKABLE void selectedItem(const QString& name, const LecturesManager::Type& type);
+//    Q_INVOKABLE QString selectedItem(const LecturesManager::Type& type);
 
-    Q_INVOKABLE void loadAllLectures();
+//    Q_INVOKABLE bool itemHasFile(const QString& name, const LecturesManager::Type& type);
 
-    Q_INVOKABLE void saveCurrentIdxs(const QString& name, const int& id, const LecturesManager::Type& type);
+//    Q_INVOKABLE void loadAllLectures();
 
-    // work with files
-    Q_INVOKABLE void createFile();
-    Q_INVOKABLE void selectFile();
-    Q_INVOKABLE void saveFileContent(QString);
-    Q_INVOKABLE QString getFileContent();
+//    Q_INVOKABLE void saveCurrentIdxs(const QString& name, const int& id, const LecturesManager::Type& type);
 
-private:
-    void removeRelatedSubThemes(const int& themeId);
-    void removeRelatedThemes(const int& chapterId);
-    void removeRelatedChapters(const int& partId);
-    void removeRelatedParts(const int& disciplineId);
+//    // work with files
+//    Q_INVOKABLE void createFile();
+//    Q_INVOKABLE void selectFile();
+//    Q_INVOKABLE void saveFileContent(QString);
+//    Q_INVOKABLE QString getFileContent();
+
+//private:
+//    void removeRelatedSubThemes(const int& themeId);
+//    void removeRelatedThemes(const int& chapterId);
+//    void removeRelatedChapters(const int& partId);
+//    void removeRelatedParts(const int& disciplineId);
 
 private:
     static SaveManager::Ptr mSaveManager;
     static QQmlApplicationEngine *m_qmlEngine;
 
-    std::list<LecturePart> mDisciplines;
-    std::list<LecturePart> mParts;
-    std::list<LecturePart> mChapters;
-    std::list<LecturePart> mThemes;
-    std::list<LecturePart> mSubThemes;
+//    std::list<LecturePart> mDisciplines;
+//    std::list<LecturePart> mParts;
+//    std::list<LecturePart> mChapters;
+//    std::list<LecturePart> mThemes;
+//    std::list<LecturePart> mSubThemes;
 
-    selectedIt mSelectedDisciplines;
-    selectedIt mSelectedPart;
-    selectedIt mSelectedChapter;
-    selectedIt mSelectedTheme;
-    selectedIt mSelectedSubTheme;
+//    selectedIt mSelectedDisciplines;
+//    selectedIt mSelectedPart;
+//    selectedIt mSelectedChapter;
+//    selectedIt mSelectedTheme;
+//    selectedIt mSelectedSubTheme;
 
-    QString mSelectedFile;
+//    QString mSelectedFile;
 
-    QMap<QString, int> mDisciplinesIds;
-    QMap<QString, int> mPartsIds;
-    QMap<QString, int> mChaptersIds;
-    QMap<QString, int> mThemesIds;
-    QMap<QString, int> mSubThemesIds;
+//    QMap<QString, int> mDisciplinesIds;
+//    QMap<QString, int> mPartsIds;
+//    QMap<QString, int> mChaptersIds;
+//    QMap<QString, int> mThemesIds;
+//    QMap<QString, int> mSubThemesIds;
+
 };
 
 #endif // LECTURESMANAGER_H

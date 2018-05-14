@@ -21,12 +21,13 @@
 #include <QObject>
 #include <memory>
 #include "SaveManager.h"
-#include "Lecture.h"
+#include "DataTypes.h"
 #include <QQmlApplicationEngine>
 
 class StudentManager: public QObject
 {
     Q_OBJECT
+    Q_PROPERTY(int selectGroupId READ selectGroupId WRITE setSelectGroupId NOTIFY selectGroupIdChanged)
 
 public:
     explicit StudentManager(QObject *parent = nullptr);
@@ -38,30 +39,35 @@ public:
     Q_INVOKABLE void clearComponentCache();
 
     Q_INVOKABLE bool existsStudent(const QString& name, const QString& group);
-    Q_INVOKABLE void createStudent(const QString& name, const QString& phone, const QString& email, const QString& group);
-    Q_INVOKABLE void deleteStudent(const QString& name, const QString& phone, const QString& email, const QString& group);
+
+    Q_INVOKABLE void updateStudent(int id, QString name, QString phone, QString group, QString email, QString photo);
+    Q_INVOKABLE void addStudent(QString name, QString phone, QString group, QString email, QString photo);
+    Q_INVOKABLE void deleteStudent(int id);
 
     Q_INVOKABLE QStringList getGroups();
-    Q_INVOKABLE QStringList getAllStudents();
-    Q_INVOKABLE QStringList getStudentsByGroup(const QString& groupName);
-    Q_INVOKABLE QStringList getStudentsByName(const QString&);
-    Q_INVOKABLE QStringList getStudentsByNameAndGroup(const QString& name, const QString& group);
+    Q_INVOKABLE QList<QObject*> getAllStudents();
+    Q_INVOKABLE QList<QObject*> getStudentsByGroup(const QString& groupName);
+    Q_INVOKABLE QList<QObject*> getStudentsByName(const QString& partOfName);
 
-    Q_INVOKABLE void selectedStudent(const QString&);
-    Q_INVOKABLE void selectedStudent(const QString& name, const QString& phone, const QString& email, const QString& group);
-    Q_INVOKABLE QString selectedStudentName() const;
-    Q_INVOKABLE QString selectedStudentPhone() const;
-    Q_INVOKABLE QString selectedStudentEmail() const;
-    Q_INVOKABLE QString selectedStudentGroup() const;
+    Q_INVOKABLE void selectedStudent(const int& id);
+    Q_INVOKABLE QObject* selectedStudent() const;
 
-    Q_INVOKABLE void selectedGroupIdx(const int&);
-    Q_INVOKABLE int selectedGroupIdx() const;
+    Q_INVOKABLE void loadStudentsFromDB();
+
+    Q_INVOKABLE QString copyExternalPhoto(QString path);
+
+    void setSelectGroupId(int);
+    int selectGroupId() const;
+
+signals:
+    void selectGroupIdChanged();
 
 private:
-    void loadStudentsFromDB();
+    void checkGroup(const QString& name);
 
 protected:
     QList<Student> mStudentList;
+    QMap<int, QString> mGroupMap;
     Student mSelectedStudent;
     int mSelectedGroupIdx;
     static SaveManager::Ptr mSaveManager;

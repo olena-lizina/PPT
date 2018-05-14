@@ -17,365 +17,21 @@
 ****************************************************************************/
 
 #include "SaveManager.h"
-
-#include <QtSql/QSqlDatabase>
-#include <QtSql/QSqlQuery>
-#include <QtSql/QSqlError>
 #include <QVariant>
 #include <QDebug>
-#include <QList>
 
-#define STUDENT_MODE
-//#define TEACHER_MODE
+//#define STUDENT_MODE
+#define TEACHER_MODE
 
 const QString getLastIdTemp = "SELECT MAX(Id) from '%1'";
 
 SaveManager::SaveManager(): mSqlManager("ppt.db")
 {
-    //    mDbConnection.reset(new QSqlDatabase());
-    //    *mDbConnection = QSqlDatabase::addDatabase("QSQLITE");
-    //    mDbConnection->setDatabaseName("ppt.db");
-
-    //    if (mDbConnection->open())
-    //    {
-    //        mQuery.reset(new QSqlQuery(*mDbConnection));
-    //        isInitialized = true;
-    //    }
-    //    else
-    //        isInitialized = false;
-
     initTables();
 }
 
 /*virtual*/ SaveManager::~SaveManager()
 {
-    if (mDbConnection)
-    {
-        // we need to remove query first because possible memory leak
-        mQuery.reset();
-        mDbConnection->close();
-        mDbConnection->removeDatabase("QSQLITE");
-        mDbConnection.reset();
-    }
-}
-
-void SaveManager::clearTable(const SaveManager::LecturePartType& type)
-{
-    if (!isInitialized)
-        return;
-
-    switch(type)
-    {
-    case Part:
-        mQuery->prepare(QString("DELETE FROM Parts"));
-        mQuery->exec();
-        break;
-    case ChapterType:
-        mQuery->prepare(QString("DELETE FROM Chapters"));
-        mQuery->exec();
-        break;
-    case ThemeType:
-        mQuery->prepare(QString("DELETE FROM Themes"));
-        mQuery->exec();
-        break;
-    case SubTheme:
-        mQuery->prepare(QString("DELETE FROM SubThemes"));
-        mQuery->exec();
-        break;
-    }
-}
-
-void SaveManager::saveStudent(const Student& student)
-{
-    if (!isInitialized)
-        return;
-
-    mQuery->prepare(QString("INSERT INTO Students (Name, Phone, Email, InstGroup) VALUES ('%1', '%2', '%3', '%4')")
-                    .arg(student.name).arg(student.phone).arg(student.email).arg(student.groupId));
-    mQuery->exec();
-}
-
-void SaveManager::removeStudent(const Student& student)
-{
-    if (!isInitialized)
-        return;
-
-    mQuery->prepare(QString("DELETE FROM Students WHERE Name=\"%1\" AND InstGroup='%2'").arg(student.name).arg(student.groupId));
-    mQuery->exec();
-}
-
-void SaveManager::updateStudent(const Student& oldStudent, const Student& newStudent)
-{
-    if (!isInitialized)
-        return;
-
-    mQuery->prepare(QString("UPDATE Students SET Name='%1', Phone='%2', Email='%3', InstGroup='%4' WHERE Name='%5' AND InstGroup='%6'")
-                    .arg(newStudent.name).arg(newStudent.phone).arg(newStudent.email).arg(newStudent.groupId).arg(oldStudent.name).arg(oldStudent.groupId));
-    mQuery->exec();
-}
-
-QList<Student> SaveManager::loadAllStudents()
-{
-    if (!isInitialized)
-        return QList<Student>();
-
-    mQuery->prepare("SELECT * FROM Students");
-    mQuery->exec();
-
-    QList<Student> students;
-
-    while (mQuery->next())
-    {
-        QString name(mQuery->value(0).toString());
-        QString phone(mQuery->value(1).toString());
-        QString email(mQuery->value(2).toString());
-        QString group(mQuery->value(3).toString());
-
-        //students << Student(name, phone, email, group);
-    }
-
-    return students;
-}
-
-QStringList SaveManager::getGroups()
-{
-    if (!isInitialized)
-        return QList<QString>();
-
-    mQuery->prepare("SELECT InstGroup FROM Students");
-    mQuery->exec();
-
-    QStringList groups;
-
-    groups << "------";
-
-    while (mQuery->next())
-    {
-        QString group(mQuery->value(0).toString());
-
-        if (!groups.count(group))
-            groups << group;
-    }
-
-    return groups;
-}
-
-void SaveManager::saveLecturePart(const LecturePart& lecture, const SaveManager::LecturePartType& type)
-{
-    if (!isInitialized)
-        return;
-
-    switch(type)
-    {
-    case Discipline:
-    {
-        mQuery->prepare(QString("INSERT INTO Disciplines (Id, Name) VALUES ('%1', \"%2\")")
-                        .arg(lecture.getId()).arg(lecture.getName()));
-        mQuery->exec();
-        break;
-    }
-    case Part:
-    {
-        mQuery->prepare(QString("INSERT INTO Parts (Id, Name, DisciplineId) VALUES ('%1', \"%2\", '%3')")
-                        .arg(lecture.getId()).arg(lecture.getName()).arg(lecture.getParentId()));
-        mQuery->exec();
-        break;
-    }
-    case ChapterType:
-    {
-        mQuery->prepare(QString("INSERT INTO Chapters (Id, Name, PartId) VALUES ('%1', \"%2\", '%3')")
-                        .arg(lecture.getId()).arg(lecture.getName()).arg(lecture.getParentId()));
-        mQuery->exec();
-        break;
-    }
-    case ThemeType:
-    {
-        mQuery->prepare(QString("INSERT INTO Themes (Id, Name, ChapterId, File) VALUES ('%1', \"%2\", '%3', \"%4\")")
-                        .arg(lecture.getId()).arg(lecture.getName()).arg(lecture.getParentId()).arg(lecture.getFileName()));
-        mQuery->exec();
-        break;
-    }
-    case SubTheme:
-    {
-        mQuery->prepare(QString("INSERT INTO SubThemes (Id, Name, ThemeId, File) VALUES ('%1', \"%2\", '%3', \"%4\")")
-                        .arg(lecture.getId()).arg(lecture.getName()).arg(lecture.getParentId()).arg(lecture.getFileName()));
-        mQuery->exec();
-        break;
-    }
-    }
-}
-
-void SaveManager::updateLecturePart(const LecturePart& oldLecture, const LecturePart& newLecture, const SaveManager::LecturePartType& type)
-{
-    if (!isInitialized)
-        return;
-
-    switch(type)
-    {
-    case Discipline:
-    {
-        mQuery->prepare(QString("UPDATE Disciplines Set Name=\"%1\", Id='%2' WHERE Name=\"%3\"")
-                        .arg(newLecture.getName()).arg(newLecture.getId()).arg(oldLecture.getName()));
-        mQuery->exec();
-        break;
-    }
-    case Part:
-    {
-        mQuery->prepare(QString("UPDATE Parts Set Name=\"%1\", Id='%2', DisciplineId='%3' WHERE Id='%4' AND DisciplineId='%5'")
-                        .arg(newLecture.getName()).arg(newLecture.getId()).arg(newLecture.getParentId()).arg(oldLecture.getId()).arg(oldLecture.getParentId()));
-        mQuery->exec();
-        break;
-    }
-    case ChapterType:
-    {
-        mQuery->prepare(QString("UPDATE Chapters Set Name=\"%1\", Id='%2', PartId='%3' WHERE Id='%4' AND PartId='%5'")
-                        .arg(newLecture.getName()).arg(newLecture.getId()).arg(newLecture.getParentId()).arg(oldLecture.getId()).arg(oldLecture.getParentId()));
-        mQuery->exec();
-        break;
-    }
-    case ThemeType:
-    {
-        mQuery->prepare(QString("UPDATE Themes Set Name=\"%1\", Id='%2', ChapterId='%3', File=\"%4\" WHERE Id='%5' AND ChapterId='%6'")
-                        .arg(newLecture.getName()).arg(newLecture.getId()).arg(newLecture.getParentId()).arg(newLecture.getFileName()).arg(oldLecture.getId()).arg(oldLecture.getParentId()));
-        mQuery->exec();
-        break;
-    }
-    case SubTheme:
-    {
-        mQuery->prepare(QString("UPDATE SubThemes Set Name=\"%1\", Id='%2', ThemeId='%3', File=\"%4\" WHERE Id='%5' AND ThemeId='%6'")
-                        .arg(newLecture.getName()).arg(newLecture.getId()).arg(newLecture.getParentId()).arg(newLecture.getFileName()).arg(oldLecture.getId()).arg(oldLecture.getParentId()));
-        mQuery->exec();
-        break;
-    }
-    }
-}
-
-void SaveManager::deleteLecturePart(const int& id, const int& parentId, const SaveManager::LecturePartType& type)
-{
-    if (!isInitialized)
-        return;
-
-    switch(type)
-    {
-    case Discipline:
-        mQuery->prepare(QString("DELETE FROM Disciplines WHERE Id='%1'").arg(id));
-        mQuery->exec();
-        break;
-    case Part:
-        mQuery->prepare(QString("DELETE FROM Parts WHERE Id='%1' AND DisciplineId='%2'").arg(id).arg(parentId));
-        mQuery->exec();
-        break;
-    case ChapterType:
-        mQuery->prepare(QString("DELETE FROM Chapters WHERE Id='%1' AND PartId='%2'").arg(id).arg(parentId));
-        mQuery->exec();
-        break;
-    case ThemeType:
-        mQuery->prepare(QString("DELETE FROM Themes WHERE Id='%1' AND ChapterId='%2'").arg(id).arg(parentId));
-        mQuery->exec();
-        break;
-    case SubTheme:
-        mQuery->prepare(QString("DELETE FROM SubThemes WHERE Id='%1' AND ThemeId='%2'").arg(id).arg(parentId));
-        mQuery->exec();
-        break;
-    }
-}
-
-void SaveManager::deleteLecturePartByParentId(const int& parentId, const SaveManager::LecturePartType& type)
-{
-    if (!isInitialized)
-        return;
-
-    switch(type)
-    {
-    case Part:
-        mQuery->prepare(QString("DELETE FROM Parts WHERE DisciplineId='%1'").arg(parentId));
-        mQuery->exec();
-        break;
-    case ChapterType:
-        mQuery->prepare(QString("DELETE FROM Chapters WHERE PartId='%1'").arg(parentId));
-        mQuery->exec();
-        break;
-    case ThemeType:
-        mQuery->prepare(QString("DELETE FROM Themes WHERE ChapterId='%1'").arg(parentId));
-        mQuery->exec();
-        break;
-    case SubTheme:
-        mQuery->prepare(QString("DELETE FROM SubThemes WHERE ThemeId='%1'").arg(parentId));
-        mQuery->exec();
-        break;
-    }
-}
-
-std::list<LecturePart> SaveManager::getLectureParts(const SaveManager::LecturePartType& type)
-{
-    if (!isInitialized)
-        return std::list<LecturePart>();
-
-    std::list<LecturePart> result;
-
-    switch(type)
-    {
-    case Discipline:
-    {
-        mQuery->prepare("SELECT Id, Name FROM Disciplines");
-        mQuery->exec();
-
-        while(mQuery->next())
-            result.push_back(LecturePart(mQuery->value(1).toString(), mQuery->value(0).toInt(), 0));
-
-        break;
-    }
-    case Part:
-    {
-        mQuery->prepare("SELECT Id, Name, DisciplineId FROM Parts");
-        mQuery->exec();
-
-        while(mQuery->next())
-            result.push_back(LecturePart(mQuery->value(1).toString(), mQuery->value(0).toInt(), mQuery->value(2).toInt()));
-
-        break;
-    }
-    case ChapterType:
-    {
-        mQuery->prepare("SELECT Id, Name, PartId FROM Chapters");
-        mQuery->exec();
-
-        while(mQuery->next())
-            result.push_back(LecturePart(mQuery->value(1).toString(), mQuery->value(0).toInt(), mQuery->value(2).toInt()));
-
-        break;
-    }
-    case ThemeType:
-    {
-        mQuery->prepare("SELECT Id, Name, ChapterId, File FROM Themes");
-        mQuery->exec();
-
-        while(mQuery->next())
-        {
-            LecturePart lect(mQuery->value(1).toString(), mQuery->value(0).toInt(), mQuery->value(2).toInt());
-            lect.setFileName(mQuery->value(3).toString());
-            result.push_back(lect);
-        }
-
-        break;
-    }
-    case SubTheme:
-    {
-        mQuery->prepare("SELECT Id, Name, ThemeId, File FROM SubThemes");
-        mQuery->exec();
-
-        while(mQuery->next())
-        {
-            LecturePart lect(mQuery->value(1).toString(), mQuery->value(0).toInt(), mQuery->value(2).toInt());
-            lect.setFileName(mQuery->value(3).toString());
-            result.push_back(lect);
-        }
-
-        break;
-    }
-    }
-
-    return result;
 }
 
 void SaveManager::addChapter(const Chapter& info)
@@ -431,7 +87,7 @@ void SaveManager::addDiscipline(const DisciplineTeach& info)
 
 void SaveManager::addGroup(const Group& info)
 {
-    auto res = mSqlManager.execute(getLastIdTemp.arg("'Group'"));
+    auto res = mSqlManager.execute("SELECT MAX(Id) from 'Group'");
 
     if (!res.first)
     {
@@ -647,17 +303,8 @@ void SaveManager::delReportFile(const int& id)
         qDebug() << "Cannot delete report file";
 }
 
-void SaveManager::delStudent(const int& id, const int& groupId)
+void SaveManager::delStudent(const int& id)
 {
-    /*
-        To avoid keeping groups that doesn't have any student
-        after each remove student we check does this group has
-        any student. If no - we remove this group.
-
-        After removing student we also remove all his reports
-        and row in Report_Student table
-    */
-
     const QString tempDelStr("DELETE FROM Student WHERE Id='%1'");
 
     if (!mSqlManager.execute(tempDelStr.arg(id)).first)
@@ -1008,31 +655,6 @@ QList<ReportFile> SaveManager::loadReportFile()
     return files;
 }
 
-QList<ReportStudent> SaveManager::loadReportStudent()
-{
-    const QString tempLoadStr("SELECT * FROM Report_Student");
-    auto res = mSqlManager.execute(tempLoadStr);
-
-    if (!res.first)
-    {
-        qDebug() << "Cannot load report_students";
-        return QList<ReportStudent>();
-    }
-
-    QList<ReportStudent> items;
-
-    for (auto it : res.second)
-    {
-        ReportStudent tmp;
-        tmp.id = it.at(0).toInt();
-        tmp.studId = it.at(1).toInt();
-        tmp.reportId = it.at(2).toInt();
-        items << tmp;
-    }
-
-    return items;
-}
-
 QList<Student> SaveManager::loadStudent()
 {
     const QString tempLoadStr("SELECT * FROM Student");
@@ -1116,24 +738,24 @@ QList<Theme> SaveManager::loadTheme()
 void SaveManager::initTables()
 {
     const QStringList commonValues {
-        "CREATE TABLE IF NOT EXISTS Chapter (Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, Name TEXT, Order_Id	INTEGER, Discipline_Id INTEGER)",
-        "CREATE TABLE IF NOT EXISTS Lab_Work (Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, Theme_Id INTEGER, Finish_Date INTEGER, Name TEXT, Path TEXT)",
-        "CREATE TABLE IF NOT EXISTS Subtheme_Lecture_File (Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, Subtheme_Id INTEGER, Path TEXT)",
-        "CREATE TABLE IF NOT EXISTS Theme_Lecture_File (Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, Theme_Id INTEGER, Path TEXT)",
-        "CREATE TABLE IF NOT EXISTS Report (Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, Lab_Id INTEGER, Delivery_Date INTEGER, Mark TEXT, Evaluation_Date INTEGER, Stud_Id INTEGER)",
-        "CREATE TABLE IF NOT EXISTS Report_File (Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, Report_Id INTEGER, Path TEXT)",
-        "CREATE TABLE IF NOT EXISTS Subtheme (Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, Name TEXT, Order_Id INTEGER, Theme_Id INTEGER)",
-        "CREATE TABLE IF NOT EXISTS Theme (Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, Name TEXT, Order_Id INTEGER, Chapter_Id INTEGER)"
+        "CREATE TABLE IF NOT EXISTS Chapter (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Order_Id INTEGER, Discipline_Id INTEGER, FOREIGN KEY (Discipline_Id) REFERENCES Discipline(Id) ON DELETE CASCADE)",
+        "CREATE TABLE IF NOT EXISTS Lab_Work (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Theme_Id INTEGER, Finish_Date INTEGER, Name TEXT, Path TEXT, FOREIGN KEY (Theme_Id) REFERENCES Theme(Id) ON DELETE CASCADE)",
+        "CREATE TABLE IF NOT EXISTS Subtheme_Lecture_File (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Subtheme_Id INTEGER, Path TEXT, FOREIGN KEY (Subtheme_Id) REFERENCES Subtheme(Id) ON DELETE CASCADE)",
+        "CREATE TABLE IF NOT EXISTS Theme_Lecture_File (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Theme_Id INTEGER, Path TEXT, FOREIGN KEY (Theme_Id) REFERENCES Theme(Id) ON DELETE CASCADE)",
+        "CREATE TABLE IF NOT EXISTS Report (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Lab_Id INTEGER, Delivery_Date INTEGER, Mark TEXT, Evaluation_Date INTEGER, Stud_Id INTEGER, FOREIGN KEY (Lab_Id) REFERENCES Lab_Work(Id) ON DELETE CASCADE, FOREIGN KEY (Stud_Id) REFERENCES Student(Id) ON DELETE CASCADE)",
+        "CREATE TABLE IF NOT EXISTS Report_File (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Report_Id INTEGER, Path TEXT, FOREIGN KEY (Report_Id) REFERENCES Report(Id) ON DELETE CASCADE)",
+        "CREATE TABLE IF NOT EXISTS Subtheme (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Order_Id INTEGER, Theme_Id INTEGER, FOREIGN KEY (Theme_Id) REFERENCES Theme(Id) ON DELETE CASCADE)",
+        "CREATE TABLE IF NOT EXISTS Theme (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Order_Id INTEGER, Chapter_Id INTEGER, FOREIGN KEY (Chapter_Id) REFERENCES Chapter(Id) ON DELETE CASCADE)"
     };
 
     const QStringList teacherValues {
-        "CREATE TABLE IF NOT EXISTS Discipline (Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, Name TEXT, Liter_Path	TEXT, Educ_Plan_Path TEXT, Educ_Progr_Path TEXT)",
-        "CREATE TABLE IF NOT EXISTS 'Group' (Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, Name TEXT)",
-        "CREATE TABLE IF NOT EXISTS Student (Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, Name TEXT, Phone TEXT, Email TEXT, Photo_Path TEXT, Group_Id INTEGER)",
+        "CREATE TABLE IF NOT EXISTS Discipline (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Liter_Path TEXT, Educ_Plan_Path TEXT, Educ_Progr_Path TEXT)",
+        "CREATE TABLE IF NOT EXISTS 'Group' (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT)",
+        "CREATE TABLE IF NOT EXISTS Student (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Phone TEXT, Email TEXT, Photo_Path TEXT, Group_Id INTEGER, FOREIGN KEY (Group_Id) REFERENCES 'Group'(Id) ON DELETE CASCADE)",
     };
 
     const QStringList studentValues {
-        "CREATE TABLE IF NOT EXISTS Discipline (Id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, Name TEXT, Liter_Path	TEXT)"
+        "CREATE TABLE IF NOT EXISTS Discipline (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Liter_Path	TEXT)"
     };
 
     for (auto val : commonValues)
@@ -1144,7 +766,7 @@ void SaveManager::initTables()
     for (auto val : studentValues)
         if (!mSqlManager.execute(val).first)
             qDebug() << "Cannot init table: " << val;
-#elif
+#else
     for (auto val : teacherValues)
         if (!mSqlManager.execute(val).first)
             qDebug() << "Cannot init table: " << val;

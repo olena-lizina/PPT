@@ -23,6 +23,7 @@
 #include "StudentManager.h"
 #include "LecturesManager.h"
 #include "SyntaxHighlighter.h"
+#include "TreeModel.h"
 
 int main(int argc, char *argv[])
 {
@@ -45,8 +46,10 @@ int main(int argc, char *argv[])
     LecturesManager::setSaveManager(saveManager);
 
     qmlRegisterType<SyntaxHighlighter>("SyntaxHighlighter", 1, 1, "SyntaxHighlighter");
-
-    QQmlApplicationEngine engine(QUrl("qrc:/qml/main.qml"));
+    qmlRegisterType<TreeModel>("TreeModel", 1,1, "TreeModel");
+    QQmlApplicationEngine engine;
+    engine.rootContext()->setContextProperty("applicationDirPath", QGuiApplication::applicationDirPath());
+    engine.load(QUrl("qrc:/qml/main.qml"));
     StudentManager::setQmlEngine(&engine);
     LecturesManager::setQmlEngine(&engine);
 

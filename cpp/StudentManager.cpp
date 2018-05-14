@@ -17,17 +17,19 @@
 ****************************************************************************/
 
 #include "StudentManager.h"
+#include "StudentModel.h"
+
 #include <QDebug>
+#include <QFile>
+#include <QDir>
 
 /*static*/ QQmlApplicationEngine *StudentManager::m_qmlEngine = nullptr;
 /*static*/ SaveManager::Ptr StudentManager::mSaveManager;
 
 StudentManager::StudentManager(QObject *parent)
     : QObject(parent)
-    //, mSelectedStudent("", "", "", "")
     , mSelectedGroupIdx(0)
 {
-    //loadStudentsFromDB();
 }
 
 /*static*/ QObject* StudentManager::studentManagerProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
@@ -54,16 +56,16 @@ void StudentManager::clearComponentCache()
     StudentManager::m_qmlEngine->clearComponentCache();
 }
 
-void StudentManager::selectedStudent(const QString& student)
+void StudentManager::selectedStudent(const int& id)
 {
-    auto studentInfo = student.split(',');
-//    mSelectedStudent = Student(studentInfo.at(0), studentInfo.at(1),
-//                        studentInfo.at(2), studentInfo.at(3));
+    auto studIter = std::find_if(mStudentList.cbegin(), mStudentList.cend(),
+                                 [&id](const Student& stud){ return stud.id == id; });
+    mSelectedStudent = mStudentList.cend() == studIter ? Student() : *studIter;
 }
 
-void StudentManager::selectedStudent(const QString& name, const QString& phone, const QString& email, const QString& group)
+QObject* StudentManager::selectedStudent() const
 {
-    //mSelectedStudent = Student(name, phone, email, group);
+    return new StudentModel(mSelectedStudent, mGroupMap[mSelectedStudent.groupId]);
 }
 
 bool StudentManager::existsStudent(const QString& name, const QString& group)
@@ -76,74 +78,127 @@ bool StudentManager::existsStudent(const QString& name, const QString& group)
     return false;
 }
 
-void StudentManager::createStudent(const QString& name, const QString& phone, const QString& email, const QString& group)
+void StudentManager::updateStudent(int id, QString name, QString phone, QString group, QString email, QString photo)
 {
-//    Student stud(name, phone, email, group);
-//    mStudentList.push_back(stud);
+    checkGroup(group);
 
-//    if (mSaveManager)
-//        mSaveManager->saveStudent(stud);
+    Student edit;
+    edit.id = id;
+    edit.name = name;
+    edit.email = email;
+    edit.phone = phone;
+    edit.photoPath = photo;
+    edit.groupId = mGroupMap.key(group);
+
+    auto studIter = std::find_if(mStudentList.begin(), mStudentList.end(),
+                                 [&id](Student& stud){ return stud.id == id; });
+    if (mStudentList.end() == studIter)
+    {
+        qWarning() << "Cannot update student: " << name;
+        return;
+    }
+
+    mSaveManager->updStudent(edit);
+    *studIter = edit;
 }
 
-void StudentManager::deleteStudent(const QString& name, const QString& phone, const QString& email, const QString& group)
+void StudentManager::checkGroup(const QString& name)
 {
-//    Student stud(name, phone, email, group);
-//    mStudentList.removeOne(stud);
+    const int defaultGroup = -1;
+    if (defaultGroup == mGroupMap.key(name, defaultGroup))
+    {
+        // no such group
+        Group tmp;
+        tmp.name = name;
+        mSaveManager->addGroup(tmp);
 
-//    if (mSaveManager)
-//        mSaveManager->removeStudent(stud);
+        mGroupMap.clear();
+        auto groups = mSaveManager->loadGroup();
+
+        for (auto it : groups)
+            mGroupMap.insert(it.id, it.name);
+    }
+}
+
+void StudentManager::addStudent(QString name, QString phone, QString group, QString email, QString photo)
+{
+    checkGroup(group);
+
+    Student add;
+    add.name = name;
+    add.email = email;
+    add.phone = phone;
+    add.photoPath = photo;
+    add.groupId = mGroupMap.key(group);
+    mSaveManager->addStudent(add);
+
+    mStudentList.clear();
+    mStudentList = mSaveManager->loadStudent();
+}
+
+void StudentManager::deleteStudent(int id)
+{
+    auto studIter = std::find_if(mStudentList.begin(), mStudentList.end(),
+                                 [&id](Student& stud){ return stud.id == id; });
+    if (mStudentList.end() == studIter)
+    {
+        qWarning() << "Cannot delete student with id: " << id;
+        return;
+    }
+
+    int groupId = studIter->groupId;
+    mSaveManager->delStudent(id);
+    mStudentList.erase(studIter);
+
+    auto hasGroup = std::find_if(mStudentList.begin(), mStudentList.end(),
+                 [groupId](Student& it){ return it.groupId == groupId; });
+
+    if (hasGroup == mStudentList.end())
+        mSaveManager->delGroup(groupId);
+
+    loadStudentsFromDB();
 }
 
 QStringList StudentManager::getGroups()
 {
-    return mSaveManager->getGroups();
-}
+    QStringList result;    
+    result << tr("All groups");
 
-QStringList StudentManager::getAllStudents()
-{
-    QStringList result;
-
-//    for (auto& stud : mStudentList)
-//        result << stud.name() + "," + stud.phone() + "," + stud.email() + "," + stud.group();
+    for(auto& it: mGroupMap)
+        result << it;
 
     return result;
 }
 
-QStringList StudentManager::getStudentsByGroup(const QString& group)
+QList<QObject*> StudentManager::getAllStudents()
 {
-    QStringList result;
+    QList<QObject*> result;
 
-//    for (auto& stud : mStudentList)
-//    {
-//        if (!group.compare(stud.group()))
-//            result << stud.name() + "," + stud.phone() + "," + stud.email() + "," + stud.group();
-//    }
+    for (auto& stud : mStudentList)
+        result.append(new StudentModel(stud, mGroupMap[stud.groupId]));
 
     return result;
 }
 
-QStringList StudentManager::getStudentsByName(const QString& name)
+QList<QObject*> StudentManager::getStudentsByGroup(const QString& group)
 {
-    QStringList result;
+    QList<QObject*> result;
+    int groupId = mGroupMap.key(group);
 
-//    for (auto& stud : mStudentList)
-//    {
-//        if (stud.name().contains(name))
-//            result << stud.name() + "," + stud.phone() + "," + stud.email() + "," + stud.group();
-//    }
+    for (auto& stud : mStudentList)
+        if (stud.groupId == groupId)
+            result.append(new StudentModel(stud, group));
 
     return result;
 }
 
-QStringList StudentManager::getStudentsByNameAndGroup(const QString& name, const QString& group)
+QList<QObject*> StudentManager::getStudentsByName(const QString& partOfName)
 {
-    QStringList result;
+    QList<QObject*> result;
 
-//    for (auto& stud : mStudentList)
-//    {
-//        if (stud.name().contains(name) && !stud.group().compare(group))
-//            result << stud.name() + "," + stud.phone() + "," + stud.email() + "," + stud.group();
-//    }
+    for (auto& stud : mStudentList)
+        if (stud.name.contains(partOfName))
+            result.append(new StudentModel(stud, mGroupMap[stud.id]));
 
     return result;
 }
@@ -153,36 +208,35 @@ void StudentManager::loadStudentsFromDB()
     if (mSaveManager)
     {
         mStudentList.clear();
-        mStudentList = mSaveManager->loadAllStudents();
+        mGroupMap.clear();
+        mStudentList = mSaveManager->loadStudent();
+        auto groups = mSaveManager->loadGroup();
+
+        for (auto it : groups)
+            mGroupMap.insert(it.id, it.name);
     }
 }
-
-QString StudentManager::selectedStudentName() const
+QString StudentManager::copyExternalPhoto(QString path)
 {
-    return "";//mSelectedStudent.name();
+    QDir dir("photos");
+    if (!dir.exists())
+        dir.mkpath("photos");
+
+    QString prefix("file:///");
+    path.remove(0, prefix.size());
+    QString fileName(path.right(path.size() - path.lastIndexOf('/') - 1));
+    QString newPath(QDir::currentPath() + '/' + "photos" + '/' + fileName);
+    QFile::copy(path, newPath);
+
+    return fileName;
 }
 
-QString StudentManager::selectedStudentPhone() const
-{
-    return "";//mSelectedStudent.phone();
-}
-
-QString StudentManager::selectedStudentEmail() const
-{
-    return "";// mSelectedStudent.email();
-}
-
-QString StudentManager::selectedStudentGroup() const
-{
-    return "";//mSelectedStudent.group();
-}
-
-void StudentManager::selectedGroupIdx(const int& group)
+void StudentManager::setSelectGroupId(int group)
 {
     mSelectedGroupIdx = group;
 }
 
-int StudentManager::selectedGroupIdx() const
+int StudentManager::selectGroupId() const
 {
     return mSelectedGroupIdx;
 }

@@ -26,7 +26,7 @@ BlankScreen {
 
     Component.onCompleted: {
         StudentManager.loadStudentsFromDB()
-        LecturesManager.loadAllLectures()
+        //LecturesManager.loadAllLectures()
     }
 
     CToolBar {
@@ -65,7 +65,7 @@ BlankScreen {
             CNavigationButton {
                 text: qsTr("Educational materials")
                 icon: "\uf115"
-                onClicked: stackView.push(Qt.resolvedUrl("EducationalMaterialsScreen.qml"))
+                onClicked: stackView.push(Qt.resolvedUrl("BaseLecturesScreen.qml"))
             }
 
             CNavigationButton {

@@ -23,8 +23,11 @@ HEADERS += \
     cpp/StudentManager.h \
     cpp/SaveManager.h \
     cpp/LecturesManager.h \
-    cpp/Lecture.h \
-    cpp/DBManager.h
+    cpp/DBManager.h \
+    cpp/DataTypes.h \
+    cpp/StudentModel.h \
+    cpp/TreeModel.h \
+    cpp/TreeItem.h
 
 SOURCES += \
     cpp/main.cpp \
@@ -35,7 +38,9 @@ SOURCES += \
     cpp/StudentManager.cpp \
     cpp/SaveManager.cpp \
     cpp/LecturesManager.cpp \
-    cpp/DBManager.cpp
+    cpp/DBManager.cpp \
+    cpp/TreeModel.cpp \
+    cpp/TreeItem.cpp
 
 lupdate_only {
 SOURCES += \
@@ -49,7 +54,8 @@ SOURCES += \
     qml/*.qml
 }
 
-TRANSLATIONS = resources/translations/ppt_ru.ts resources/translations/ppt_uk_UA.ts
+TRANSLATIONS = resources/translations/ppt_ru.ts \
+               resources/translations/ppt_uk_UA.ts
 
 android {
     OTHER_FILES += platform-specific/android/AndroidManifest.xml

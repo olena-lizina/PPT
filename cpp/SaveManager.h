@@ -20,47 +20,18 @@
 #define SAVEMANAGER_H
 #include <QList>
 #include <memory>
-#include "Lecture.h"
-
+#include "DataTypes.h"
 #include "DBManager.h"
-
-class QSqlDatabase;
-class QSqlQuery;
 
 class SaveManager
 {
 public:
-
-    enum LecturePartType {
-        Discipline,
-        Part,
-        ChapterType,
-        ThemeType,
-        SubTheme
-    };
 
     using WPtr = std::weak_ptr<SaveManager>;
     using Ptr = std::shared_ptr<SaveManager>;
 
     explicit SaveManager();
     virtual ~SaveManager();
-
-    // work for students
-    void saveStudent(const Student&);
-    void removeStudent(const Student&);
-    void updateStudent(const Student& oldStudent, const Student& newStudent);
-    QList<Student> loadAllStudents();
-    QStringList getGroups();
-
-    // work for lectures
-    void saveLecturePart(const LecturePart& lecture, const SaveManager::LecturePartType& type);
-    void updateLecturePart(const LecturePart& oldLecture, const LecturePart& newLecture, const SaveManager::LecturePartType& type);
-    void deleteLecturePart(const int& id, const int& parentId, const SaveManager::LecturePartType& type);
-    void deleteLecturePartByParentId(const int& parentId, const SaveManager::LecturePartType& type);
-
-    std::list<LecturePart> getLectureParts(const SaveManager::LecturePartType& type);
-
-    void clearTable(const SaveManager::LecturePartType& type);
 
     void addChapter(const Chapter& info);
     void addDiscipline(const DisciplineStud& info);
@@ -71,7 +42,6 @@ public:
     void addSubthemeLectureFile(const SubthemeLectureFile& info);
     void addReport(const Report& info);
     void addReportFile(const ReportFile& info);
-    void addReportStudent(const ReportStudent& info);
     void addStudent(const Student& info);
     void addSubtheme(const Subtheme& info);
     void addTheme(const Theme& info);
@@ -84,7 +54,7 @@ public:
     void delSubthemeLectureFile(const int& id);
     void delReport(const int& id);
     void delReportFile(const int& id);
-    void delStudent(const int& id, const int& groupId);
+    void delStudent(const int& id);
     void delSubtheme(const int& id);
     void delTheme(const int& id);
 
@@ -115,17 +85,9 @@ public:
     QList<Theme> loadTheme();
 
 protected:
-    void initTables(); // OK
-
-    int getPartId(const QString& part);
-    int getChapterId(const int& partId, const QString& chapter);
-    int getThemeId(const int& chapterId, const QString& theme);
+    void initTables();
 
 protected:
-    std::shared_ptr<QSqlDatabase> mDbConnection;
-    std::shared_ptr<QSqlQuery> mQuery;
-    bool isInitialized = { false };
-
     SQLiteManager mSqlManager;
 };
 
