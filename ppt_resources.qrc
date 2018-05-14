@@ -164,7 +164,6 @@
         <file>qml/modules/XmlListModel.qml</file>
         <file>resources/images/admin.PNG</file>
         <file>qml/screens/AdministrationScreen.qml</file>
-        <file>qml/screens/EducationalMaterialsScreen.qml</file>
         <file>qml/screens/ProgressScreen.qml</file>
         <file>qml/components/CInputField.qml</file>
         <file>qml/components/CFilterItem.qml</file>
@@ -174,19 +173,17 @@
         <file>qml/screens/education/lectures/ThemesScreen.qml</file>
         <file>qml/screens/education/lectures/SubThemesScreen.qml</file>
         <file>qml/components/CThemeButton.qml</file>
-        <file>qml/components/dialogs/AddEditStudentDialog.qml</file>
         <file>qml/components/CEditOrRemoveButton.qml</file>
-        <file>qml/components/dialogs/ConfirmationDeleteStudentDialog.qml</file>
         <file>qml/screens/admins/StudentScreen.qml</file>
-        <file>resources/translations/ppt_ru.qm</file>
         <file>qml/components/dialogs/ThemeClickedDialog.qml</file>
         <file>qml/screens/education/lectures/EditorLectureScreen.qml</file>
         <file>qml/screens/education/lectures/LectureScreen.qml</file>
         <file>qml/components/CReadyCodeArea.qml</file>
         <file>qml/components/CHomeButton.qml</file>
-        <file>resources/translations/ppt_uk_UA.qm</file>
         <file>qml/screens/education/lectures/PartScreen.qml</file>
         <file>qml/screens/education/lectures/DisciplineScreen.qml</file>
         <file>qml/components/CDragAndDropList.qml</file>
+        <file>resources/translations/ppt_ru.ts</file>
+        <file>resources/translations/ppt_uk_UA.ts</file>
     </qresource>
 </RCC>

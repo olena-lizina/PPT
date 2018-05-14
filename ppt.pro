@@ -23,7 +23,7 @@ HEADERS += \
     cpp/StudentManager.h \
     cpp/SaveManager.h \
     cpp/LecturesManager.h \
-    cpp/Lecture.h \
+#    cpp/Lecture.h \
     cpp/DBManager.h
 
 SOURCES += \
