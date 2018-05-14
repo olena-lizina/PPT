@@ -27,9 +27,12 @@ Item {
     implicitHeight: 18.5 * settings.pixelDensity
     property alias color: btnRect.color
     property alias icon: buttonIcon.text
+    property alias iconWidth: buttonIcon.width
     property alias text: buttonLabel.text
+    property alias btnBody: body
 
     signal clicked()
+    signal iconClicked()
 
     CHorizontalSeparator {
         anchors.left: parent.left
@@ -46,6 +49,7 @@ Item {
     }
 
     RowLayout {
+        id: body
         anchors.fill: parent
         anchors.leftMargin: 5 * settings.pixelDensity
         anchors.rightMargin: 5 * settings.pixelDensity
@@ -55,6 +59,11 @@ Item {
             id: buttonIcon
             Layout.fillHeight: true
             visible: text !== ""
+
+            MouseArea{
+                anchors.fill: parent
+                onClicked: cNavigationButton.iconClicked()
+            }
         }
 
         CLabel {
