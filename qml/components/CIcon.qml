@@ -20,6 +20,7 @@ import QtQuick 2.5
 
 Text {
     id: cIcon
+
     font.family: "FontAwesome"
     font.pixelSize: 10 * settings.pixelDensity
     verticalAlignment: Text.AlignVCenter

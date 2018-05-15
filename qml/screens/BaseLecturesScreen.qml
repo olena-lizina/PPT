@@ -52,71 +52,11 @@ BlankScreen {
         }
     }
 
-    ListModel {
-        id: disciplinesModel
-
-        ListElement {
-            type: 0
-            name: "disciplines"
-            number: "disciplines"
-        }
-        ListElement {
-            type: 0
-            name: "disciplines"
-            number: "disciplines"
-        }
-        ListElement {
-            type: 0
-            name: "disciplines"
-            number: "disciplines"
-        }
-        ListElement {
-            type: 0
-            name: "disciplines"
-            number: "disciplines"
-        }
-        ListElement {
-            type: 0
-            name: "disciplines"
-            number: "disciplines"
-        }
-        ListElement {
-            type: 0
-            name: "disciplines"
-            number: "disciplines"
-        }
-    }
-
     ListView {
         id: myView
-        model: TreeModel.simpleTree//disciplinesModel
-        delegate: CTreeItem{}
-            /*CNavigationButton {
-            text: name + ": " + number
 
-            anchors.leftMargin: type === disciplineType ? 0 : type === chapterType ? 20 : type === themeType ? 30 : 40
-
-            onClicked: {
-                console.debug(name + " idx " + index)
-                switch(type)
-                {
-                case disciplineType:
-                    disciplinesModel.insert(index + 1, {"type": 1, "name": "chapters", "number": "chapters"})
-                    break;
-                case chapterType:
-                    disciplinesModel.insert(index + 1, {"type": 2, "name": "themes", "number": "themes"})
-                    break;
-                case themeType:
-                    disciplinesModel.insert(index + 1, {"type": 3, "name": "subthemes", "number": "subthemes"})
-                    break;
-                case subthemeType:
-                    console.log("show file");
-                    break;
-                }
-            }
-
-            iconWidth: 0
-        }*/
+        model: TreeModel.simpleTree
+        delegate: CTreeItem {}
 
         width: 0.25 * settings.windowWidth
         height: settings.windowHeight - toolBar.height

@@ -17,21 +17,43 @@
 ****************************************************************************/
 
 import QtQuick 2.5
+import ".."
 
-Item {
-    id: cTreeItem
-
-    CNavigationButton {
-        id: body
-
-        text: modelData.idx + " " + modelData.text
-        icon: modelData.isOpen ? "\u02c4" : "\u02c5"
-        iconWidth: modelData.hasChild ? iconWidth : 0
-
-        onIconClicked: {
-            modelData.isOpen = !modelData.isOpen;
-        }
+Row {
+    Rectangle{
+        width: 20
+        height: list.height
+        color: palette.button
+        opacity: 0
     }
 
-    Loader{ source: modelData.isOpen ? "ChildList.qml" : "CTreeEmptyItem.qml"; }
+    Column {
+        id: list
+        CLabel {
+            height: 18.5 * settings.pixelDensity
+            width: 0.25 * settings.windowWidth
+
+            text: modelData.idx + " " + modelData.text
+            MouseArea {
+                id: mouseArea
+                anchors.fill: parent
+                onClicked: modelData.isOpen = !modelData.isOpen;
+            }
+            CHorizontalSeparator {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                anchors.bottom: parent.bottom
+            }
+            Rectangle {
+                anchors.fill: parent
+                color: palette.button
+                visible: mouseArea.pressed
+                opacity: 0.5
+            }
+        }
+
+        Loader{ source: modelData.isOpen ? "CChildTreeList.qml" : "CTreeEmptyItem.qml"; }
+    }
 }
+
+

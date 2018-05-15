@@ -27,9 +27,8 @@ Item {
     implicitHeight: 18.5 * settings.pixelDensity
     property alias color: btnRect.color
     property alias icon: buttonIcon.text
-    property alias iconWidth: buttonIcon.width
+    property alias iconVisibility: buttonIcon.visible
     property alias text: buttonLabel.text
-    property alias btnBody: body
 
     signal clicked()
     signal iconClicked()
@@ -59,22 +58,19 @@ Item {
             id: buttonIcon
             Layout.fillHeight: true
             visible: text !== ""
-
             MouseArea{
-                anchors.fill: parent
+                anchors.fill: buttonIcon
                 onClicked: cNavigationButton.iconClicked()
             }
         }
-
         CLabel {
             id: buttonLabel
             Layout.fillWidth: true
-        }
-    }
-
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        onClicked: cNavigationButton.clicked()
+            MouseArea {
+                id: mouseArea
+                anchors.fill: buttonLabel
+                onClicked: cNavigationButton.clicked()
+            }
+        }        
     }
 }

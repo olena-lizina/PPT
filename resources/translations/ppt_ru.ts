@@ -491,6 +491,49 @@
     </message>
 </context>
 <context>
+    <name>QObject</name>
+    <message>
+        <source>Элемент 1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Подпункт 1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Подпункт 2</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Подпункт 3</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Элемент 2</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Элемент 3</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Подэлемент 1</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Элемент 4</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Элемент 5</source>
+        <translation></translation>
+    </message>
+    <message>
+        <source>Элемент 6</source>
+        <translation></translation>
+    </message>
+</context>
+<context>
     <name>SelectFileDialog</name>
     <message>
         <source>Choose a file to open</source>
@@ -534,6 +577,13 @@
     <message>
         <source>Palette</source>
         <translation>Палитра</translation>
+    </message>
+</context>
+<context>
+    <name>StudentManager</name>
+    <message>
+        <source>All groups</source>
+        <translation>Все группы</translation>
     </message>
 </context>
 <context>

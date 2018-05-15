@@ -18,20 +18,9 @@
 
 import QtQuick 2.5
 
-Row{
-    spacing: 10
-    Rectangle{
-        width: 10
-        height: list.height
-        color: "#69a8ff"
-    }
-
-    Column{
-        id: list
-        spacing: 10
-        Repeater{
-            model: modelData.childItems
-            delegate: CTreeItem{}
-        }
+Column{
+    Repeater{
+        model: modelData.childItems
+        delegate: CTreeItem {}
     }
 }

@@ -40,13 +40,14 @@ int main(int argc, char *argv[])
 
     qmlRegisterSingletonType<StudentManager>("StudentManager", 1, 1, "StudentManager", &StudentManager::studentManagerProvider);
     qmlRegisterSingletonType<LecturesManager>("LecturesManager", 1, 1, "LecturesManager", &LecturesManager::lecturesManagerProvider);
+    qmlRegisterSingletonType<TreeModel>("TreeModel", 1, 1, "TreeModel", &TreeModel::treeModelProvider);
 
     SaveManager::Ptr saveManager(new SaveManager());
     StudentManager::setSaveManager(saveManager);
     LecturesManager::setSaveManager(saveManager);
 
     qmlRegisterType<SyntaxHighlighter>("SyntaxHighlighter", 1, 1, "SyntaxHighlighter");
-    qmlRegisterType<TreeModel>("TreeModel", 1,1, "TreeModel");
+    //qmlRegisterType<TreeModel>("TreeModel", 1, 1, "TreeModel");
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("applicationDirPath", QGuiApplication::applicationDirPath());
     engine.load(QUrl("qrc:/qml/main.qml"));

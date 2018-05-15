@@ -27,7 +27,8 @@ HEADERS += \
     cpp/DataTypes.h \
     cpp/StudentModel.h \
     cpp/TreeModel.h \
-    cpp/TreeItem.h
+    cpp/TreeItem.h \
+    cpp/LanguageManager.h
 
 SOURCES += \
     cpp/main.cpp \
@@ -40,7 +41,8 @@ SOURCES += \
     cpp/LecturesManager.cpp \
     cpp/DBManager.cpp \
     cpp/TreeModel.cpp \
-    cpp/TreeItem.cpp
+    cpp/TreeItem.cpp \
+    cpp/LanguageManager.cpp
 
 lupdate_only {
 SOURCES += \

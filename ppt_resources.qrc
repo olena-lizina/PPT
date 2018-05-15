@@ -169,13 +169,11 @@
         <file>qml/components/CThemeButton.qml</file>
         <file>qml/components/CEditOrRemoveButton.qml</file>
         <file>qml/screens/admins/StudentScreen.qml</file>
-        <file>resources/translations/ppt_ru.qm</file>
         <file>qml/components/dialogs/ThemeClickedDialog.qml</file>
         <file>qml/screens/education/lectures/EditorLectureScreen.qml</file>
         <file>qml/screens/education/lectures/LectureScreen.qml</file>
         <file>qml/components/CReadyCodeArea.qml</file>
         <file>qml/components/CHomeButton.qml</file>
-        <file>resources/translations/ppt_uk_UA.qm</file>
         <file>qml/screens/education/lectures/PartScreen.qml</file>
         <file>qml/screens/education/lectures/DisciplineScreen.qml</file>
         <file>qml/components/CDragAndDropList.qml</file>
@@ -184,7 +182,9 @@
         <file>qml/components/dialogs/SelectFileDialog.qml</file>
         <file>qml/screens/BaseLecturesScreen.qml</file>
         <file>qml/components/CTreeItem.qml</file>
-        <file>qml/components/CTreeChildItem.qml</file>
         <file>qml/components/CTreeEmptyItem.qml</file>
+        <file>resources/translations/ppt_ru.ts</file>
+        <file>resources/translations/ppt_uk_UA.ts</file>
+        <file>qml/components/CChildTreeList.qml</file>
     </qresource>
 </RCC>
