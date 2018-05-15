@@ -17,6 +17,7 @@
 ****************************************************************************/
 
 import QtQuick 2.5
+import QtQuick.Controls 2.3
 import ".."
 
 Row {
@@ -31,13 +32,23 @@ Row {
         id: list
         CLabel {
             height: 18.5 * settings.pixelDensity
-            width: 0.25 * settings.windowWidth
+            width: 0.25 * settings.windowWidth - modelData.nesting * 20 - 20
 
-            text: modelData.idx + " " + modelData.text
+            text: modelData.text
+            wrapMode: Text.Wrap
+
             MouseArea {
                 id: mouseArea
                 anchors.fill: parent
-                onClicked: modelData.isOpen = !modelData.isOpen;
+                acceptedButtons: Qt.LeftButton | Qt.RightButton
+                onClicked: {
+                    if (mouse.button == Qt.LeftButton)
+                        modelData.isOpen = !modelData.isOpen;
+                    else
+                        contextMenu.popup()
+                }
+
+                onPressAndHold: tooltip.show(modelData.text)
             }
             CHorizontalSeparator {
                 anchors.left: parent.left
@@ -54,6 +65,10 @@ Row {
 
         Loader{ source: modelData.isOpen ? "CChildTreeList.qml" : "CTreeEmptyItem.qml"; }
     }
+
+        Menu {
+            id: contextMenu
+            MenuItem { text: qsTr("Edit") }
+            MenuItem { text: qsTr("Remove") }
+        }
 }
-
-

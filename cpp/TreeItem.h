@@ -10,6 +10,8 @@ class TreeItem: public QObject
     Q_PROPERTY(QString text READ text WRITE setText NOTIFY textChanged)
     /** Element index*/
     Q_PROPERTY(int idx READ idx WRITE setIdx NOTIFY idxChanged)
+    /** Nesting*/
+    Q_PROPERTY(int nesting READ nesting)
     /** Child list*/
     Q_PROPERTY(QList<QObject*> childItems READ childItems NOTIFY childItemsChanged)
     /** Has child*/
@@ -17,7 +19,7 @@ class TreeItem: public QObject
     /** Node is open*/
     Q_PROPERTY(bool isOpen READ isOpen WRITE setOpen NOTIFY isOpenChanged)
 public:
-    explicit TreeItem(const QString & text, const int& idx, QObject *parent = 0);
+    explicit TreeItem(const QString & text, const int& idx, const int& nesting, QObject *parent = 0);
 
     QString text() const;
     void setText(const QString & text);
@@ -28,6 +30,7 @@ public:
     bool isOpen() const;
     void addChild(TreeItem * child);
     void setOpen(bool open);
+    int nesting() const;
 
 signals:
     void textChanged();
@@ -45,6 +48,7 @@ private:
     QList<QObject*> m_childItems;
     /** Node is open*/
     bool m_isOpen;
+    int mNesting;
 };
 
 #endif // TREEITEM_H

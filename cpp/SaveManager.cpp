@@ -444,6 +444,7 @@ QList<Chapter> SaveManager::loadChapters()
         tmp.orderId = chapt.at(2).toInt();
         tmp.disciplineId = chapt.at(3).toInt();
         chapters << tmp;
+        qDebug() << tmp.name;
     }
 
     return chapters;
@@ -469,6 +470,7 @@ QList<DisciplineStud> SaveManager::loadStudDiscipline()
         tmp.name = discipline.at(1).toString();
         tmp.literPath = discipline.at(2).toString();
         disciplines << tmp;
+        qDebug() << tmp.name;
     }
 
     return disciplines;
@@ -496,6 +498,7 @@ QList<DisciplineTeach> SaveManager::loadTeachDiscipline()
         tmp.educPlanPath = discipline.at(3).toString();
         tmp.educProgPath = discipline.at(4).toString();
         disciplines << tmp;
+        qDebug() << tmp.name;
     }
 
     return disciplines;
@@ -520,6 +523,7 @@ QList<Group> SaveManager::loadGroup()
         tmp.id = group.at(0).toInt();
         tmp.name = group.at(1).toString();
         groups << tmp;
+        qDebug() << tmp.name;
     }
 
     return groups;
@@ -547,6 +551,7 @@ QList<LabWork> SaveManager::loadLabWork()
         tmp.name = work.at(3).toString();
         tmp.path = work.at(4).toString();
         labWorks << tmp;
+        qDebug() << tmp.name;
     }
 
     return labWorks;
@@ -572,6 +577,7 @@ QList<ThemeLectureFile> SaveManager::loadThemeLectureFile()
         tmp.themeId = lect.at(1).toInt();
         tmp.path = lect.at(2).toString();
         themeLectures << tmp;
+        qDebug() << tmp.themeId;
     }
 
     return themeLectures;
@@ -597,6 +603,7 @@ QList<SubthemeLectureFile> SaveManager::loadSubthemeLectureFile()
         tmp.subthemeId = lect.at(1).toInt();
         tmp.path = lect.at(2).toString();
         subthemeLectures << tmp;
+        qDebug() << tmp.subthemeId;
     }
 
     return subthemeLectures;
@@ -625,6 +632,7 @@ QList<Report> SaveManager::loadReport()
         tmp.evalDate = report.at(4).toInt();
         tmp.studId = report.at(5).toInt();
         reports << tmp;
+        qDebug() << tmp.labId;
     }
 
     return reports;
@@ -650,6 +658,7 @@ QList<ReportFile> SaveManager::loadReportFile()
         tmp.reportId = file.at(1).toInt();
         tmp.path = file.at(2).toString();
         files << tmp;
+        qDebug() << tmp.reportId;
     }
 
     return files;
@@ -678,6 +687,7 @@ QList<Student> SaveManager::loadStudent()
         tmp.photoPath = student.at(4).toString();
         tmp.groupId = student.at(5).toInt();
         students << tmp;
+        qDebug() << tmp.name;
     }
 
     return students;
@@ -704,6 +714,7 @@ QList<Subtheme> SaveManager::loadSubtheme()
         tmp.orderId = subtheme.at(2).toInt();
         tmp.themeId = subtheme.at(3).toInt();
         subthemes << tmp;
+        qDebug() << tmp.name;
     }
 
     return subthemes;
@@ -730,6 +741,7 @@ QList<Theme> SaveManager::loadTheme()
         tmp.orderId = subtheme.at(2).toInt();
         tmp.chapterId = subtheme.at(3).toInt();
         themes << tmp;
+        qDebug() << tmp.name;
     }
 
     return themes;

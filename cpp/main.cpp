@@ -47,7 +47,6 @@ int main(int argc, char *argv[])
     LecturesManager::setSaveManager(saveManager);
 
     qmlRegisterType<SyntaxHighlighter>("SyntaxHighlighter", 1, 1, "SyntaxHighlighter");
-    //qmlRegisterType<TreeModel>("TreeModel", 1, 1, "TreeModel");
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("applicationDirPath", QGuiApplication::applicationDirPath());
     engine.load(QUrl("qrc:/qml/main.qml"));

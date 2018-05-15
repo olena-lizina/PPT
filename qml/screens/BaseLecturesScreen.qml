@@ -20,15 +20,10 @@ import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.2
 import "../components"
-import TreeModel 1.1
+import LecturesManager 1.1
 
 BlankScreen {
     id: educationalMaterialsScreen
-
-    readonly property int disciplineType: 0
-    readonly property int chapterType: 1
-    readonly property int themeType: 2
-    readonly property int subthemeType: 3
 
     CToolBar {
         id: toolBar
@@ -55,7 +50,7 @@ BlankScreen {
     ListView {
         id: myView
 
-        model: TreeModel.simpleTree
+        model: LecturesManager.labsTree
         delegate: CTreeItem {}
 
         width: 0.25 * settings.windowWidth

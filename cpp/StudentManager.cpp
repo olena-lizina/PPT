@@ -70,11 +70,6 @@ QObject* StudentManager::selectedStudent() const
 
 bool StudentManager::existsStudent(const QString& name, const QString& group)
 {
-//    Student stud(name, "", "", group);
-//    auto student = std::find(mStudentList.begin(), mStudentList.end(), stud);
-
-//    if (mStudentList.cend() != student)
-//        return true;
     return false;
 }
 
@@ -228,6 +223,7 @@ QString StudentManager::copyExternalPhoto(QString path)
     QString newPath(QDir::currentPath() + '/' + "photos" + '/' + fileName);
     QFile::copy(path, newPath);
 
+    qDebug() << "file: " << fileName;
     return fileName;
 }
 

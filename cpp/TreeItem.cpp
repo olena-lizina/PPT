@@ -1,11 +1,12 @@
 #include "TreeItem.h"
 #include <QDebug>
 
-TreeItem::TreeItem(const QString & text, const int& idx, QObject *parent)
+TreeItem::TreeItem(const QString & text, const int& idx, const int& nesting, QObject *parent)
     : QObject(parent)
     , m_text(text)
     , m_index(idx)
     , m_isOpen(false)
+    , mNesting(nesting)
 {}
 
 QString TreeItem::text() const
@@ -63,4 +64,9 @@ void TreeItem::setOpen(bool open)
         m_isOpen = open;
         emit isOpenChanged();
     }
+}
+
+int TreeItem::nesting() const
+{
+    return mNesting;
 }
