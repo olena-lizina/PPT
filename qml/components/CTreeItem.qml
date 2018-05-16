@@ -43,9 +43,29 @@ Row {
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
                 onClicked: {
                     if (mouse.button == Qt.LeftButton)
-                        modelData.isOpen = !modelData.isOpen;
+                    {
+                        if (modelData.idx === -1)
+                        {
+                            var insertParameters = {
+                                title: qsTr("Insert new discipline"),
+                                nameLabel: qsTr("Enter discipline name:")
+                            }
+
+                            var insertCallback = function(value)
+                            {
+                                console.log("Callback: " + value + ", idx: " + modelData.idx)
+                                LecturesManager.insertDiscipline(value, modelData.idx)
+                            }
+                            dialog.open(dialog.types.lecture, insertParameters, insertCallback)
+                        }
+                        else
+                            modelData.isOpen = !modelData.isOpen;
+                    }
                     else
-                        contextMenu.visible = !contextMenu.visible
+                    {
+                        if (modelData.idx !== -1)
+                            contextMenu.visible = !contextMenu.visible
+                    }
                 }
 
                 onPressAndHold: tooltip.show(modelData.text)
@@ -160,19 +180,19 @@ Row {
                         if (value === 0)
                             LecturesManager.insertDiscipline(val, modelData.idx)
                         else
-                            LecturesManager.insertChapter(val, modelData.idx)
+                            LecturesManager.appendChapter(val, modelData.idx)
                         break;
                     case 1:
                         if (value === 0)
                             LecturesManager.insertChapter(val, modelData.idx)
                         else
-                            LecturesManager.insertTheme(val, modelData.idx)
+                            LecturesManager.appendTheme(val, modelData.idx)
                         break;
                     case 2:
                         if (value === 0)
                             LecturesManager.insertTheme(val, modelData.idx)
                         else
-                            LecturesManager.insertSubtheme(val, modelData.idx)
+                            LecturesManager.appendSubtheme(val, modelData.idx)
                         break;
                     case 3:
                         LecturesManager.insertSubtheme(val, modelData.idx)
@@ -212,7 +232,7 @@ Row {
                     LecturesManager.updateChapter(value, modelData.idx)
                     break;
                 case 2:
-                    LecturesManager.updateThemes(value, modelData.idx)
+                    LecturesManager.updateTheme(value, modelData.idx)
                     break;
                 case 3:
                     LecturesManager.updateSubtheme(value, modelData.idx)

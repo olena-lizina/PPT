@@ -33,8 +33,10 @@ public:
     explicit SaveManager();
     virtual ~SaveManager();
 
+    void appendChapter(const Chapter& info);
     void addChapter(const Chapter& info);
-    void addDiscipline(const DisciplineStud& info);
+    void appendDiscipline(const DisciplineStud& info);
+    void appendDiscipline(const DisciplineTeach& info);
     void addDiscipline(const DisciplineTeach& info);
     void addGroup(const Group& info);
     void addLabWork(const LabWork& info);
@@ -43,7 +45,9 @@ public:
     void addReport(const Report& info);
     void addReportFile(const ReportFile& info);
     void addStudent(const Student& info);
+    void appendSubtheme(const Subtheme& info);
     void addSubtheme(const Subtheme& info);
+    void appendTheme(const Theme& info);
     void addTheme(const Theme& info);
 
     void delChapter(const int& id);
@@ -70,6 +74,11 @@ public:
     void updStudent(const Student& info);
     void updSubtheme(const Subtheme& info);
     void updTheme(const Theme& info);
+
+    void updChapterIdx(const int& oldIdx, const int& newIdx);
+    void updDisciplineIdx(const int& oldIdx, const int& newIdx);
+    void updSubthemeIdx(const int& oldIdx, const int& newIdx);
+    void updThemeIdx(const int& oldIdx, const int& newIdx);
 
     QList<Chapter> loadChapters();
     QList<DisciplineStud> loadStudDiscipline();

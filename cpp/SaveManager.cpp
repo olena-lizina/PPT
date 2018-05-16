@@ -34,7 +34,7 @@ SaveManager::SaveManager(): mSqlManager("ppt.db")
 {
 }
 
-void SaveManager::addChapter(const Chapter& info)
+void SaveManager::appendChapter(const Chapter& info)
 {
     auto res = mSqlManager.execute(getLastIdTemp.arg("Chapter"));
 
@@ -51,7 +51,15 @@ void SaveManager::addChapter(const Chapter& info)
         qDebug() << "Cannot save chapter";
 }
 
-void SaveManager::addDiscipline(const DisciplineStud& info)
+void SaveManager::addChapter(const Chapter& info)
+{
+    const QString tempAddChapter("INSERT INTO Chapter (Id,Name,Order_Id,Discipline_Id) VALUES ('%1',\"%2\",'%3','%4')");
+
+    if (!mSqlManager.execute(tempAddChapter.arg(info.id).arg(info.name).arg(info.orderId).arg(info.disciplineId)).first)
+        qDebug() << "Cannot save chapter";
+}
+
+void SaveManager::appendDiscipline(const DisciplineStud& info)
 {
     auto res = mSqlManager.execute(getLastIdTemp.arg("Discipline"));
 
@@ -68,7 +76,7 @@ void SaveManager::addDiscipline(const DisciplineStud& info)
         qDebug() << "Cannot save discipline";
 }
 
-void SaveManager::addDiscipline(const DisciplineTeach& info)
+void SaveManager::appendDiscipline(const DisciplineTeach& info)
 {
     auto res = mSqlManager.execute(getLastIdTemp.arg("Discipline"));
 
@@ -82,6 +90,14 @@ void SaveManager::addDiscipline(const DisciplineTeach& info)
     const QString tempAddDiscipline("INSERT INTO Discipline (Id,Name,Liter_Path,Educ_Plan_Path,Educ_Progr_Path) VALUES ('%1',\"%2\",\"%3\",\"%4\",\"%5\")");
 
     if (!mSqlManager.execute(tempAddDiscipline.arg(++lastId).arg(info.name).arg(info.literPath).arg(info.educPlanPath).arg(info.educProgPath)).first)
+        qDebug() << "Cannot save discipline";
+}
+
+void SaveManager::addDiscipline(const DisciplineTeach& info)
+{
+    const QString tempAddDiscipline("INSERT INTO Discipline (Id,Name,Liter_Path,Educ_Plan_Path,Educ_Progr_Path) VALUES ('%1',\"%2\",\"%3\",\"%4\",\"%5\")");
+
+    if (!mSqlManager.execute(tempAddDiscipline.arg(info.id).arg(info.name).arg(info.literPath).arg(info.educPlanPath).arg(info.educProgPath)).first)
         qDebug() << "Cannot save discipline";
 }
 
@@ -205,7 +221,7 @@ void SaveManager::addStudent(const Student& info)
         qDebug() << "Cannot save student";
 }
 
-void SaveManager::addSubtheme(const Subtheme& info)
+void SaveManager::appendSubtheme(const Subtheme& info)
 {
     auto res = mSqlManager.execute(getLastIdTemp.arg("Subtheme"));
 
@@ -222,7 +238,15 @@ void SaveManager::addSubtheme(const Subtheme& info)
         qDebug() << "Cannot save subtheme";
 }
 
-void SaveManager::addTheme(const Theme& info)
+void SaveManager::addSubtheme(const Subtheme& info)
+{
+    const QString tempAddSubtheme("INSERT INTO Subtheme(Id,Name,Order_Id,Theme_Id) VALUES ('%1',\"%2\",'%3','%4')");
+
+    if (!mSqlManager.execute(tempAddSubtheme.arg(info.id).arg(info.name).arg(info.orderId).arg(info.themeId)).first)
+        qDebug() << "Cannot save subtheme";
+}
+
+void SaveManager::appendTheme(const Theme& info)
 {
     auto res = mSqlManager.execute(getLastIdTemp.arg("Theme"));
 
@@ -236,6 +260,14 @@ void SaveManager::addTheme(const Theme& info)
     const QString tempAddTheme("INSERT INTO Theme(Id,Name,Order_Id,Chapter_Id) VALUES ('%1',\"%2\",'%3','%3')");
 
     if (!mSqlManager.execute(tempAddTheme.arg(++lastId).arg(info.name).arg(info.orderId).arg(info.chapterId)).first)
+        qDebug() << "Cannot save theme";
+}
+
+void SaveManager::addTheme(const Theme& info)
+{
+    const QString tempAddTheme("INSERT INTO Theme(Id,Name,Order_Id,Chapter_Id) VALUES ('%1',\"%2\",'%3','%3')");
+
+    if (!mSqlManager.execute(tempAddTheme.arg(info.id).arg(info.name).arg(info.orderId).arg(info.chapterId)).first)
         qDebug() << "Cannot save theme";
 }
 
@@ -421,6 +453,38 @@ void SaveManager::updTheme(const Theme& info)
 
     if (!mSqlManager.execute(tempUpdStr.arg(info.name).arg(info.orderId).arg(info.chapterId).arg(info.id)).first)
         qDebug() << "Cannot update theme";
+}
+
+void SaveManager::updChapterIdx(const int& oldIdx, const int& newIdx)
+{
+    const QString tempUpdStr("UPDATE Chapter SET Id='%1' WHERE Id='%2'");
+
+    if (!mSqlManager.execute(tempUpdStr.arg(newIdx).arg(oldIdx)).first)
+        qDebug() << "Cannot update chapter index";
+}
+
+void SaveManager::updDisciplineIdx(const int& oldIdx, const int& newIdx)
+{
+    const QString tempUpdStr("UPDATE Discipline SET Id='%1' WHERE Id='%2'");
+
+    if (!mSqlManager.execute(tempUpdStr.arg(newIdx).arg(oldIdx)).first)
+        qDebug() << "Cannot update discipline index";
+}
+
+void SaveManager::updSubthemeIdx(const int& oldIdx, const int& newIdx)
+{
+    const QString tempUpdStr("UPDATE Subtheme SET Id='%1' WHERE Id='%2'");
+
+    if (!mSqlManager.execute(tempUpdStr.arg(newIdx).arg(oldIdx)).first)
+        qDebug() << "Cannot update subtheme index";
+}
+
+void SaveManager::updThemeIdx(const int& oldIdx, const int& newIdx)
+{
+    const QString tempUpdStr("UPDATE Theme SET Id='%1' WHERE Id='%2'");
+
+    if (!mSqlManager.execute(tempUpdStr.arg(newIdx).arg(oldIdx)).first)
+        qDebug() << "Cannot update theme index";
 }
 
 QList<Chapter> SaveManager::loadChapters()

@@ -66,8 +66,14 @@ void LecturesManager::clearComponentCache()
     LecturesManager::m_qmlEngine->clearComponentCache();
 }
 
-QList<QObject*> LecturesManager::labsTree() const
+QList<QObject*> LecturesManager::labsTree()
 {
+    if (m_labsTree.size() <= 0)
+    {
+        TreeItem * d_item =  new TreeItem(tr("Add discipline"), -1, 0);
+        m_labsTree << d_item;
+    }
+
     return m_labsTree;
 }
 
@@ -109,26 +115,80 @@ void LecturesManager::initLabsTree()
 
         m_labsTree << d_item;
     }
+
+    emit labsTreeChanged();
 }
 
 void LecturesManager::updateDiscipline(const QString& name, const int& idx)
 {
     qDebug() << "updateDiscipline: " << idx << " " << name;
+
+    auto discIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                                 [&idx](DisciplineTeach& disc){ return disc.id == idx; });
+    if (mDisciplines.end() == discIter)
+    {
+        qWarning() << "Cannot update discipline: " << name;
+        return;
+    }
+
+    discIter->name = name;
+    mSaveManager->updDiscipline(*discIter);
+    initLabsTree();
+    emit labsTreeChanged();
 }
 
 void LecturesManager::updateChapter(const QString& name, const int& idx)
 {
     qDebug() << "updateChapter: " << idx << " " << name;
+
+    auto chapIter = std::find_if(mChapters.begin(), mChapters.end(),
+                                 [&idx](Chapter& ch){ return ch.id == idx; });
+    if (mChapters.end() == chapIter)
+    {
+        qWarning() << "Cannot update chapter: " << name;
+        return;
+    }
+
+    chapIter->name = name;
+    mSaveManager->updChapter(*chapIter);
+    initLabsTree();
+    emit labsTreeChanged();
 }
 
 void LecturesManager::updateTheme(const QString& name, const int& idx)
 {
     qDebug() << "updateTheme: " << idx << " " << name;
+
+    auto themIter = std::find_if(mThemes.begin(), mThemes.end(),
+                                 [&idx](Theme& th){ return th.id == idx; });
+    if (mThemes.end() == themIter)
+    {
+        qWarning() << "Cannot update theme: " << name;
+        return;
+    }
+
+    themIter->name = name;
+    mSaveManager->updTheme(*themIter);
+    initLabsTree();
+    emit labsTreeChanged();
 }
 
 void LecturesManager::updateSubtheme(const QString& name, const int& idx)
 {
     qDebug() << "updateSubtheme: " << idx << " " << name;
+
+    auto subIter = std::find_if(mSubtheme.begin(), mSubtheme.end(),
+                                 [&idx](Subtheme& sub){ return sub.id == idx; });
+    if (mSubtheme.end() == subIter)
+    {
+        qWarning() << "Cannot update subtheme: " << name;
+        return;
+    }
+
+    subIter->name = name;
+    mSaveManager->updSubtheme(*subIter);
+    initLabsTree();
+    emit labsTreeChanged();
 }
 
 void LecturesManager::removeDiscipline(const int& idx)
@@ -154,20 +214,189 @@ void LecturesManager::removeSubtheme(const int& idx)
 void LecturesManager::insertDiscipline(const QString& name, const int& idx)
 {
     qDebug() << "insertDiscipline: " << idx << " " << name;
+
+    auto it = mDisciplines.end();
+    --it;
+
+    while (mDisciplines.begin() != it)
+    {
+        if (it->id <= idx)
+            break;
+
+        int old = it->id;
+        mSaveManager->updDisciplineIdx(old, (it->id = it->id + 1));
+        --it;
+    }
+
+    DisciplineTeach add;
+    add.name = name;
+    add.literPath = "";
+    add.educPlanPath = "";
+    add.educProgPath = "";
+
+    if (-1 == idx)
+        add.id = 1;
+    else
+        add.id = idx + 1;
+
+    mSaveManager->addDiscipline(add);
+
+    mDisciplines.clear();
+    mDisciplines = mSaveManager->loadTeachDiscipline();
+    initLabsTree();
+    emit labsTreeChanged();
 }
 
 void LecturesManager::insertChapter(const QString& name, const int& idx)
 {
     qDebug() << "insertChapter: " << idx << " " << name;
+
+    auto it = mChapters.end();
+    --it;
+
+    int discIdx = -1;
+
+    while (mChapters.begin() != it)
+    {
+        if (it->id == idx)
+            discIdx = it->disciplineId;
+
+        if (it->id <= idx)
+            break;
+
+        int old = it->id;
+        mSaveManager->updChapterIdx(old, (it->id = it->id + 1));
+        --it;
+    }
+
+    Chapter add;
+    add.name = name;
+    add.id = idx + 1;
+    add.disciplineId = discIdx;
+    add.orderId = 0;
+    mSaveManager->addChapter(add);
+
+    mChapters.clear();
+    mChapters = mSaveManager->loadChapters();
+    initLabsTree();
+    emit labsTreeChanged();
+}
+
+void LecturesManager::appendChapter(const QString& name, const int& idx)
+{
+    qDebug() << "insertFirstChapter: " << idx << " " << name;
+
+    Chapter add;
+    add.name = name;
+    add.disciplineId = idx;
+    add.orderId = 0;
+    mSaveManager->appendChapter(add);
+
+    mChapters.clear();
+    mChapters = mSaveManager->loadChapters();
+    initLabsTree();
+    emit labsTreeChanged();
 }
 
 void LecturesManager::insertTheme(const QString& name, const int& idx)
 {
     qDebug() << "insertTheme: " << idx << " " << name;
+
+    auto it = mThemes.end();
+    --it;
+
+    int chaptIdx = -1;
+
+    while (mThemes.begin() != it)
+    {
+        if (it->id == idx)
+            chaptIdx = it->chapterId;
+
+        if (it->id <= idx)
+            break;
+
+        int old = it->id;
+        mSaveManager->updThemeIdx(old, (it->id = it->id + 1));
+        --it;
+    }
+
+    Theme add;
+    add.name = name;
+    add.id = idx + 1;
+    add.chapterId = chaptIdx;
+    add.orderId = 0;
+    mSaveManager->addTheme(add);
+
+    mThemes.clear();
+    mThemes = mSaveManager->loadTheme();
+    initLabsTree();
+    emit labsTreeChanged();
+}
+
+void LecturesManager::appendTheme(const QString& name, const int& idx)
+{
+    qDebug() << "appendTheme: " << idx << " " << name;
+
+    Theme add;
+    add.name = name;
+    add.chapterId = idx;
+    add.orderId = 0;
+    mSaveManager->appendTheme(add);
+
+    mThemes.clear();
+    mThemes = mSaveManager->loadTheme();
+    initLabsTree();
+    emit labsTreeChanged();
 }
 
 void LecturesManager::insertSubtheme(const QString& name, const int& idx)
 {
     qDebug() << "insertSubtheme: " << idx << " " << name;
+
+    auto it = mSubtheme.end();
+    --it;
+
+    int themeIdx = -1;
+
+    while (mSubtheme.begin() != it)
+    {
+        if (it->id == idx)
+            themeIdx = it->themeId;
+
+        if (it->id <= idx)
+            break;
+
+        int old = it->id;
+        mSaveManager->updSubthemeIdx(old, (it->id = it->id + 1));
+        --it;
+    }
+
+    Subtheme add;
+    add.name = name;
+    add.id = idx + 1;
+    add.themeId = themeIdx;
+    add.orderId = 0;
+    mSaveManager->addSubtheme(add);
+
+    mSubtheme.clear();
+    mSubtheme = mSaveManager->loadSubtheme();
+    initLabsTree();
+    emit labsTreeChanged();
+}
+
+void LecturesManager::appendSubtheme(const QString& name, const int& idx)
+{
+    qDebug() << "appendSubtheme: " << idx << " " << name;
+
+    Subtheme add;
+    add.name = name;
+    add.themeId = idx;
+    add.orderId = 0;
+    mSaveManager->appendSubtheme(add);
+
+    mSubtheme.clear();
+    mSubtheme = mSaveManager->loadSubtheme();
+    initLabsTree();
+    emit labsTreeChanged();
 }
 

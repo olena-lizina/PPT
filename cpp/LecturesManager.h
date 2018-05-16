@@ -55,11 +55,15 @@ public:
 
     Q_INVOKABLE void insertDiscipline(const QString& name, const int& idx);
     Q_INVOKABLE void insertChapter(const QString& name, const int& idx);
+    Q_INVOKABLE void appendChapter(const QString& name, const int& idx);
     Q_INVOKABLE void insertTheme(const QString& name, const int& idx);
+    Q_INVOKABLE void appendTheme(const QString& name, const int& idx);
     Q_INVOKABLE void insertSubtheme(const QString& name, const int& idx);
+    Q_INVOKABLE void appendSubtheme(const QString& name, const int& idx);
 
 public:
-    QList<QObject*> labsTree() const;
+    QList<QObject*> labsTree();
+    Q_INVOKABLE bool isEmptyTree() { return m_labsTree.size() <= 0; }
 
 signals:
     void labsTreeChanged();
