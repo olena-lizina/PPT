@@ -26,6 +26,8 @@ BaseDialog {
 
     property alias title: titleLabel.text
     property alias label: colLabel.text
+    property alias leftBtnText: leftBtn.text
+    property alias rightBtnText: rightBtn.text
 
     signal rightClicked()
 
@@ -173,11 +175,11 @@ BaseDialog {
         }
 
         CDialogButton {
+            id: leftBtn
             anchors.left: parent.left
             anchors.right: footer.left
             anchors.bottom: parent.bottom
-            text: qsTr("Create sub theme")
-            onClicked: themeClickedDialog.process(LecturesManager.SubThemes)
+            onClicked: themeClickedDialog.process(0)
         }
 
         CVerticalSeparator {
@@ -187,11 +189,11 @@ BaseDialog {
         }
 
         CDialogButton {
+            id: rightBtn
             anchors.left: footer.right
             anchors.right: parent.right
             anchors.bottom: parent.bottom
-            text: qsTr("Create lecture")
-            onClicked: themeClickedDialog.process(LecturesManager.Themes)
+            onClicked: themeClickedDialog.process(1)
         }
     }
 }

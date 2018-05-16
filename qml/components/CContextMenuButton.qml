@@ -33,6 +33,7 @@ Item {
     CLabel {
         id: buttonLabel
         anchors.fill: parent
+        font.pixelSize: 3 * settings.pixelDensity
         horizontalAlignment: Text.AlignHCenter
         color: palette.contextMenuButtonText
     }

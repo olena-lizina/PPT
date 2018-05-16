@@ -41,6 +41,9 @@ QtObject {
 
     property color button: "#aaaaaa"
 
+    property color contextBackground: "#80c342"
+    property color contextButton: "#58882b"
+
     property color separator: "#cccccc"
 
     property color scrollBar: "#30000000"

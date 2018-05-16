@@ -60,11 +60,25 @@ BlankScreen {
             left: parent.left
             top: toolBar.bottom
         }
+
+        onFocusChanged: {
+            visible = false
+            visible = true
+        }
+
+        MouseArea {
+            acceptedButtons: Qt.LeftButton | Qt.RightButton
+            onClicked: {
+                if (mouse.button == Qt.LeftButton)
+                    modelData.isOpen = !modelData.isOpen;
+                else
+                    contextMenu.visible = true
+            }
+        }
     }
 
     Rectangle {
         id: rightRect
-        color: "blue"
 
         width: 0.75 * settings.windowWidth
         height: settings.windowHeight - toolBar.height

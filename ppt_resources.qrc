@@ -186,5 +186,6 @@
         <file>resources/translations/ppt_ru.ts</file>
         <file>resources/translations/ppt_uk_UA.ts</file>
         <file>qml/components/CChildTreeList.qml</file>
+        <file>qml/components/CContextMenu.qml</file>
     </qresource>
 </RCC>

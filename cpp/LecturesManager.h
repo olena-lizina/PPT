@@ -43,6 +43,22 @@ public:
     Q_INVOKABLE void clearComponentCache();
 
 public:
+    Q_INVOKABLE void updateDiscipline(const QString& name, const int& idx);
+    Q_INVOKABLE void updateChapter(const QString& name, const int& idx);
+    Q_INVOKABLE void updateTheme(const QString& name, const int& idx);
+    Q_INVOKABLE void updateSubtheme(const QString& name, const int& idx);
+
+    Q_INVOKABLE void removeDiscipline(const int& idx);
+    Q_INVOKABLE void removeChapter(const int& idx);
+    Q_INVOKABLE void removeTheme(const int& idx);
+    Q_INVOKABLE void removeSubtheme(const int& idx);
+
+    Q_INVOKABLE void insertDiscipline(const QString& name, const int& idx);
+    Q_INVOKABLE void insertChapter(const QString& name, const int& idx);
+    Q_INVOKABLE void insertTheme(const QString& name, const int& idx);
+    Q_INVOKABLE void insertSubtheme(const QString& name, const int& idx);
+
+public:
     QList<QObject*> labsTree() const;
 
 signals:

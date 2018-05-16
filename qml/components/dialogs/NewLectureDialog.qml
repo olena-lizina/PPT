@@ -24,9 +24,9 @@ import ".."
 BaseDialog {
     id: newLectureDialog
 
+    property alias name: nameText.text
+    property alias nameLabel: nameName.text
     property alias title: titleLabel.text
-    property alias label: colLabel.text
-    property real itemType
 
     function initialize(parameters) {
         for (var attr in parameters) {
@@ -108,13 +108,13 @@ BaseDialog {
                 spacing: 2 * settings.pixelDensity
 
                 CLabel {
-                    id: colLabel
+                    id: nameName
                     anchors.left: parent.left
                     anchors.right: parent.right
                 }
 
                 CTextField {
-                    id: partNameTextField
+                    id: nameText
 
                     onTextChanged: {
                         if (warningLabel.visible)
@@ -157,24 +157,14 @@ BaseDialog {
             anchors.bottom: parent.bottom
             text: qsTr("OK")
             onClicked: {
-                var partName = partNameTextField.text
-
-                if (partName.length === 0)
+                if (name.length === 0)
                 {
                     warningLabel.text = qsTr("Input field cannot be left blank")
                     warningLabel.visible = true
                 }
                 else
                 {
-                    if (LecturesManager.itemExists(partName, itemType))
-                    {
-                        warningLabel.text = qsTr("Such name already exists")
-                        warningLabel.visible = true
-                    }
-                    else
-                    {
-                        newLectureDialog.process(partName)
-                    }
+                    newLectureDialog.process(name)
                 }
             }
         }

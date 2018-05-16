@@ -110,3 +110,64 @@ void LecturesManager::initLabsTree()
         m_labsTree << d_item;
     }
 }
+
+void LecturesManager::updateDiscipline(const QString& name, const int& idx)
+{
+    qDebug() << "updateDiscipline: " << idx << " " << name;
+}
+
+void LecturesManager::updateChapter(const QString& name, const int& idx)
+{
+    qDebug() << "updateChapter: " << idx << " " << name;
+}
+
+void LecturesManager::updateTheme(const QString& name, const int& idx)
+{
+    qDebug() << "updateTheme: " << idx << " " << name;
+}
+
+void LecturesManager::updateSubtheme(const QString& name, const int& idx)
+{
+    qDebug() << "updateSubtheme: " << idx << " " << name;
+}
+
+void LecturesManager::removeDiscipline(const int& idx)
+{
+    qDebug() << "removeDiscipline: " << idx;
+}
+
+void LecturesManager::removeChapter(const int& idx)
+{
+    qDebug() << "removeChapter: " << idx;
+}
+
+void LecturesManager::removeTheme(const int& idx)
+{
+    qDebug() << "removeTheme: " << idx;
+}
+
+void LecturesManager::removeSubtheme(const int& idx)
+{
+    qDebug() << "removeSubtheme: " << idx;
+}
+
+void LecturesManager::insertDiscipline(const QString& name, const int& idx)
+{
+    qDebug() << "insertDiscipline: " << idx << " " << name;
+}
+
+void LecturesManager::insertChapter(const QString& name, const int& idx)
+{
+    qDebug() << "insertChapter: " << idx << " " << name;
+}
+
+void LecturesManager::insertTheme(const QString& name, const int& idx)
+{
+    qDebug() << "insertTheme: " << idx << " " << name;
+}
+
+void LecturesManager::insertSubtheme(const QString& name, const int& idx)
+{
+    qDebug() << "insertSubtheme: " << idx << " " << name;
+}
+
