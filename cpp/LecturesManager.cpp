@@ -194,21 +194,45 @@ void LecturesManager::updateSubtheme(const QString& name, const int& idx)
 void LecturesManager::removeDiscipline(const int& idx)
 {
     qDebug() << "removeDiscipline: " << idx;
+
+    mSaveManager->delDiscipline(idx);
+    mDisciplines.clear();
+    mDisciplines = mSaveManager->loadTeachDiscipline();
+    initLabsTree();
+    emit labsTreeChanged();
 }
 
 void LecturesManager::removeChapter(const int& idx)
 {
     qDebug() << "removeChapter: " << idx;
+
+    mSaveManager->delChapter(idx);
+    mChapters.clear();
+    mChapters = mSaveManager->loadChapters();
+    initLabsTree();
+    emit labsTreeChanged();
 }
 
 void LecturesManager::removeTheme(const int& idx)
 {
     qDebug() << "removeTheme: " << idx;
+
+    mSaveManager->delTheme(idx);
+    mThemes.clear();
+    mThemes = mSaveManager->loadTheme();
+    initLabsTree();
+    emit labsTreeChanged();
 }
 
 void LecturesManager::removeSubtheme(const int& idx)
 {
     qDebug() << "removeSubtheme: " << idx;
+
+    mSaveManager->delSubtheme(idx);
+    mSubtheme.clear();
+    mSubtheme = mSaveManager->loadSubtheme();
+    initLabsTree();
+    emit labsTreeChanged();
 }
 
 void LecturesManager::insertDiscipline(const QString& name, const int& idx)

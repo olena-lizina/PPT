@@ -25,12 +25,27 @@ struct Chapter {
     QString name;
     int orderId;
     int disciplineId;
+
+    bool operator==(const Chapter& rhs)
+    {
+        return id == rhs.id
+                && name.compare(rhs.name)
+                && orderId == rhs.orderId
+                && disciplineId == rhs.disciplineId;
+    }
 };
 
 struct DisciplineStud {
     int id;
     QString name;
     QString literPath;
+
+    bool operator==(const DisciplineStud& rhs)
+    {
+        return id == rhs.id
+                && name.compare(rhs.name)
+                && literPath.compare(rhs.literPath);
+    }
 };
 
 struct DisciplineTeach {
@@ -39,6 +54,14 @@ struct DisciplineTeach {
     QString literPath;
     QString educPlanPath;
     QString educProgPath;
+
+    bool operator==(const DisciplineTeach& rhs)
+    {
+        return id == rhs.id
+                && name.compare(rhs.name)
+                && educPlanPath.compare(rhs.educPlanPath)
+                && educProgPath.compare(rhs.educProgPath);
+    }
 };
 
 struct Group {
@@ -95,6 +118,14 @@ struct Subtheme {
     QString name;
     int orderId;
     int themeId;
+
+    bool operator==(const Subtheme& rhs)
+    {
+        return id == rhs.id
+                && name.compare(rhs.name)
+                && orderId == rhs.orderId
+                && themeId == rhs.themeId;
+    }
 };
 
 struct Theme {
@@ -102,6 +133,14 @@ struct Theme {
     QString name;
     int orderId;
     int chapterId;
+
+    bool operator==(const Theme& rhs)
+    {
+        return id == rhs.id
+                && name.compare(rhs.name)
+                && orderId == rhs.orderId
+                && chapterId == rhs.chapterId;
+    }
 };
 
 #endif // LECTURE_H

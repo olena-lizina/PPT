@@ -264,7 +264,7 @@ Row {
                     LecturesManager.removeChapter(modelData.idx)
                     break;
                 case 2:
-                    LecturesManager.removeThemes(modelData.idx)
+                    LecturesManager.removeTheme(modelData.idx)
                     break;
                 case 3:
                     LecturesManager.removeSubtheme(modelData.idx)
