@@ -257,7 +257,7 @@ void SaveManager::appendTheme(const Theme& info)
     }
 
     int lastId = res.second.at(0).at(0).toInt();
-    const QString tempAddTheme("INSERT INTO Theme(Id,Name,Order_Id,Chapter_Id) VALUES ('%1',\"%2\",'%3','%3')");
+    const QString tempAddTheme("INSERT INTO Theme(Id,Name,Order_Id,Chapter_Id) VALUES ('%1',\"%2\",'%3','%4')");
 
     if (!mSqlManager.execute(tempAddTheme.arg(++lastId).arg(info.name).arg(info.orderId).arg(info.chapterId)).first)
         qDebug() << "Cannot save theme";
@@ -265,7 +265,7 @@ void SaveManager::appendTheme(const Theme& info)
 
 void SaveManager::addTheme(const Theme& info)
 {
-    const QString tempAddTheme("INSERT INTO Theme(Id,Name,Order_Id,Chapter_Id) VALUES ('%1',\"%2\",'%3','%3')");
+    const QString tempAddTheme("INSERT INTO Theme(Id,Name,Order_Id,Chapter_Id) VALUES ('%1',\"%2\",'%3','%4')");
 
     if (!mSqlManager.execute(tempAddTheme.arg(info.id).arg(info.name).arg(info.orderId).arg(info.chapterId)).first)
         qDebug() << "Cannot save theme";
