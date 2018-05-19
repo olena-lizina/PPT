@@ -94,6 +94,7 @@ public:
 
 signals:
     void labsTreeChanged();
+    void fileContentChanged();
 
 private:
     void initLabsTree();

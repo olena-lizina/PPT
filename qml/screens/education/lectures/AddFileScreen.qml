@@ -37,6 +37,7 @@ Rectangle {
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: parent.top
+        height: 18.5 * settings.pixelDensity
 
         Row {
             anchors.fill: topBar

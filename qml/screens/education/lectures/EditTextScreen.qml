@@ -26,15 +26,19 @@ import "../.."
 
 Item {
     id: rootItem
+
+    property string textItText: LecturesManager.getFileContent(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting)
+
     Component.onCompleted: {
+        codeArea.myNesting = ScreenContextBuffer.nesting
+        codeArea.myIdx = ScreenContextBuffer.selectedIdx
         if (ScreenContextBuffer.edit)
         {
             btn1.visible = true
             btn2.visible = true
             btn3.visible = true
             btn5.visible = true
-            visible = false
-            codeArea.readOnly = false
+            btn4.visible = false
         }
         else
         {
@@ -43,7 +47,6 @@ Item {
             btn3.visible = false
             btn4.visible = true
             btn5.visible = false
-            codeArea.readOnly = true
         }
     }
 
@@ -52,6 +55,7 @@ Item {
         anchors.left: rootItem.left
         anchors.right: rootItem.right
         anchors.top: rootItem.top
+        height: 18.5 * settings.pixelDensity
 
         RowLayout {
             anchors.fill: parent
@@ -94,7 +98,7 @@ Item {
                     btn3.visible = true
                     btn5.visible = true
                     visible = false
-                    codeArea.readOnly = false
+                    ScreenContextBuffer.edit = true
                 }
             }
 
@@ -113,7 +117,7 @@ Item {
                     btn3.visible = false
                     btn4.visible = true
                     visible = false
-                    codeArea.readOnly = true
+                    ScreenContextBuffer.edit = false
                 }
             }
         }
@@ -122,38 +126,25 @@ Item {
     TextArea {
         id: codeArea
 
-        Component.onDestruction: {
-            LecturesManager.saveFileContent(text, ScreenContextBuffer.nesting, ScreenContextBuffer.selectedIdx)
-        }
+        property int myNesting
+        property int myIdx
 
-        text: LecturesManager.getFileContent(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting)
+        Component.onDestruction: {
+            LecturesManager.saveFileContent(text, myNesting, myIdx)
+        }
 
         anchors.top: toolBar.bottom
         anchors.bottom: rootItem.bottom
         anchors.left: rootItem.left
         anchors.right: rootItem.right
 
-        readOnly: ScreenContextBuffer.edit
+        text: textItText
 
-        function paste() {
-            textEdit.paste()
-        }
-
-        function copy() {
-            textEdit.copy()
-        }
-
-        function cut() {
-            textEdit.cut()
-        }
-
-        function selectAll() {
-            textEdit.selectAll()
-        }
+        readOnly: !ScreenContextBuffer.edit
 
         onActiveFocusChanged: {
             if (activeFocus)
-                textEdit.forceActiveFocus()
+                forceActiveFocus()
         }
 
         selectByMouse: true
@@ -161,13 +152,6 @@ Item {
         textFormat: TextEdit.RichText
         inputMethodHints: Qt.ImhNoPredictiveText
         onLinkActivated: Qt.openUrlExternally(link)
-
-        property string previousText: ""
-
-        onLengthChanged: {
-            if (text !== previousText)
-                previousText = text
-        }
     }
 }
 

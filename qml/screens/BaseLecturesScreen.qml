@@ -26,7 +26,6 @@ import ScreenContextBuffer 1.1
 BlankScreen {
     id: educationalMaterialsScreen
 
-    signal btnItemChanged()
     CToolBar {
         id: toolBar
         anchors.left: parent.left
@@ -53,10 +52,7 @@ BlankScreen {
         id: leftMenu
 
         model: LecturesManager.labsTree
-        delegate: CTreeItem {
-            id: btn
-            onItemChanged: educationalMaterialsScreen.btnItemChanged()
-        }
+        delegate: CTreeItem {}
 
         width: 0.25 * settings.windowWidth
         height: settings.windowHeight - toolBar.height
@@ -79,7 +75,11 @@ BlankScreen {
             top: toolBar.bottom
         }
 
-        Component.onCompleted: handleItemChanged()
+        Component.onCompleted: {
+            ScreenContextBuffer.screenType = LecturesManager.LectureFile;
+            ScreenContextBuffer.setNestingAndIndex(0, 1)
+            handleItemChanged()
+        }
     }
 
     Connections {
@@ -90,28 +90,20 @@ BlankScreen {
 
     Loader {
         id: rectLoader
-        anchors{
-            top: rightRect.top
-            bottom: rightRect.bottom
-            left: rightRect.left
-            right: rightRect.right
-        }
+        anchors.fill: rightRect
     }
 
     function handleItemChanged()
     {
+        rectLoader.source = ""
         if (ScreenContextBuffer.nesting == 0)
             rectLoader.source = "education/lectures/AddDisciplineFilesScreen.qml"
         else if (ScreenContextBuffer.nesting == 1)
             rectLoader.source = "education/lectures/DummyScreen.qml"
         else
         {
-            if (LecturesManager.fileExist(LecturesManager.LectureFile, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting))
-            {
-                ScreenContextBuffer.screenType = LecturesManager.LectureFile;
-                ScreenContextBuffer.edit = false;
+            if (LecturesManager.fileExist(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting))
                 rectLoader.source = "education/lectures/EditTextScreen.qml"
-            }
             else
                 rectLoader.source = "education/lectures/AddFileScreen.qml"
 

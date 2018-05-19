@@ -468,6 +468,15 @@ bool LecturesManager::lectureFileExist(const int& nesting, const int& idx)
 
         if (mSubthemeLectureFiles.end() == fileIter || fileIter->path.isEmpty())
             return false;
+
+        QFile file(fileIter->path);
+
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            qDebug() << "Unable to open file " << fileIter->path << file.errorString();
+            return false;
+        }
+
         return true;
     }
     else if (nesting == 2)
@@ -477,6 +486,15 @@ bool LecturesManager::lectureFileExist(const int& nesting, const int& idx)
 
         if (mThemeLectureFiles.end() == fileIter || fileIter->path.isEmpty())
             return false;
+
+        QFile file(fileIter->path);
+
+        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+        {
+            qDebug() << "Unable to open file " << fileIter->path << file.errorString();
+            return false;
+        }
+
         return true;
     }
     return false;
@@ -508,6 +526,8 @@ QString LecturesManager::getLectureFileContent(const int& nesting, const int& id
         path = fileIter->path;
     }
 
+    qDebug() << "file path: " << path;
+
     QFile file(path);
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
@@ -528,6 +548,9 @@ void LecturesManager::createFile(const int& nesting, const int& idx)
 
     const QString fileExtension {"qppt"};
     QString baseFolder {"Lectures\\"};
+
+    if (!QDir(baseFolder).exists())
+        QDir().mkdir(baseFolder);
 
     if (nesting == 3)
         baseFolder.append("Subthemes");
@@ -596,6 +619,7 @@ void LecturesManager::saveFileContent(const QString& text, const int& nesting, c
     QTextStream textStream(&file);
     textStream << text;
     file.close();
+    emit fileContentChanged();
 }
 
 void LecturesManager::copyLectureFile(QString path, const int& nesting, const int& idx)
@@ -631,6 +655,14 @@ bool LecturesManager::literListFileExist(const int& idx)
 
     if (mDisciplines.end() == fileIter || fileIter->literPath.isEmpty())
         return false;
+
+    QFile file(fileIter->literPath);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qDebug() << "Unable to open file " << fileIter->literPath << file.errorString();
+        return false;
+    }
     return true;
 }
 
@@ -730,6 +762,14 @@ bool LecturesManager::educPlanFileExist(const int& idx)
 
     if (mDisciplines.end() == fileIter || fileIter->educPlanPath.isEmpty())
         return false;
+
+    QFile file(fileIter->educPlanPath);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qDebug() << "Unable to open file " << fileIter->educPlanPath << file.errorString();
+        return false;
+    }
     return true;
 }
 
@@ -827,6 +867,15 @@ bool LecturesManager::educProgFileExist(const int& idx)
 
     if (mDisciplines.end() == fileIter || fileIter->educProgPath.isEmpty())
         return false;
+
+    QFile file(fileIter->educProgPath);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qDebug() << "Unable to open file " << fileIter->educProgPath << file.errorString();
+        return false;
+    }
+
     return true;
 }
 

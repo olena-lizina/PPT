@@ -24,8 +24,6 @@ import ".."
 Row {
     id: root
 
-    signal itemChanged()
-
     Rectangle{
         width: 20
         height: list.height
@@ -64,6 +62,8 @@ Row {
                         }
                         else
                         {
+                            ScreenContextBuffer.screenType = LecturesManager.LectureFile;
+                            ScreenContextBuffer.edit = false;
                             ScreenContextBuffer.setNestingAndIndex(modelData.nesting, modelData.idx);
                             modelData.isOpen = !modelData.isOpen;
                         }

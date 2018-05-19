@@ -106,6 +106,7 @@ void ScreenContextBuffer::setLoaderSource(const QString& path)
         emit loaderSourceChanged();
         //qDebug() << "emit loaderSourceChanged";
     }
+    emit loaderSourceChanged();
 }
 
 void ScreenContextBuffer::setScreenType(const int& type)
