@@ -81,6 +81,7 @@ Rectangle {
                                 else
                                 {
                                     ScreenContextBuffer.screenType = LecturesManager.LiteratureListFile;
+                                    ScreenContextBuffer.edit = true;
                                     LecturesManager.createFile(ScreenContextBuffer.nesting, ScreenContextBuffer.selectedIdx)
                                     ScreenContextBuffer.loaderSource = "education/lectures/EditTextScreen.qml"
                                 }
@@ -138,6 +139,7 @@ Rectangle {
                                 else
                                 {
                                     ScreenContextBuffer.screenType = LecturesManager.EducationProgramFile;
+                                    ScreenContextBuffer.edit = true;
                                     LecturesManager.createFile(ScreenContextBuffer.nesting, ScreenContextBuffer.selectedIdx)
                                     ScreenContextBuffer.loaderSource = "education/lectures/EditTextScreen.qml"
                                 }
@@ -199,6 +201,7 @@ Rectangle {
                                 else
                                 {
                                     ScreenContextBuffer.screenType = LecturesManager.EducationPlanFile;
+                                    ScreenContextBuffer.edit = true;
                                     LecturesManager.createFile(ScreenContextBuffer.nesting, ScreenContextBuffer.selectedIdx)
                                     ScreenContextBuffer.loaderSource = "education/lectures/EditTextScreen.qml"
                                 }
@@ -237,19 +240,22 @@ Rectangle {
             {
                 ScreenContextBuffer.screenType = LecturesManager.LiteratureListFile;
                 LecturesManager.copyLiterListLectureFile(value, ScreenContextBuffer.selectedIdx);
-                ScreenContextBuffer.loaderSource = "education/lectures/DisplayTextScreen.qml"
+                ScreenContextBuffer.edit = false;
+                ScreenContextBuffer.loaderSource = "education/lectures/EditTextScreen.qml"
             }
             else if (btnClicked === 1)
             {
                 ScreenContextBuffer.screenType = LecturesManager.EducationProgramFile;
                 LecturesManager.copyEducPlanLectureFile(value, ScreenContextBuffer.selectedIdx);
-                ScreenContextBuffer.loaderSource = "education/lectures/DisplayTextScreen.qml"
+                ScreenContextBuffer.edit = false;
+                ScreenContextBuffer.loaderSource = "education/lectures/EditTextScreen.qml"
             }
             else if (btnClicked === 2)
             {
                 ScreenContextBuffer.screenType = LecturesManager.EducationPlanFile;
                 LecturesManager.copyEducProgLectureFile(value, ScreenContextBuffer.selectedIdx);
-                ScreenContextBuffer.loaderSource = "education/lectures/DisplayTextScreen.qml"
+                ScreenContextBuffer.edit = false;
+                ScreenContextBuffer.loaderSource = "education/lectures/EditTextScreen.qml"
             }
         }
         onClose: {

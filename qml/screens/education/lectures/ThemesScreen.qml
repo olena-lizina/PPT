@@ -90,7 +90,7 @@ BlankScreen {
             else if (LecturesManager.itemHasFile(LecturesManager.selectedItem(LecturesManager.Themes), LecturesManager.Themes))
             {
                 LecturesManager.selectFile()
-                stackView.push(Qt.resolvedUrl("DisplayTextScreen.qml"))
+                stackView.push(Qt.resolvedUrl("EditTextScreen.qml"))
             }
             else
             {

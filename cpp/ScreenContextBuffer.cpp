@@ -6,7 +6,7 @@
 ScreenContextBuffer::ScreenContextBuffer(QObject *parent)
     : QObject(parent)
     , mNesting(0)
-    , mSelectedIdx(0)
+    , mSelectedIdx(1)
 {
 }
 
@@ -31,9 +31,21 @@ void ScreenContextBuffer::clearComponentCache()
 
 void ScreenContextBuffer::setNestingAndIndex(const int& nesting, const int& idx)
 {
-    setNesting(nesting);
-    setSelectedIdx(idx);
-    emit itemChanged();
+    bool isChanged = false;
+
+    if (mNesting != nesting)
+    {
+        mNesting = nesting;
+        isChanged = true;
+    }
+    if (mSelectedIdx != idx)
+    {
+        mSelectedIdx = idx;
+        isChanged = true;
+    }
+
+    if (isChanged)
+        emit itemChanged();
 }
 
 int ScreenContextBuffer::nesting() const
@@ -54,6 +66,11 @@ QString ScreenContextBuffer::loaderSource() const
 int ScreenContextBuffer::screenType() const
 {
     return mScreenType;
+}
+
+bool ScreenContextBuffer::edit() const
+{
+    return mEdit;
 }
 
 void ScreenContextBuffer::setNesting(const int& nesting)
@@ -93,12 +110,24 @@ void ScreenContextBuffer::setLoaderSource(const QString& path)
 
 void ScreenContextBuffer::setScreenType(const int& type)
 {
-    qDebug() << "setScreenType: " << type;
+//    qDebug() << "setScreenType: " << type;
 
     if (mScreenType != type)
     {
         mScreenType = type;
         emit screenTypeChanged();
-        qDebug() << "emit screenTypeChanged";
+//        qDebug() << "emit screenTypeChanged";
+    }
+}
+
+void ScreenContextBuffer::setEdit(bool edit)
+{
+    qDebug() << "setEdit: " << edit;
+
+    if (mEdit != edit)
+    {
+        mEdit = edit;
+        emit editChanged();
+        qDebug() << "emit editChanged";
     }
 }

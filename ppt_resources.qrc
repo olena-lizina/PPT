@@ -58,7 +58,6 @@
         <file>qml/components/CVerticalSeparator.qml</file>
         <file>qml/screens/AboutScreen.qml</file>
         <file>qml/screens/BlankScreen.qml</file>
-        <file>qml/screens/EditorScreen.qml</file>
         <file>qml/screens/ExamplesScreen.qml</file>
         <file>qml/screens/FilesScreen.qml</file>
         <file>qml/screens/MainMenuScreen.qml</file>
@@ -185,7 +184,6 @@
         <file>qml/screens/education/lectures/DummyScreen.qml</file>
         <file>qml/screens/education/lectures/AddFileScreen.qml</file>
         <file>qml/screens/education/lectures/AddDisciplineFilesScreen.qml</file>
-        <file>qml/screens/education/lectures/DisplayTextScreen.qml</file>
         <file>qml/screens/education/lectures/EditTextScreen.qml</file>
     </qresource>
 </RCC>

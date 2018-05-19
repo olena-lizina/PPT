@@ -16,11 +16,11 @@ protected:
 
  protected slots:
   // this slot is called by the language menu actions
-  void slotLanguageChanged(QAction* action){}
+  void slotLanguageChanged(QAction*){}
 
  private:
   // loads a language by the given language shortcur (e.g. de, en)
-  void loadLanguage(const QString& rLanguage){}
+  void loadLanguage(const QString&){}
 
   // creates the language menu dynamically from the content of m_langPath
   void createLanguageMenu(void) {}

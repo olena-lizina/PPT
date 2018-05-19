@@ -68,7 +68,7 @@ QObject* StudentManager::selectedStudent() const
     return new StudentModel(mSelectedStudent, mGroupMap[mSelectedStudent.groupId]);
 }
 
-bool StudentManager::existsStudent(const QString& name, const QString& group)
+bool StudentManager::existsStudent(const QString&, const QString&)
 {
     return false;
 }

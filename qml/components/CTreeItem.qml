@@ -64,12 +64,11 @@ Row {
                         }
                         else
                         {
-                            modelData.isOpen = !modelData.isOpen;
                             ScreenContextBuffer.setNestingAndIndex(modelData.nesting, modelData.idx);
-                            root.itemChanged()
+                            modelData.isOpen = !modelData.isOpen;
                         }
                     }
-                    else if (modelData.idx !== -1)
+                    else if (mouse.button == Qt.RightButton && modelData.idx !== -1)
                         contextMenu.visible = !contextMenu.visible;
                 }
 

@@ -55,9 +55,11 @@ Rectangle {
                     MouseArea {
                         id: mouseArea1
                         anchors.fill: parent
+
                         onClicked: {
-                            ScreenContextBuffer.screenType = LecturesManager.LectureFile;
                             LecturesManager.createFile(ScreenContextBuffer.nesting, ScreenContextBuffer.selectedIdx)
+                            ScreenContextBuffer.edit = true;
+                            ScreenContextBuffer.screenType = LecturesManager.LectureFile;
                             ScreenContextBuffer.loaderSource = "education/lectures/EditTextScreen.qml"
                         }
                     }
@@ -123,7 +125,8 @@ Rectangle {
             getFileDialog.source = ""
             ScreenContextBuffer.screenType = LecturesManager.LectureFile;
             LecturesManager.copyLectureFile(value, ScreenContextBuffer.nesting, ScreenContextBuffer.selectedIdx)
-            ScreenContextBuffer.loaderSource = "education/lectures/DisplayTextScreen.qml"
+            ScreenContextBuffer.edit = false;
+            ScreenContextBuffer.loaderSource = "education/lectures/EditTextScreen.qml"
         }
         onClose: {
             getFileDialog.source = ""

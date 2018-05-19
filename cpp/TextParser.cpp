@@ -1,6 +1,6 @@
 #include "TextParser.h"
 
-TextParser::TextParser()
+TextParser::TextParser(QObject* parent): QObject(parent)
 {
 
 }

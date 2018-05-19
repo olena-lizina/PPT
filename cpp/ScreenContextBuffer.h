@@ -11,6 +11,7 @@ class ScreenContextBuffer: public QObject
     Q_PROPERTY(int selectedIdx READ selectedIdx WRITE setSelectedIdx NOTIFY selectedIdxChanged)
     Q_PROPERTY(QString loaderSource READ loaderSource WRITE setLoaderSource NOTIFY loaderSourceChanged)
     Q_PROPERTY(int screenType READ screenType WRITE setScreenType NOTIFY screenTypeChanged)
+    Q_PROPERTY(bool edit READ edit WRITE setEdit NOTIFY editChanged)
 
 public:
     ScreenContextBuffer(QObject *parent = 0);
@@ -25,11 +26,13 @@ public:
     int selectedIdx() const;
     QString loaderSource() const;
     int screenType() const;
+    bool edit() const;
 
     void setNesting(const int& nesting);
     void setSelectedIdx(const int& idx);
     void setLoaderSource(const QString& path);
     void setScreenType(const int& type);
+    void setEdit(bool edit);
 
 signals:
     void nestingChanged();
@@ -37,6 +40,7 @@ signals:
     void loaderSourceChanged();
     void screenTypeChanged();
     void itemChanged();
+    void editChanged();
 
 private:
     static QQmlApplicationEngine *m_qmlEngine;
@@ -44,6 +48,7 @@ private:
     int mSelectedIdx;
     int mScreenType;
     QString mLoaderSource;
+    bool mEdit;
 };
 
 #endif // SCREENCONTEXTBUFFER_H

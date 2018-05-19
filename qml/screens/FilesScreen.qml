@@ -80,7 +80,7 @@ BlankScreen {
 
             onClicked: {
                 ProjectManager.fileName = modelData
-                stackView.push(Qt.resolvedUrl("EditorScreen.qml"))
+                //stackView.push(Qt.resolvedUrl("EditorScreen.qml"))
             }
 
             onRemoveClicked: {

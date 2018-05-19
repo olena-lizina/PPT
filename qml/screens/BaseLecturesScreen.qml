@@ -80,33 +80,41 @@ BlankScreen {
         }
 
         Component.onCompleted: handleItemChanged()
+    }
 
-        Connections {
-            target: ScreenContextBuffer
-            onItemChanged: handleItemChanged()
-        }
+    Connections {
+        target: ScreenContextBuffer
+        onLoaderSourceChanged: handleItemChanged()
+        onItemChanged: handleItemChanged()
+    }
 
-        Loader {
-            id: rectLoader
-            source: ScreenContextBuffer.loaderSource
+    Loader {
+        id: rectLoader
+        anchors{
+            top: rightRect.top
+            bottom: rightRect.bottom
+            left: rightRect.left
+            right: rightRect.right
         }
     }
 
     function handleItemChanged()
     {
         if (ScreenContextBuffer.nesting == 0)
-            ScreenContextBuffer.loaderSource = "education/lectures/AddDisciplineFilesScreen.qml"
+            rectLoader.source = "education/lectures/AddDisciplineFilesScreen.qml"
         else if (ScreenContextBuffer.nesting == 1)
-            ScreenContextBuffer.loaderSource = "education/lectures/DummyScreen.qml"
+            rectLoader.source = "education/lectures/DummyScreen.qml"
         else
         {
-            if (false === LecturesManager.fileExist(LecturesManager.LectureFile, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting))
-                ScreenContextBuffer.loaderSource = "education/lectures/AddFileScreen.qml"
-            else
+            if (LecturesManager.fileExist(LecturesManager.LectureFile, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting))
             {
                 ScreenContextBuffer.screenType = LecturesManager.LectureFile;
-                ScreenContextBuffer.loaderSource = "education/lectures/DisplayTextScreen.qml"
+                ScreenContextBuffer.edit = false;
+                rectLoader.source = "education/lectures/EditTextScreen.qml"
             }
+            else
+                rectLoader.source = "education/lectures/AddFileScreen.qml"
+
         }
     }
 }

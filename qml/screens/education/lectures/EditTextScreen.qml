@@ -18,26 +18,47 @@
 
 import QtQuick 2.5
 import QtQuick.Layouts 1.2
+import QtQuick.Controls 1.4
 import LecturesManager 1.1
 import ScreenContextBuffer 1.1
 import "../../../components"
 import "../.."
 
 Item {
-
-    anchors.fill: parent
+    id: rootItem
+    Component.onCompleted: {
+        if (ScreenContextBuffer.edit)
+        {
+            btn1.visible = true
+            btn2.visible = true
+            btn3.visible = true
+            btn5.visible = true
+            visible = false
+            codeArea.readOnly = false
+        }
+        else
+        {
+            btn1.visible = false
+            btn2.visible = false
+            btn3.visible = false
+            btn4.visible = true
+            btn5.visible = false
+            codeArea.readOnly = true
+        }
+    }
 
     CToolBar {
         id: toolBar
-        anchors.left: parent.left
-        anchors.right: parent.right
-        anchors.top: parent.top
+        anchors.left: rootItem.left
+        anchors.right: rootItem.right
+        anchors.top: rootItem.top
 
         RowLayout {
             anchors.fill: parent
             spacing: 0
 
             CToolButton {
+                id: btn1
                 Layout.fillHeight: true
                 icon: "\uf034"
                 tooltipText: qsTr("Select all")
@@ -45,6 +66,7 @@ Item {
             }
 
             CToolButton {
+                id: btn2
                 visible: true
                 Layout.fillHeight: true
                 icon: "\uf0c5"
@@ -53,6 +75,7 @@ Item {
             }
 
             CToolButton {
+                id: btn3
                 visible: true
                 Layout.fillHeight: true
                 icon: "\uf0c4"
@@ -61,6 +84,22 @@ Item {
             }
 
             CToolButton {
+                id: btn4
+                Layout.fillHeight: true
+                icon: "\u270e"
+                tooltipText: qsTr("Edit")
+                onClicked: {
+                    btn1.visible = true
+                    btn2.visible = true
+                    btn3.visible = true
+                    btn5.visible = true
+                    visible = false
+                    codeArea.readOnly = false
+                }
+            }
+
+            CToolButton {
+                id: btn5
                 visible: true
                 Layout.fillHeight: true
                 icon: "\u2714"
@@ -69,30 +108,65 @@ Item {
                     LecturesManager.saveFileContent(codeArea.text, ScreenContextBuffer.nesting, ScreenContextBuffer.selectedIdx)
                     LecturesManager.clearComponentCache()
                     Qt.inputMethod.hide()
-                    ScreenContextBuffer.loaderSource = "education/lectures/DisplayTextScreen.qml"
+                    btn1.visible = false
+                    btn2.visible = false
+                    btn3.visible = false
+                    btn4.visible = true
+                    visible = false
+                    codeArea.readOnly = true
                 }
             }
         }
     }
 
-    CCodeArea {
+    TextArea {
         id: codeArea
 
         Component.onDestruction: {
             LecturesManager.saveFileContent(text, ScreenContextBuffer.nesting, ScreenContextBuffer.selectedIdx)
         }
 
-        anchors.top: toolBar.bottom
-        anchors.bottom: parent.bottom
-        anchors.left: parent.left
-        anchors.right: parent.right
-
-        indentSize: settings.indentSize
-
         text: LecturesManager.getFileContent(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting)
 
-        onTextChanged: {
-            LecturesManager
+        anchors.top: toolBar.bottom
+        anchors.bottom: rootItem.bottom
+        anchors.left: rootItem.left
+        anchors.right: rootItem.right
+
+        readOnly: ScreenContextBuffer.edit
+
+        function paste() {
+            textEdit.paste()
+        }
+
+        function copy() {
+            textEdit.copy()
+        }
+
+        function cut() {
+            textEdit.cut()
+        }
+
+        function selectAll() {
+            textEdit.selectAll()
+        }
+
+        onActiveFocusChanged: {
+            if (activeFocus)
+                textEdit.forceActiveFocus()
+        }
+
+        selectByMouse: true
+        wrapMode: TextEdit.Wrap
+        textFormat: TextEdit.RichText
+        inputMethodHints: Qt.ImhNoPredictiveText
+        onLinkActivated: Qt.openUrlExternally(link)
+
+        property string previousText: ""
+
+        onLengthChanged: {
+            if (text !== previousText)
+                previousText = text
         }
     }
 }

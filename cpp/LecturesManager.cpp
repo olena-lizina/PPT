@@ -921,24 +921,44 @@ void LecturesManager::saveThemeLectureFile(const QString& path, const int& idx)
 {
     qDebug() << "saveThemeLectureFile";
 
-    ThemeLectureFile add;
-    add.path = path;
-    add.themeId = idx;
-    mSaveManager->addThemeLectureFile(add);
+    auto fileIter = std::find_if(mThemeLectureFiles.begin(), mThemeLectureFiles.end(),
+                                 [&idx](ThemeLectureFile& th){ return th.themeId == idx; });
 
-    mThemeLectureFiles = mSaveManager->loadThemeLectureFile();
+    if (mThemeLectureFiles.end() == fileIter)
+    {
+        ThemeLectureFile add;
+        add.path = path;
+        add.themeId = idx;
+        mSaveManager->addThemeLectureFile(add);
+        mThemeLectureFiles = mSaveManager->loadThemeLectureFile();
+    }
+    else
+    {
+        fileIter->path = path;
+        mSaveManager->updThemeLectureFile(*fileIter);
+    }
 }
 
 void LecturesManager::saveSubthemeLectureFile(const QString& path, const int& idx)
 {
     qDebug() << "saveSubthemeLectureFile";
 
-    SubthemeLectureFile add;
-    add.path = path;
-    add.subthemeId = idx;
-    mSaveManager->addSubthemeLectureFile(add);
+    auto fileIter = std::find_if(mSubthemeLectureFiles.begin(), mSubthemeLectureFiles.end(),
+                                 [&idx](SubthemeLectureFile& th){ return th.subthemeId == idx; });
 
-    mSubthemeLectureFiles = mSaveManager->loadSubthemeLectureFile();
+    if (mSubthemeLectureFiles.end() == fileIter)
+    {
+        SubthemeLectureFile add;
+        add.path = path;
+        add.subthemeId = idx;
+        mSaveManager->addSubthemeLectureFile(add);
+        mSubthemeLectureFiles = mSaveManager->loadSubthemeLectureFile();
+    }
+    else
+    {
+        fileIter->path = path;
+        mSaveManager->updSubthemeLectureFile(*fileIter);
+    }
 }
 
 void LecturesManager::saveLiterListFile(const QString& path, const int& idx)
