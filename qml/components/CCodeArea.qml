@@ -194,7 +194,7 @@ Item {
                         }
                     }
 
-                    previousText = text
+                    previousText = syntaxHighlighter.detectTables(text)
                 }
             }
 
@@ -226,7 +226,7 @@ Item {
                 property int endPosition
 
                 onPressed: {
-                    textEdit.contextMenu.visible = false
+                    //textEdit.contextMenu.visible = false
 
                     startX = mouse.x
                     startY = mouse.y
@@ -241,11 +241,11 @@ Item {
                 }
 
                 onPositionChanged: {
-                    if (textEdit.contextMenu.visible)
-                    {
-                        mouse.accepted = true
-                        return
-                    }
+//                    if (textEdit.contextMenu.visible)
+//                    {
+//                        mouse.accepted = true
+//                        return
+//                    }
 
                     var newPosition = textEdit.positionAt(mouse.x, mouse.y)
                     if (newPosition !== endPosition)
@@ -262,11 +262,11 @@ Item {
 
                 onPressAndHold: {
                     var distance = Math.sqrt(Math.pow(mouse.x - startX, 2) + Math.pow(mouse.y - startY, 2))
-                    if (distance < textEdit.cursorRectangle.height)
-                    {
-                        if (textEdit.selectedText.length === 0)
-                            textEdit.contextMenu.visible = true
-                    }
+//                    if (distance < textEdit.cursorRectangle.height)
+//                    {
+//                        if (textEdit.selectedText.length === 0)
+//                            textEdit.contextMenu.visible = true
+//                    }
                     mouse.accepted = true
                 }
             }
@@ -388,89 +388,6 @@ Item {
                         anchors.top: parent.top
                         anchors.left: parent.left
                     }
-                }
-            }
-
-            property Item contextMenu: ListView {
-                parent: textEdit
-                visible: false
-
-                property int margin: 3
-                property int delegateWidth: 40 * settings.pixelDensity
-                property int delegateHeight: 12 * settings.pixelDensity
-
-                width: delegateWidth
-                height: delegateHeight * count
-                boundsBehavior: Flickable.StopAtBounds
-
-                model: ListModel {
-                    ListElement { text: qsTr("Undo") }
-                    ListElement { text: qsTr("Redo") }
-                    ListElement { text: qsTr("Paste") }
-                }
-
-                function contextMenuCallback(index) {
-                    visible = false
-                    switch (index)
-                    {
-                    case 0:
-                        textEdit.undo()
-                        break
-                    case 1:
-                        textEdit.redo()
-                        break
-                    case 2:
-                        cCodeArea.paste()
-                        break
-                    }
-                }
-
-                delegate: CContextMenuButton {
-                    width: ListView.view.delegateWidth
-                    height: ListView.view.delegateHeight
-                    text: model.text
-                    onClicked: ListView.view.contextMenuCallback(index)
-                }
-
-                onVisibleChanged: {
-                    if (visible)
-                    {
-                        var positionRectangle = textEdit.positionToRectangle(textEdit.cursorPosition)
-
-                        if (isEnoughSpaceAtLeft() && !isEnoughSpaceAtRight())
-                            x = textEdit.width - width - margin
-                        else if (!isEnoughSpaceAtLeft() && isEnoughSpaceAtRight())
-                            x = margin
-                        else
-                            x = positionRectangle.x - width / 2
-
-                        if (isEnoughSpaceAtTop())
-                            y = positionRectangle.y - margin - height
-                        else if (isEnoughSpaceAtBottom())
-                            y = positionRectangle.y + positionRectangle.height + margin
-                        else
-                            y = positionRectangle.y + positionRectangle.height / 2 - height / 2
-                    }
-                }
-
-                function isEnoughSpaceAtTop() {
-                    var positionRectangle = textEdit.positionToRectangle(textEdit.cursorPosition)
-                    return (positionRectangle.y  - height - margin > flickable.contentY)
-                }
-
-                function isEnoughSpaceAtBottom() {
-                    var positionRectangle = textEdit.positionToRectangle(textEdit.cursorPosition)
-                    return (positionRectangle.y  + positionRectangle.height + height + margin < flickable.contentY + flickable.height)
-                }
-
-                function isEnoughSpaceAtLeft() {
-                    var positionRectangle = textEdit.positionToRectangle(textEdit.cursorPosition)
-                    return (positionRectangle.x - width / 2 > 0)
-                }
-
-                function isEnoughSpaceAtRight() {
-                    var positionRectangle = textEdit.positionToRectangle(textEdit.cursorPosition)
-                    return (positionRectangle.x + width / 2 < textEdit.width)
                 }
             }
         }

@@ -61,6 +61,8 @@ BlankScreen {
             anchors.right: parent.right
 
             CNavigationButton {
+                anchors.left: parent.left
+                anchors.right: parent.right
                 text: qsTr("Work done")
                 icon: "\u2611"
 //                onClicked: {
@@ -70,6 +72,8 @@ BlankScreen {
             }
 
             CNavigationButton {
+                anchors.left: parent.left
+                anchors.right: parent.right
                 text: qsTr("Work on execution")
                 icon: "\u26A0"
 //                onClicked: {
@@ -79,12 +83,16 @@ BlankScreen {
             }
 
             CNavigationButton {
+                anchors.left: parent.left
+                anchors.right: parent.right
                 text: qsTr("Gradebook")
                 icon: "\uD83D\uDCCA"
                 //onClicked: stackView.push(Qt.resolvedUrl("SettingsScreen.qml"))
             }
 
             CNavigationButton {
+                anchors.left: parent.left
+                anchors.right: parent.right
                 text: qsTr("Reports")
                 icon: "\u2709"
                 //onClicked: stackView.push(Qt.resolvedUrl("ModulesScreen.qml"))

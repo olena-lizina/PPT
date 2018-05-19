@@ -62,6 +62,14 @@ void SyntaxHighlighter::addJsComponent(QString componentName)
         m_highlighter->addJsComponent(componentName);
 }
 
+QString SyntaxHighlighter::detectTables(QString text)
+{
+    text.replace(QString("<table border=\"0\""), QString("<table border=\"1\""));
+    text.replace(QString("cellspacing=\"2\""), QString("cellspacing=\"0\""));
+
+    return text;
+}
+
 QColor SyntaxHighlighter::normalColor()
 {
     return m_normalColor;

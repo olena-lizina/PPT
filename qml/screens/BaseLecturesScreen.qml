@@ -21,10 +21,12 @@ import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.2
 import "../components"
 import LecturesManager 1.1
+import ScreenContextBuffer 1.1
 
 BlankScreen {
     id: educationalMaterialsScreen
 
+    signal btnItemChanged()
     CToolBar {
         id: toolBar
         anchors.left: parent.left
@@ -47,13 +49,14 @@ BlankScreen {
         }
     }
 
-
-
     ListView {
-        id: myView
+        id: leftMenu
 
         model: LecturesManager.labsTree
-        delegate: CTreeItem {}
+        delegate: CTreeItem {
+            id: btn
+            onItemChanged: educationalMaterialsScreen.btnItemChanged()
+        }
 
         width: 0.25 * settings.windowWidth
         height: settings.windowHeight - toolBar.height
@@ -61,21 +64,6 @@ BlankScreen {
         anchors {
             left: parent.left
             top: toolBar.bottom
-        }
-
-        onFocusChanged: {
-            visible = false
-            visible = true
-        }
-
-        MouseArea {
-            acceptedButtons: Qt.LeftButton | Qt.RightButton
-            onClicked: {
-                if (mouse.button == Qt.LeftButton)
-                    modelData.isOpen = !modelData.isOpen;
-                else
-                    contextMenu.visible = true
-            }
         }
     }
 
@@ -86,8 +74,39 @@ BlankScreen {
         height: settings.windowHeight - toolBar.height
 
         anchors {
-            left: myView.right
+            left: leftMenu.right
+            leftMargin: 3
             top: toolBar.bottom
+        }
+
+        Component.onCompleted: handleItemChanged()
+
+        Connections {
+            target: ScreenContextBuffer
+            onItemChanged: handleItemChanged()
+        }
+
+        Loader {
+            id: rectLoader
+            source: ScreenContextBuffer.loaderSource
+        }
+    }
+
+    function handleItemChanged()
+    {
+        if (ScreenContextBuffer.nesting == 0)
+            ScreenContextBuffer.loaderSource = "education/lectures/AddDisciplineFilesScreen.qml"
+        else if (ScreenContextBuffer.nesting == 1)
+            ScreenContextBuffer.loaderSource = "education/lectures/DummyScreen.qml"
+        else
+        {
+            if (false === LecturesManager.fileExist(LecturesManager.LectureFile, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting))
+                ScreenContextBuffer.loaderSource = "education/lectures/AddFileScreen.qml"
+            else
+            {
+                ScreenContextBuffer.screenType = LecturesManager.LectureFile;
+                ScreenContextBuffer.loaderSource = "education/lectures/DisplayTextScreen.qml"
+            }
         }
     }
 }

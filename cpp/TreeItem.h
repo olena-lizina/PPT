@@ -11,7 +11,7 @@ class TreeItem: public QObject
     /** Element index*/
     Q_PROPERTY(int idx READ idx WRITE setIdx NOTIFY idxChanged)
     /** Nesting*/
-    Q_PROPERTY(int nesting READ nesting)
+    Q_PROPERTY(int nesting READ nesting NOTIFY nestingChanged)
     /** Child list*/
     Q_PROPERTY(QList<QObject*> childItems READ childItems NOTIFY childItemsChanged)
     /** Has child*/
@@ -38,6 +38,7 @@ signals:
     void childItemsChanged();
     void hasChildChanged();
     void isOpenChanged();
+    void nestingChanged();
 
 private:
     /** Text element*/

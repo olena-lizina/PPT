@@ -93,6 +93,6 @@ BlankScreen {
 
         indentSize: settings.indentSize
 
-        text: ProjectManager.getFileContent()
+        text: ProjectManager.getFileContent(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting)
     }
 }

@@ -45,6 +45,8 @@ public:
     Q_INVOKABLE void addQmlComponent(QString componentName);
     Q_INVOKABLE void addJsComponent(QString componentName);
 
+    Q_INVOKABLE QString detectTables(QString text);
+
     QColor normalColor();
     QColor commentColor();
     QColor numberColor();

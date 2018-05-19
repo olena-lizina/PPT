@@ -42,10 +42,160 @@
     </message>
 </context>
 <context>
+    <name>CContextMenu</name>
+    <message>
+        <source>Edit</source>
+        <translation>Редагувати</translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation>Видалити</translation>
+    </message>
+</context>
+<context>
     <name>CHomeButton</name>
     <message>
         <source>Home</source>
         <translation>Домашня сторінка</translation>
+    </message>
+</context>
+<context>
+    <name>CTreeItem</name>
+    <message>
+        <source>Insert new discipline</source>
+        <translation>Додати нову дисципліну</translation>
+    </message>
+    <message>
+        <source>Enter discipline name:</source>
+        <translation>Введіть назву дисципліни:</translation>
+    </message>
+    <message>
+        <source>Insert</source>
+        <translation>Додати</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation>Редагувати</translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation>Видалити</translation>
+    </message>
+    <message>
+        <source>Insert new item</source>
+        <translation>Додати новий елемент</translation>
+    </message>
+    <message>
+        <source>What would you like to insert?</source>
+        <translation>Що ви бажаєте додати?</translation>
+    </message>
+    <message>
+        <source>Discipline</source>
+        <translation>Дисципліна</translation>
+    </message>
+    <message>
+        <source>Chapter</source>
+        <translation>Розділ</translation>
+    </message>
+    <message>
+        <source>Theme</source>
+        <translation>Тема</translation>
+    </message>
+    <message>
+        <source>Subtheme</source>
+        <translation>Підтема</translation>
+    </message>
+    <message>
+        <source>Enter the name of the new discipline:</source>
+        <translation>Введіть назву нової дисципліни:</translation>
+    </message>
+    <message>
+        <source>Insert new chapter</source>
+        <translation>Додати новий розділ</translation>
+    </message>
+    <message>
+        <source>Enter the name of the new chapter:</source>
+        <translation>Введіть назву нового розділу:</translation>
+    </message>
+    <message>
+        <source>Insert new theme</source>
+        <translation>Додати нову тему</translation>
+    </message>
+    <message>
+        <source>Enter the name of the new theme:</source>
+        <translation>Введіть назву нової теми:</translation>
+    </message>
+    <message>
+        <source>Insert new subtheme</source>
+        <translation>Додати нову підтему</translation>
+    </message>
+    <message>
+        <source>Enter the name of the new subtheme:</source>
+        <translation>Введіть назву нової підтеми:</translation>
+    </message>
+    <message>
+        <source>Edit discipline</source>
+        <translation>Редагувати дисципліну</translation>
+    </message>
+    <message>
+        <source>Enter the name of the discipline:</source>
+        <translation>Введіть назву дисципліни:</translation>
+    </message>
+    <message>
+        <source>Edit chapter</source>
+        <translation>Редагувати розділ</translation>
+    </message>
+    <message>
+        <source>Enter the name of the chapter:</source>
+        <translation>Введіть назву розділу:</translation>
+    </message>
+    <message>
+        <source>Edit theme</source>
+        <translation>Редагувати тему</translation>
+    </message>
+    <message>
+        <source>Enter the name of the theme:</source>
+        <translation>Введіть назву теми:</translation>
+    </message>
+    <message>
+        <source>Edit subtheme</source>
+        <translation>Редагувати підтему</translation>
+    </message>
+    <message>
+        <source>Enter the name of the subtheme:</source>
+        <translation>Введіть назву підтеми:</translation>
+    </message>
+    <message>
+        <source>Remove discipline</source>
+        <translation>Видалити дисципліну</translation>
+    </message>
+    <message>
+        <source>Press OK to delete discipline with name: &quot;%1&quot;</source>
+        <translation>Натисніть ОК для видалення дисципліни з назвою: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Remove chapter</source>
+        <translation>Видалити розділ</translation>
+    </message>
+    <message>
+        <source>Press OK to delete chapter with name: &quot;%1&quot;</source>
+        <translation>Натисніть ОК для видалення розділу з назвою: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Remove theme</source>
+        <translation>Видалити тему</translation>
+    </message>
+    <message>
+        <source>Press OK to delete theme with name: &quot;%1&quot;</source>
+        <translation>Натисніть ОК для видалення теми з назвою: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Remove subtheme</source>
+        <translation>Видалити підтему</translation>
+    </message>
+    <message>
+        <source>Press OK to delete subtheme with name: &quot;%1&quot;</source>
+        <translation>Натисніть ОК для видалення підтеми з назвою: &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -218,29 +368,6 @@
     </message>
 </context>
 <context>
-    <name>EducationalMaterialsScreen</name>
-    <message>
-        <source>Educational materials</source>
-        <translation type="vanished">Навчальні матеріали</translation>
-    </message>
-    <message>
-        <source>Lectures</source>
-        <translation type="vanished">Лекції</translation>
-    </message>
-    <message>
-        <source>Laboratory works</source>
-        <translation type="vanished">Лабораторні роботи</translation>
-    </message>
-    <message>
-        <source>Individual works</source>
-        <translation type="vanished">Самостійні роботи</translation>
-    </message>
-    <message>
-        <source>Tests</source>
-        <translation type="vanished">Тести</translation>
-    </message>
-</context>
-<context>
     <name>ExamplesScreen</name>
     <message>
         <source>Examples</source>
@@ -305,6 +432,13 @@
     <message>
         <source>Select all</source>
         <translation>Обрати все</translation>
+    </message>
+</context>
+<context>
+    <name>LecturesManager</name>
+    <message>
+        <source>Add discipline</source>
+        <translation>Додати дисципліну</translation>
     </message>
 </context>
 <context>
@@ -405,10 +539,6 @@
         <source>Input field cannot be left blank</source>
         <translation>Поле для вводу не може бути пустим</translation>
     </message>
-    <message>
-        <source>Such name already exists</source>
-        <translation>Таке ім&apos;я вже існує</translation>
-    </message>
 </context>
 <context>
     <name>PartScreen</name>
@@ -488,49 +618,6 @@
     <message>
         <source>Are you sure you want to delete &quot;%1&quot;?</source>
         <translation>Ви впевнені, що хочете видалили проект &quot;%1&quot;?</translation>
-    </message>
-</context>
-<context>
-    <name>QObject</name>
-    <message>
-        <source>Элемент 1</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Подпункт 1</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Подпункт 2</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Подпункт 3</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Элемент 2</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Элемент 3</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Подэлемент 1</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Элемент 4</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Элемент 5</source>
-        <translation></translation>
-    </message>
-    <message>
-        <source>Элемент 6</source>
-        <translation></translation>
     </message>
 </context>
 <context>
@@ -650,17 +737,6 @@
     <message>
         <source>Are you sure you want to delete &quot;%1&quot;?</source>
         <translation>Ви впевнені, що хочете видалили підтему &quot;%1&quot;?</translation>
-    </message>
-</context>
-<context>
-    <name>ThemeClickedDialog</name>
-    <message>
-        <source>Create sub theme</source>
-        <translation>Створити підтему</translation>
-    </message>
-    <message>
-        <source>Create lecture</source>
-        <translation>Свторити лекцію</translation>
     </message>
 </context>
 <context>

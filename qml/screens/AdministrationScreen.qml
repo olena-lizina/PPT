@@ -60,6 +60,8 @@ BlankScreen {
             anchors.right: parent.right
 
             CNavigationButton {
+                anchors.left: parent.left
+                anchors.right: parent.right
                 text: qsTr("Students")
                 icon: "\uD83D\uDC65"
                 onClicked: stackView.push(Qt.resolvedUrl("admins/StudentScreen.qml"))

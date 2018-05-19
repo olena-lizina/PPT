@@ -72,6 +72,8 @@ protected:
     int mSelectedGroupIdx;
     static SaveManager::Ptr mSaveManager;
     static QQmlApplicationEngine *m_qmlEngine;
+
+    QList<QObject*> model;
 };
 
 #endif // STUDENTMANAGER_H

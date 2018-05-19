@@ -19,6 +19,8 @@
 #include <QDebug>
 #include <QApplication>
 #include "TreeItem.h"
+#include <QFile>
+#include <QDir>
 
 /*static*/ QQmlApplicationEngine *LecturesManager::m_qmlEngine = nullptr;
 /*static*/ SaveManager::Ptr LecturesManager::mSaveManager;
@@ -35,6 +37,9 @@ LecturesManager::LecturesManager(QObject* parent)
     mChapters    = mSaveManager->loadChapters();
     mThemes      = mSaveManager->loadTheme();
     mSubtheme    = mSaveManager->loadSubtheme();
+
+    mThemeLectureFiles = mSaveManager->loadThemeLectureFile();
+    mSubthemeLectureFiles = mSaveManager->loadSubthemeLectureFile();
 
     initLabsTree();
 }
@@ -178,7 +183,7 @@ void LecturesManager::updateSubtheme(const QString& name, const int& idx)
     qDebug() << "updateSubtheme: " << idx << " " << name;
 
     auto subIter = std::find_if(mSubtheme.begin(), mSubtheme.end(),
-                                 [&idx](Subtheme& sub){ return sub.id == idx; });
+                                [&idx](Subtheme& sub){ return sub.id == idx; });
     if (mSubtheme.end() == subIter)
     {
         qWarning() << "Cannot update subtheme: " << name;
@@ -424,3 +429,568 @@ void LecturesManager::appendSubtheme(const QString& name, const int& idx)
     emit labsTreeChanged();
 }
 
+bool LecturesManager::fileExist(const LecturesManager::FileType& type, const int& idx, const int& nesting)
+{
+    qDebug() << "fileExist";
+
+    switch(type)
+    {
+    case LectureFile: return lectureFileExist(nesting, idx);
+    case LiteratureListFile: return literListFileExist(idx);
+    case EducationPlanFile: return educPlanFileExist(idx);
+    case EducationProgramFile: return educProgFileExist(idx);
+    default: return false;
+    }
+}
+
+QString LecturesManager::getFileContent(const LecturesManager::FileType& type, const int& idx, const int& nesting)
+{
+    qDebug() << "getFileContent";
+
+    switch(type)
+    {
+    case LectureFile: return getLectureFileContent(nesting, idx);
+    case LiteratureListFile: return getLiterListFileContent(idx);
+    case EducationPlanFile: return getEducPlanFileContent(idx);
+    case EducationProgramFile: return getEducProgFileContent(idx);
+    default: return QString();
+    }
+}
+
+bool LecturesManager::lectureFileExist(const int& nesting, const int& idx)
+{
+    qDebug() << "lectureFileExist";
+
+    if (nesting == 3)
+    {
+        auto fileIter = std::find_if(mSubthemeLectureFiles.begin(), mSubthemeLectureFiles.end(),
+                                     [&idx](SubthemeLectureFile& file){ return file.subthemeId == idx; });
+
+        if (mSubthemeLectureFiles.end() == fileIter || fileIter->path.isEmpty())
+            return false;
+        return true;
+    }
+    else if (nesting == 2)
+    {
+        auto fileIter = std::find_if(mThemeLectureFiles.begin(), mThemeLectureFiles.end(),
+                                     [&idx](ThemeLectureFile& file){ return file.themeId == idx; });
+
+        if (mThemeLectureFiles.end() == fileIter || fileIter->path.isEmpty())
+            return false;
+        return true;
+    }
+    return false;
+}
+
+QString LecturesManager::getLectureFileContent(const int& nesting, const int& idx)
+{
+    qDebug() << "getLectureFileContent";
+    QString path;
+
+    if (nesting == 3)
+    {
+        auto fileIter = std::find_if(mSubthemeLectureFiles.begin(), mSubthemeLectureFiles.end(),
+                                     [&idx](SubthemeLectureFile& file){ return file.subthemeId == idx; });
+
+        if (mSubthemeLectureFiles.end() == fileIter || fileIter->path.isEmpty())
+            return QString();
+
+        path = fileIter->path;
+    }
+    else if (nesting == 2)
+    {
+        auto fileIter = std::find_if(mThemeLectureFiles.begin(), mThemeLectureFiles.end(),
+                                     [&idx](ThemeLectureFile& file){ return file.themeId == idx; });
+
+        if (mThemeLectureFiles.end() == fileIter || fileIter->path.isEmpty())
+            return QString();
+
+        path = fileIter->path;
+    }
+
+    QFile file(path);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qDebug() << "Unable to open file " << path << file.errorString();
+        return QString();
+    }
+
+    QTextStream textStream(&file);
+    QString fileContent = textStream.readAll().trimmed();
+    file.close();
+    return fileContent;
+}
+
+void LecturesManager::createFile(const int& nesting, const int& idx)
+{
+    qDebug() << "createFile";
+
+    const QString fileExtension {"qppt"};
+    QString baseFolder {"Lectures\\"};
+
+    if (nesting == 3)
+        baseFolder.append("Subthemes");
+    else
+        baseFolder.append("Themes");
+
+    if (!QDir(baseFolder).exists())
+        QDir().mkdir(baseFolder);
+
+    QString filePath(baseFolder + QDir::separator() + QString::number(idx) + "." + fileExtension);
+    qDebug() << filePath;
+
+    QFile file(filePath);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        qDebug() << "Unable to create file " << filePath << file.errorString();
+        return;
+    }
+
+    QTextStream textStream(&file);
+    textStream << filePath;
+
+    if (nesting == 3)
+        saveSubthemeLectureFile(filePath, idx);
+    else
+        saveThemeLectureFile(filePath, idx);
+
+    file.close();
+}
+
+void LecturesManager::saveFileContent(const QString& text, const int& nesting, const int& idx)
+{
+    qDebug() << "saveFileContent for id: " << idx;
+    QString path;
+
+    if (nesting == 3)
+    {
+        auto fileIter = std::find_if(mSubthemeLectureFiles.begin(), mSubthemeLectureFiles.end(),
+                                     [&idx](SubthemeLectureFile& file){ return file.subthemeId == idx; });
+
+        if (mSubthemeLectureFiles.end() == fileIter || fileIter->path.isEmpty())
+            return;
+
+        path = fileIter->path;
+    }
+    else
+    {
+        auto fileIter = std::find_if(mThemeLectureFiles.begin(), mThemeLectureFiles.end(),
+                                     [&idx](ThemeLectureFile& file){ return file.themeId == idx; });
+
+        if (mThemeLectureFiles.end() == fileIter || fileIter->path.isEmpty())
+            return;
+
+        path = fileIter->path;
+    }
+
+    QFile file(path);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        qDebug() << "Unable to open file " << path << file.errorString();
+        return;
+    }
+
+    QTextStream textStream(&file);
+    textStream << text;
+    file.close();
+}
+
+void LecturesManager::copyLectureFile(QString path, const int& nesting, const int& idx)
+{
+    QString baseFolder {"Lectures\\"};
+
+    if (nesting == 3)
+        baseFolder.append("Subthemes");
+    else
+        baseFolder.append("Themes");
+
+    if (!QDir(baseFolder).exists())
+        QDir().mkdir(baseFolder);
+
+    QString prefix("file:///");
+    path.remove(0, prefix.size());
+    QString fileName(path.right(path.size() - path.lastIndexOf('/') - 1));
+    QString newPath(baseFolder + '\\' + fileName);
+    QFile::copy(path, newPath);
+
+    if (nesting == 3)
+        saveSubthemeLectureFile(newPath, idx);
+    else
+        saveThemeLectureFile(newPath, idx);
+}
+
+bool LecturesManager::literListFileExist(const int& idx)
+{
+    qDebug() << "literListFileExist";
+
+    auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                                 [&idx](DisciplineTeach& file){ return file.id == idx; });
+
+    if (mDisciplines.end() == fileIter || fileIter->literPath.isEmpty())
+        return false;
+    return true;
+}
+
+QString LecturesManager::getLiterListFileContent(const int& idx)
+{
+    qDebug() << "getLiterListFileContent";
+
+    auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                                 [&idx](DisciplineTeach& file){ return file.id == idx; });
+
+    if (mDisciplines.end() == fileIter || fileIter->literPath.isEmpty())
+        return QString();
+
+    QFile file(fileIter->literPath);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qDebug() << "Unable to open file " << fileIter->literPath << file.errorString();
+        return QString();
+    }
+
+    QTextStream textStream(&file);
+    QString fileContent = textStream.readAll().trimmed();
+    file.close();
+    return fileContent;
+}
+
+void LecturesManager::createLiterListFile(const int& idx)
+{
+    qDebug() << "createLiterListFile";
+
+    const QString fileExtension {"qppt"};
+    QString baseFolder {"Lectures\\Literatures"};
+
+    if (!QDir(baseFolder).exists())
+        QDir().mkdir(baseFolder);
+
+    QString filePath(baseFolder + QDir::separator() + QString::number(idx) + "." + fileExtension);
+    QFile file(filePath);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        qDebug() << "Unable to create file " << filePath << file.errorString();
+        return;
+    }
+
+    QTextStream textStream(&file);
+    textStream << filePath;
+    saveLiterListFile(filePath, idx);
+    file.close();
+}
+
+void LecturesManager::saveLiterListFileContent(const QString& text, const int& idx)
+{
+    qDebug() << "saveLiterListFileContent for id: " << idx;
+    auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                                 [&idx](DisciplineTeach& file){ return file.id == idx; });
+
+    if (mDisciplines.end() == fileIter || fileIter->literPath.isEmpty())
+        return;
+
+    QFile file(fileIter->literPath);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        qDebug() << "Unable to open file " << fileIter->literPath << file.errorString();
+        return;
+    }
+
+    QTextStream textStream(&file);
+    textStream << text;
+    file.close();
+}
+
+void LecturesManager::copyLiterListLectureFile(QString path, const int& idx)
+{
+    QString baseFolder {"Lectures\\Literatures"};
+
+    if (!QDir(baseFolder).exists())
+        QDir().mkdir(baseFolder);
+
+    QString prefix("file:///");
+    path.remove(0, prefix.size());
+    QString fileName(path.right(path.size() - path.lastIndexOf('/') - 1));
+    QString newPath(baseFolder + '\\' + fileName);
+    QFile::copy(path, newPath);
+
+    saveLiterListFile(newPath, idx);
+}
+
+bool LecturesManager::educPlanFileExist(const int& idx)
+{
+    qDebug() << "getEducPlanFileContent";
+
+    auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                                 [&idx](DisciplineTeach& file){ return file.id == idx; });
+
+    if (mDisciplines.end() == fileIter || fileIter->educPlanPath.isEmpty())
+        return false;
+    return true;
+}
+
+QString LecturesManager::getEducPlanFileContent(const int& idx)
+{
+    qDebug() << "getEducPlanFileContent";
+
+    auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                                 [&idx](DisciplineTeach& file){ return file.id == idx; });
+
+    if (mDisciplines.end() == fileIter || fileIter->educPlanPath.isEmpty())
+        return QString();
+
+    QFile file(fileIter->educPlanPath);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qDebug() << "Unable to open file " << fileIter->educPlanPath << file.errorString();
+        return QString();
+    }
+
+    QTextStream textStream(&file);
+    QString fileContent = textStream.readAll().trimmed();
+    file.close();
+    return fileContent;
+}
+
+void LecturesManager::createEducPlanFile(const int& idx)
+{
+    qDebug() << "createLiterListFile";
+
+    const QString fileExtension {"qppt"};
+    QString baseFolder {"Lectures\\EducPlans"};
+
+    if (!QDir(baseFolder).exists())
+        QDir().mkdir(baseFolder);
+
+    QString filePath(baseFolder + QDir::separator() + QString::number(idx) + "." + fileExtension);
+    QFile file(filePath);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        qDebug() << "Unable to create file " << filePath << file.errorString();
+        return;
+    }
+
+    QTextStream textStream(&file);
+    textStream << filePath;
+    saveEducPlanFile(filePath, idx);
+    file.close();
+}
+
+void LecturesManager::saveEducPlanFileContent(const QString& text, const int& idx)
+{
+    qDebug() << "saveEducPlanFileContent for id: " << idx;
+    auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                                 [&idx](DisciplineTeach& file){ return file.id == idx; });
+
+    if (mDisciplines.end() == fileIter || fileIter->educPlanPath.isEmpty())
+        return;
+
+    QFile file(fileIter->educPlanPath);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        qDebug() << "Unable to open file " << fileIter->educPlanPath << file.errorString();
+        return;
+    }
+
+    QTextStream textStream(&file);
+    textStream << text;
+    file.close();
+}
+
+void LecturesManager::copyEducPlanLectureFile(QString path, const int& idx)
+{
+    QString baseFolder {"Lectures\\Literatures"};
+
+    if (!QDir(baseFolder).exists())
+        QDir().mkdir(baseFolder);
+
+    QString prefix("file:///");
+    path.remove(0, prefix.size());
+    QString fileName(path.right(path.size() - path.lastIndexOf('/') - 1));
+    QString newPath(baseFolder + '\\' + fileName);
+    QFile::copy(path, newPath);
+
+    saveEducPlanFileContent(newPath, idx);
+}
+
+bool LecturesManager::educProgFileExist(const int& idx)
+{
+    auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                                 [&idx](DisciplineTeach& file){ return file.id == idx; });
+
+    if (mDisciplines.end() == fileIter || fileIter->educProgPath.isEmpty())
+        return false;
+    return true;
+}
+
+QString LecturesManager::getEducProgFileContent(const int& idx)
+{
+    qDebug() << "getEducProgFileContent";
+
+    auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                                 [&idx](DisciplineTeach& file){ return file.id == idx; });
+
+    if (mDisciplines.end() == fileIter || fileIter->educProgPath.isEmpty())
+        return QString();
+
+    QFile file(fileIter->educProgPath);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qDebug() << "Unable to open file " << fileIter->educProgPath << file.errorString();
+        return QString();
+    }
+
+    QTextStream textStream(&file);
+    QString fileContent = textStream.readAll().trimmed();
+    file.close();
+    return fileContent;
+}
+
+void LecturesManager::createEducProgFile(const int& idx)
+{
+    qDebug() << "createEducProgFile";
+
+    const QString fileExtension {"qppt"};
+    QString baseFolder {"Lectures\\EducProgram"};
+
+    if (!QDir(baseFolder).exists())
+        QDir().mkdir(baseFolder);
+
+    QString filePath(baseFolder + QDir::separator() + QString::number(idx) + "." + fileExtension);
+    QFile file(filePath);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        qDebug() << "Unable to create file " << filePath << file.errorString();
+        return;
+    }
+
+    QTextStream textStream(&file);
+    textStream << filePath;
+    saveEducProgFile(filePath, idx);
+    file.close();
+}
+
+void LecturesManager::saveEducProgFileContent(const QString& text, const int& idx)
+{
+    qDebug() << "saveEducProgFileContent for id: " << idx;
+    auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                                 [&idx](DisciplineTeach& file){ return file.id == idx; });
+
+    if (mDisciplines.end() == fileIter || fileIter->educProgPath.isEmpty())
+        return;
+
+    QFile file(fileIter->educProgPath);
+
+    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    {
+        qDebug() << "Unable to open file " << fileIter->educProgPath << file.errorString();
+        return;
+    }
+
+    QTextStream textStream(&file);
+    textStream << text;
+    file.close();
+}
+
+void LecturesManager::copyEducProgLectureFile(QString path, const int& idx)
+{
+    QString baseFolder {"Lectures\\Literatures"};
+
+    if (!QDir(baseFolder).exists())
+        QDir().mkdir(baseFolder);
+
+    QString prefix("file:///");
+    path.remove(0, prefix.size());
+    QString fileName(path.right(path.size() - path.lastIndexOf('/') - 1));
+    QString newPath(baseFolder + '\\' + fileName);
+    QFile::copy(path, newPath);
+
+    saveEducProgFileContent(newPath, idx);
+}
+
+void LecturesManager::saveThemeLectureFile(const QString& path, const int& idx)
+{
+    qDebug() << "saveThemeLectureFile";
+
+    ThemeLectureFile add;
+    add.path = path;
+    add.themeId = idx;
+    mSaveManager->addThemeLectureFile(add);
+
+    mThemeLectureFiles = mSaveManager->loadThemeLectureFile();
+}
+
+void LecturesManager::saveSubthemeLectureFile(const QString& path, const int& idx)
+{
+    qDebug() << "saveSubthemeLectureFile";
+
+    SubthemeLectureFile add;
+    add.path = path;
+    add.subthemeId = idx;
+    mSaveManager->addSubthemeLectureFile(add);
+
+    mSubthemeLectureFiles = mSaveManager->loadSubthemeLectureFile();
+}
+
+void LecturesManager::saveLiterListFile(const QString& path, const int& idx)
+{
+    qDebug() << "saveLiterListFile";
+
+    auto disc = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                             [&idx](DisciplineTeach& d){ return d.id == idx; });
+
+    if (mDisciplines.end() == disc)
+    {
+        qDebug() << "Cannot find discipline with Id " << idx;
+        return;
+    }
+
+    disc->literPath = path;
+    qDebug() << "New liter path: " << disc->literPath;
+    mSaveManager->updDiscipline(*disc);
+}
+
+void LecturesManager::saveEducPlanFile(const QString& path, const int& idx)
+{
+    qDebug() << "saveEducPlanFile";
+
+    auto disc = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                             [&idx](DisciplineTeach& d){ return d.id == idx; });
+
+    if (mDisciplines.end() == disc)
+    {
+        qDebug() << "Cannot find discipline with Id " << idx;
+        return;
+    }
+
+    disc->educPlanPath = path;
+    qDebug() << "New education plan path: " << disc->educPlanPath;
+    mSaveManager->updDiscipline(*disc);
+}
+
+void LecturesManager::saveEducProgFile(const QString& path, const int& idx)
+{
+    qDebug() << "saveEducProgFile";
+
+    auto disc = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                             [&idx](DisciplineTeach& d){ return d.id == idx; });
+
+    if (mDisciplines.end() == disc)
+    {
+        qDebug() << "Cannot find discipline with Id " << idx;
+        return;
+    }
+
+    disc->educProgPath = path;
+    qDebug() << "New education program path: " << disc->educProgPath;
+    mSaveManager->updDiscipline(*disc);
+}

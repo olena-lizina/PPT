@@ -19,11 +19,13 @@
 import QtQuick 2.5
 import QtQuick.Layouts 1.2
 import LecturesManager 1.1
+import ScreenContextBuffer 1.1
 import "../../../components"
 import "../.."
 
-BlankScreen {
-    id: editorScreen
+Item {
+
+    anchors.fill: parent
 
     CToolBar {
         id: toolBar
@@ -34,14 +36,6 @@ BlankScreen {
         RowLayout {
             anchors.fill: parent
             spacing: 0
-
-            CBackButton {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                text: LecturesManager.hasSubThemes(LecturesManager.selectedItem(LecturesManager.Themes))
-                      ? LecturesManager.selectedItem(LecturesManager.SubThemes)
-                      : LecturesManager.selectedItem(LecturesManager.Themes)
-            }
 
             CToolButton {
                 Layout.fillHeight: true
@@ -72,15 +66,11 @@ BlankScreen {
                 icon: "\u2714"
                 tooltipText: qsTr("Save lecture")
                 onClicked: {
-                    LecturesManager.saveFileContent(codeArea.text)
+                    LecturesManager.saveFileContent(codeArea.text, ScreenContextBuffer.nesting, ScreenContextBuffer.selectedIdx)
                     LecturesManager.clearComponentCache()
                     Qt.inputMethod.hide()
-                    stackView.push(Qt.resolvedUrl("LectureScreen.qml"))
+                    ScreenContextBuffer.loaderSource = "education/lectures/DisplayTextScreen.qml"
                 }
-            }
-
-            CHomeButton {
-                onClicked: stackView.push(Qt.resolvedUrl("../../MainMenuScreen.qml"))
             }
         }
     }
@@ -89,7 +79,7 @@ BlankScreen {
         id: codeArea
 
         Component.onDestruction: {
-            LecturesManager.saveFileContent(text)
+            LecturesManager.saveFileContent(text, ScreenContextBuffer.nesting, ScreenContextBuffer.selectedIdx)
         }
 
         anchors.top: toolBar.bottom
@@ -99,6 +89,12 @@ BlankScreen {
 
         indentSize: settings.indentSize
 
-        text: LecturesManager.getFileContent()
+        text: LecturesManager.getFileContent(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting)
+
+        onTextChanged: {
+            LecturesManager
+        }
     }
 }
+
+

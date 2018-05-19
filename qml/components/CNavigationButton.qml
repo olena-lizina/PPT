@@ -22,8 +22,6 @@ import QtQuick.Layouts 1.2
 Item {
     id: cNavigationButton
 
-    anchors.left: parent.left
-    anchors.right: parent.right
     implicitHeight: 18.5 * settings.pixelDensity
     property alias color: btnRect.color
     property alias icon: buttonIcon.text

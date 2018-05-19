@@ -90,7 +90,7 @@ BlankScreen {
             else if (LecturesManager.itemHasFile(LecturesManager.selectedItem(LecturesManager.Themes), LecturesManager.Themes))
             {
                 LecturesManager.selectFile()
-                stackView.push(Qt.resolvedUrl("LectureScreen.qml"))
+                stackView.push(Qt.resolvedUrl("DisplayTextScreen.qml"))
             }
             else
             {
@@ -108,7 +108,7 @@ BlankScreen {
                     else
                     {
                         LecturesManager.createFile()
-                        stackView.push(Qt.resolvedUrl("EditorLectureScreen.qml"))
+                        stackView.push(Qt.resolvedUrl("EditTextScreen.qml"))
                     }
                 }
 

@@ -21,6 +21,7 @@ import QtQuick.Controls 1.4
 import QtQuick.Controls.Styles 1.4
 import QtQuick.Window 2.2
 import Qt.labs.settings 1.0
+import StudentManager 1.1
 import "palettes"
 
 ApplicationWindow {
@@ -45,6 +46,7 @@ ApplicationWindow {
 
     onLoaded: {
         settings.pixelDensity = settings.debugMode ? 6.0 : Screen.logicalPixelDensity
+        StudentManager.loadStudentsFromDB()
     }
 
     // Settings
@@ -69,6 +71,10 @@ ApplicationWindow {
 
         property alias windowWidth: cApplicationWindow.width
         property alias windowHeight: cApplicationWindow.height
+
+        // used between screens
+        property int nestingLevel
+        property int selectedId
     }
 
     Settings {

@@ -19,11 +19,14 @@
 import QtQuick 2.5
 import QtQuick.Layouts 1.2
 import LecturesManager 1.1
+import ScreenContextBuffer 1.1
 import "../../../components"
 import "../.."
 
-BlankScreen {
+Item {
     id: editorScreen
+
+    anchors.fill: parent
 
     CToolBar {
         id: toolBar
@@ -35,23 +38,11 @@ BlankScreen {
             anchors.fill: parent
             spacing: 0
 
-            CBackButton {
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                text: LecturesManager.hasSubThemes(LecturesManager.selectedItem(LecturesManager.Themes))
-                      ? LecturesManager.selectedItem(LecturesManager.SubThemes)
-                      : LecturesManager.selectedItem(LecturesManager.Themes)
-            }
-
             CToolButton {
                 Layout.fillHeight: true
                 icon: "\u270e"
-                tooltipText: qsTr("Select all")
-                onClicked: stackView.push(Qt.resolvedUrl("EditorLectureScreen.qml"))
-            }
-
-            CHomeButton {
-                onClicked: stackView.push(Qt.resolvedUrl("../../MainMenuScreen.qml"))
+                tooltipText: qsTr("Edit")
+                onClicked: ScreenContextBuffer.loaderSource = "education/lectures/EditTextScreen.qml"
             }
         }
     }
@@ -64,6 +55,6 @@ BlankScreen {
         anchors.left: parent.left
         anchors.right: parent.right
 
-        text: LecturesManager.getFileContent()
+        text: LecturesManager.getFileContent(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting)
     }
 }

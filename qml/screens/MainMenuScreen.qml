@@ -18,15 +18,11 @@
 
 import QtQuick 2.5
 import "../components"
-import LecturesManager 1.1
-import StudentManager 1.1
 
 BlankScreen {
     id: mainMenuScreen
 
     Component.onCompleted: {
-        StudentManager.loadStudentsFromDB()
-        //LecturesManager.loadAllLectures()
     }
 
     CToolBar {
@@ -57,30 +53,40 @@ BlankScreen {
             anchors.right: parent.right
 
             CNavigationButton {
+                anchors.left: parent.left
+                anchors.right: parent.right
                 text: qsTr("Administration")
                 icon: "\uD83D\uDC71"
                 onClicked: stackView.push(Qt.resolvedUrl("AdministrationScreen.qml"))
             }
 
             CNavigationButton {
+                anchors.left: parent.left
+                anchors.right: parent.right
                 text: qsTr("Educational materials")
                 icon: "\uf115"
                 onClicked: stackView.push(Qt.resolvedUrl("BaseLecturesScreen.qml"))
             }
 
             CNavigationButton {
+                anchors.left: parent.left
+                anchors.right: parent.right
                 text: qsTr("Learning progress")
                 icon: "\uf080"
                 onClicked: stackView.push(Qt.resolvedUrl("ProgressScreen.qml"))
             }
 
             CNavigationButton {
+                anchors.left: parent.left
+                anchors.right: parent.right
                 text: qsTr("Manual")
                 icon: "\uf1c9"
                 //onClicked: stackView.push(Qt.resolvedUrl("ModulesScreen.qml"))
             }
 
             CNavigationButton {
+                anchors.left: parent.left
+                anchors.right: parent.right
                 text: qsTr("About")
                 icon: "\uf0e5"
                 onClicked: stackView.push(Qt.resolvedUrl("AboutScreen.qml"))

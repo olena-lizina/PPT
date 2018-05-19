@@ -26,9 +26,10 @@ HEADERS += \
     cpp/DBManager.h \
     cpp/DataTypes.h \
     cpp/StudentModel.h \
-    cpp/TreeModel.h \
     cpp/TreeItem.h \
-    cpp/LanguageManager.h
+    cpp/LanguageManager.h \
+    cpp/ScreenContextBuffer.h \
+    cpp/TextParser.h
 
 SOURCES += \
     cpp/main.cpp \
@@ -40,9 +41,10 @@ SOURCES += \
     cpp/SaveManager.cpp \
     cpp/LecturesManager.cpp \
     cpp/DBManager.cpp \
-    cpp/TreeModel.cpp \
     cpp/TreeItem.cpp \
-    cpp/LanguageManager.cpp
+    cpp/LanguageManager.cpp \
+    cpp/ScreenContextBuffer.cpp \
+    cpp/TextParser.cpp
 
 lupdate_only {
 SOURCES += \

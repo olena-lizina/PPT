@@ -23,7 +23,7 @@
 #include "StudentManager.h"
 #include "LecturesManager.h"
 #include "SyntaxHighlighter.h"
-#include "TreeModel.h"
+#include "ScreenContextBuffer.h"
 
 int main(int argc, char *argv[])
 {
@@ -40,18 +40,22 @@ int main(int argc, char *argv[])
 
     qmlRegisterSingletonType<StudentManager>("StudentManager", 1, 1, "StudentManager", &StudentManager::studentManagerProvider);
     qmlRegisterSingletonType<LecturesManager>("LecturesManager", 1, 1, "LecturesManager", &LecturesManager::lecturesManagerProvider);
-    qmlRegisterSingletonType<TreeModel>("TreeModel", 1, 1, "TreeModel", &TreeModel::treeModelProvider);
+    qmlRegisterSingletonType<ScreenContextBuffer>("ScreenContextBuffer", 1, 1, "ScreenContextBuffer", &ScreenContextBuffer::screenContextBufferProvider);
 
     SaveManager::Ptr saveManager(new SaveManager());
     StudentManager::setSaveManager(saveManager);
     LecturesManager::setSaveManager(saveManager);
 
     qmlRegisterType<SyntaxHighlighter>("SyntaxHighlighter", 1, 1, "SyntaxHighlighter");
+    //qmlRegisterType<ScreenContextBuffer>("ScreenContextBuffer", 1, 1, "ScreenContextBuffer");
+
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("applicationDirPath", QGuiApplication::applicationDirPath());
     engine.load(QUrl("qrc:/qml/main.qml"));
+
     StudentManager::setQmlEngine(&engine);
     LecturesManager::setQmlEngine(&engine);
+    ScreenContextBuffer::setQmlEngine(&engine);
 
     return app.exec();
 }

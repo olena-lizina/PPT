@@ -18,10 +18,14 @@
 
 import QtQuick 2.5
 import LecturesManager 1.1
+import ScreenContextBuffer 1.1
 import ".."
 
 Row {
     id: root
+
+    signal itemChanged()
+
     Rectangle{
         width: 20
         height: list.height
@@ -59,13 +63,14 @@ Row {
                             dialog.open(dialog.types.lecture, insertParameters, insertCallback)
                         }
                         else
+                        {
                             modelData.isOpen = !modelData.isOpen;
+                            ScreenContextBuffer.setNestingAndIndex(modelData.nesting, modelData.idx);
+                            root.itemChanged()
+                        }
                     }
-                    else
-                    {
-                        if (modelData.idx !== -1)
-                            contextMenu.visible = !contextMenu.visible
-                    }
+                    else if (modelData.idx !== -1)
+                        contextMenu.visible = !contextMenu.visible;
                 }
 
                 onPressAndHold: tooltip.show(modelData.text)
@@ -126,48 +131,91 @@ Row {
     function contextMenuCallback(idx)
     {
         contextMenu.visible = false;
-        var label;
-        var child;
-
-        switch(modelData.nesting)
-        {
-        case 0:
-            label = qsTr("discipline");
-            child = qsTr("chapter");
-            break;
-        case 1:
-            label = qsTr("chapter");
-            child = qsTr("theme");
-            break;
-        case 2:
-            label = qsTr("theme");
-            child = qsTr("subtheme");
-            break;
-        case 3:
-            label = qsTr("subtheme");
-            break;
-        }
-
-        var dialogTitle;
 
         switch(idx)
         {
         case 0:
+            var leftBtn;
+            var rightBtn;
+            switch(modelData.nesting)
+            {
+            case 0:
+                leftBtn = qsTr("Discipline");
+                rightBtn = qsTr("Chapter");
+                break;
+            case 1:
+                leftBtn = qsTr("Chapter");
+                rightBtn = qsTr("Theme");
+                break;
+            case 2:
+                leftBtn = qsTr("Theme");
+                rightBtn = qsTr("Subtheme");
+                break;
+            }
+
             var insertParameters = {
                 title: qsTr("Insert new item"),
                 label: qsTr("What would you like to insert?"),
-                leftBtnText: label,
-                rightBtnText: child
+                leftBtnText: leftBtn,
+                rightBtnText: rightBtn
             }
 
             var insertCallback = function(value)
             {
                 console.log("Callback: " + value + ", idx: " + modelData.idx)
 
-                var textLab = value === 0 ? label : child;
+                var insTitle;
+                var insLabel;
+                switch(modelData.nesting)
+                {
+                case 0:
+                    if (value === 0)
+                    {
+                        insTitle = qsTr("Insert new discipline");
+                        insLabel = qsTr("Enter the name of the new discipline:");
+                    }
+                    else
+                    {
+                        insTitle = qsTr("Insert new chapter");
+                        insLabel = qsTr("Enter the name of the new chapter:");
+                    }
+                    break;
+                case 1:
+                    if (value === 0)
+                    {
+                        insTitle = qsTr("Insert new chapter");
+                        insLabel = qsTr("Enter the name of the new chapter:");
+                    }
+                    else
+                    {
+                        insTitle = qsTr("Insert new theme");
+                        insLabel = qsTr("Enter the name of the new theme:");
+                    }
+                    break;
+                case 2:
+                    if (value === 0)
+                    {
+                        insTitle = qsTr("Insert new theme");
+                        insLabel = qsTr("Enter the name of the new theme:");
+                    }
+                    else
+                    {
+                        insTitle = qsTr("Insert new subtheme");
+                        insLabel = qsTr("Enter the name of the new subtheme:");
+                    }
+                    break;
+                case 3:
+                    if (value === 0)
+                    {
+                        insTitle = qsTr("Insert new subtheme");
+                        insLabel = qsTr("Enter the name of the new subtheme:");
+                    }
+                    break;
+                }
+
                 var ins = {
-                    title: qsTr("Insert new ") + textLab,
-                    nameLabel: qsTr("Enter new ") + textLab + qsTr(" name:")
+                    title: insTitle,
+                    nameLabel: insLabel
                 }
 
                 var insCallback = function(val)
@@ -204,18 +252,35 @@ Row {
             }
 
             if (modelData.nesting === 3)
-            {
                 insertCallback(0);
-            }
             else
-            {
                 dialog.open(dialog.types.insert, insertParameters, insertCallback)
-            }
             break;
         case 1:
+            var editTitle;
+            var editLabel;
+            switch(modelData.nesting)
+            {
+            case 0:
+                editTitle = qsTr("Edit discipline");
+                editLabel = qsTr("Enter the name of the discipline:");
+                break;
+            case 1:
+                editTitle = qsTr("Edit chapter");
+                editLabel = qsTr("Enter the name of the chapter:");
+                break;
+            case 2:
+                editTitle = qsTr("Edit theme");
+                editLabel = qsTr("Enter the name of the theme:");
+                break;
+            case 3:
+                editTitle = qsTr("Edit subtheme");
+                editLabel = qsTr("Enter the name of the subtheme:");
+                break;
+            }
             var editParameters = {
-                title: qsTr("Edit ") + label,
-                nameLabel: qsTr("Enter new ") + label + qsTr(" name:"),
+                title: editTitle,
+                nameLabel: editLabel,
                 name: modelData.text
             }
 
@@ -243,9 +308,31 @@ Row {
             dialog.open(dialog.types.lecture, editParameters, editCallback)
             break;
         case 2:
+            var removeTitle;
+            var removeLabel;
+            switch(modelData.nesting)
+            {
+            case 0:
+                removeTitle = qsTr("Remove discipline");
+                removeLabel = qsTr("Press OK to delete discipline with name: \"%1\"");
+                break;
+            case 1:
+                removeTitle = qsTr("Remove chapter");
+                removeLabel = qsTr("Press OK to delete chapter with name: \"%1\"");
+                break;
+            case 2:
+                removeTitle = qsTr("Remove theme");
+                removeLabel = qsTr("Press OK to delete theme with name: \"%1\"");
+                break;
+            case 3:
+                removeTitle = qsTr("Remove subtheme");
+                removeLabel = qsTr("Press OK to delete subtheme with name: \"%1\"");
+                break;
+            }
+
             var removeParameters = {
-                title: qsTr("Remove ") + label,
-                text: qsTr("Press OK to delete ") + label + qsTr(": \"%1\"").arg(modelData.text)
+                title: removeTitle,
+                text: removeLabel.arg(modelData.text)
             }
 
             var removeCallback = function(value)
