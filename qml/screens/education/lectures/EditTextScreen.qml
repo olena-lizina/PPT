@@ -38,6 +38,7 @@ Item {
             btn2.visible = true
             btn3.visible = true
             btn5.visible = true
+            btn6.visible = false
             btn4.visible = false
         }
         else
@@ -47,6 +48,7 @@ Item {
             btn3.visible = false
             btn4.visible = true
             btn5.visible = false
+            btn6.visible = true
         }
     }
 
@@ -97,6 +99,7 @@ Item {
                     btn2.visible = true
                     btn3.visible = true
                     btn5.visible = true
+                    btn6.visible = false
                     visible = false
                     ScreenContextBuffer.edit = true
                 }
@@ -109,15 +112,49 @@ Item {
                 icon: "\u2714"
                 tooltipText: qsTr("Save lecture")
                 onClicked: {
-                    LecturesManager.saveFileContent(codeArea.text, ScreenContextBuffer.nesting, ScreenContextBuffer.selectedIdx)
+
+                    if (ScreenContextBuffer.screenType === LecturesManager.LiteratureListFile)
+                        LecturesManager.saveLiterListFileContent(codeArea.text, ScreenContextBuffer.selectedIdx)
+                    else if (ScreenContextBuffer.screenType === LecturesManager.EducationProgramFile)
+                        LecturesManager.saveEducProgFileContent(codeArea.text, ScreenContextBuffer.selectedIdx)
+                    else if (ScreenContextBuffer.screenType === LecturesManager.EducationPlanFile)
+                        LecturesManager.saveEducPlanFileContent(codeArea.text, ScreenContextBuffer.selectedIdx);
+                    else
+                        LecturesManager.saveFileContent(codeArea.text, ScreenContextBuffer.nesting, ScreenContextBuffer.selectedIdx)
+
                     LecturesManager.clearComponentCache()
                     Qt.inputMethod.hide()
                     btn1.visible = false
                     btn2.visible = false
                     btn3.visible = false
                     btn4.visible = true
+                    btn6.visible = true
                     visible = false
                     ScreenContextBuffer.edit = false
+                }
+            }
+
+            CToolButton {
+                id: btn6
+                Layout.fillHeight: true
+                icon: "\u2716"
+                tooltipText: qsTr("Delete")
+                onClicked: {
+                    var parameters = {
+                        title: qsTr("Delete file"),
+                        text: qsTr("Are you sure you want to delete this file?")
+                    }
+
+                    var callback = function(value)
+                    {
+                        if (value)
+                        {
+                            LecturesManager.removeFile(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting);
+                            ScreenContextBuffer.loaderSource = ""
+                        }
+                    }
+
+                    dialog.open(dialog.types.confirmation, parameters, callback)
                 }
             }
         }
@@ -130,7 +167,14 @@ Item {
         property int myIdx
 
         Component.onDestruction: {
-            LecturesManager.saveFileContent(text, myNesting, myIdx)
+            if (ScreenContextBuffer.screenType === LecturesManager.LiteratureListFile)
+                LecturesManager.saveLiterListFileContent(codeArea.text, myIdx)
+            else if (ScreenContextBuffer.screenType === LecturesManager.EducationProgramFile)
+                LecturesManager.saveEducProgFileContent(codeArea.text, myIdx)
+            else if (ScreenContextBuffer.screenType === LecturesManager.EducationPlanFile)
+                LecturesManager.saveEducPlanFileContent(codeArea.text, myIdx);
+            else
+                LecturesManager.saveFileContent(codeArea.text, myNesting, myIdx)
         }
 
         anchors.top: toolBar.bottom

@@ -44,6 +44,8 @@ Row {
                 anchors.fill: parent
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
                 onClicked: {
+                    ScreenContextBuffer.screenType = LecturesManager.LectureFile;
+
                     if (mouse.button == Qt.LeftButton)
                     {
                         if (modelData.idx === -1)
@@ -62,7 +64,11 @@ Row {
                         }
                         else
                         {
-                            ScreenContextBuffer.screenType = LecturesManager.LectureFile;
+                            if (modelData.nesting === 0)
+                            {
+                                ScreenContextBuffer.screenType = LecturesManager.LectureFile
+                                ScreenContextBuffer.loaderSource = ""
+                            }
                             ScreenContextBuffer.edit = false;
                             ScreenContextBuffer.setNestingAndIndex(modelData.nesting, modelData.idx);
                             modelData.isOpen = !modelData.isOpen;

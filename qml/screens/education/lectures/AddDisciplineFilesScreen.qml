@@ -33,8 +33,6 @@ Rectangle {
         GradientStop { position: 1.0; color: "#b3d9ff" }
     }
 
-    property int btnClicked
-
     CToolBar {
         id: topBar
         anchors.left: parent.left
@@ -62,32 +60,17 @@ Rectangle {
                         anchors.fill: parent
 
                         onClicked: {
-                            btnClicked = 0
+                            ScreenContextBuffer.screenType = LecturesManager.LiteratureListFile;
 
-                            var litParams = {
-                                title: qsTr("Literature list"),
-                                label: qsTr("What would you like to do?"),
-                                leftBtnText: qsTr("Create literature list"),
-                                rightBtnText: qsTr("Import literature list")
-                            }
-
-                            var litCallback = function(value)
+                            if (LecturesManager.fileExist(LecturesManager.LiteratureListFile, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting))
                             {
-                                console.log("Callback: " + value)
-
-                                if (value === 1)
-                                {
-                                    getFileDialog.source = "../../../components/dialogs/SelectFileDialog.qml"
-                                }
-                                else
-                                {
-                                    ScreenContextBuffer.screenType = LecturesManager.LiteratureListFile;
-                                    ScreenContextBuffer.edit = true;
-                                    LecturesManager.createFile(ScreenContextBuffer.nesting, ScreenContextBuffer.selectedIdx)
-                                    ScreenContextBuffer.loaderSource = "education/lectures/EditTextScreen.qml"
-                                }
+                                ScreenContextBuffer.edit = false
+                                ScreenContextBuffer.loaderSource = ""
                             }
-                            dialog.open(dialog.types.insert, litParams, litCallback)
+                            else
+                            {
+                                handleBtnClicked()
+                            }
                         }
                     }
                 }
@@ -122,32 +105,17 @@ Rectangle {
                         anchors.fill: parent
 
                         onClicked: {
-                            btnClicked = 1
+                            ScreenContextBuffer.screenType = LecturesManager.EducationProgramFile
 
-                            var progParams = {
-                                title: qsTr("Education program"),
-                                label: qsTr("What would you like to do?"),
-                                leftBtnText: qsTr("Create education program"),
-                                rightBtnText: qsTr("Import education program")
-                            }
-
-                            var progCallback = function(value)
+                            if (LecturesManager.fileExist(LecturesManager.EducationProgramFile, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting))
                             {
-                                if (value === 1)
-                                {
-                                    getFileDialog.source = "../../../components/dialogs/SelectFileDialog.qml"
-                                }
-                                else
-                                {
-                                    ScreenContextBuffer.screenType = LecturesManager.EducationProgramFile;
-                                    ScreenContextBuffer.edit = true;
-                                    LecturesManager.createFile(ScreenContextBuffer.nesting, ScreenContextBuffer.selectedIdx)
-                                    ScreenContextBuffer.loaderSource = "education/lectures/EditTextScreen.qml"
-                                }
-
-                                console.log("Callback: " + value)
+                                ScreenContextBuffer.edit = false
+                                ScreenContextBuffer.loaderSource = ""
                             }
-                            dialog.open(dialog.types.insert, progParams, progCallback)
+                            else
+                            {
+                                handleBtnClicked()
+                            }
                         }
                     }
                 }
@@ -182,32 +150,17 @@ Rectangle {
                         anchors.fill: parent
 
                         onClicked: {
-                            btnClicked = 2
+                            ScreenContextBuffer.screenType = LecturesManager.EducationPlanFile
 
-                            var progParams = {
-                                title: qsTr("Education plan"),
-                                label: qsTr("What would you like to do?"),
-                                leftBtnText: qsTr("Create education plan"),
-                                rightBtnText: qsTr("Import education plan")
-                            }
-
-                            var progCallback = function(value)
+                            if (LecturesManager.fileExist(LecturesManager.EducationPlanFile, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting))
                             {
-                                console.log("Callback: " + value)
-
-                                if (value === 1)
-                                {
-                                    getFileDialog.source = "../../../components/dialogs/SelectFileDialog.qml"
-                                }
-                                else
-                                {
-                                    ScreenContextBuffer.screenType = LecturesManager.EducationPlanFile;
-                                    ScreenContextBuffer.edit = true;
-                                    LecturesManager.createFile(ScreenContextBuffer.nesting, ScreenContextBuffer.selectedIdx)
-                                    ScreenContextBuffer.loaderSource = "education/lectures/EditTextScreen.qml"
-                                }
+                                ScreenContextBuffer.edit = false
+                                ScreenContextBuffer.loaderSource = ""
                             }
-                            dialog.open(dialog.types.insert, progParams, progCallback)
+                            else
+                            {
+                                handleBtnClicked()
+                            }
                         }
                     }
                 }
@@ -237,30 +190,83 @@ Rectangle {
         target: getFileDialog.item
         onProcess: {
             getFileDialog.source = ""
-            if (btnClicked === 0)
-            {
-                ScreenContextBuffer.screenType = LecturesManager.LiteratureListFile;
-                LecturesManager.copyLiterListLectureFile(value, ScreenContextBuffer.selectedIdx);
-                ScreenContextBuffer.edit = false;
-                ScreenContextBuffer.loaderSource = "education/lectures/EditTextScreen.qml"
-            }
-            else if (btnClicked === 1)
-            {
-                ScreenContextBuffer.screenType = LecturesManager.EducationProgramFile;
-                LecturesManager.copyEducPlanLectureFile(value, ScreenContextBuffer.selectedIdx);
-                ScreenContextBuffer.edit = false;
-                ScreenContextBuffer.loaderSource = "education/lectures/EditTextScreen.qml"
-            }
-            else if (btnClicked === 2)
-            {
-                ScreenContextBuffer.screenType = LecturesManager.EducationPlanFile;
-                LecturesManager.copyEducProgLectureFile(value, ScreenContextBuffer.selectedIdx);
-                ScreenContextBuffer.edit = false;
-                ScreenContextBuffer.loaderSource = "education/lectures/EditTextScreen.qml"
-            }
+            ScreenContextBuffer.edit = false
+
+            if (ScreenContextBuffer.screenType === LecturesManager.LiteratureListFile)
+                LecturesManager.copyLiterListFile(value, ScreenContextBuffer.selectedIdx)
+            else if (ScreenContextBuffer.screenType === LecturesManager.EducationProgramFile)
+                LecturesManager.copyEducProgFile(value, ScreenContextBuffer.selectedIdx)
+            else if (ScreenContextBuffer.screenType === LecturesManager.EducationPlanFile)
+                LecturesManager.copyEducPlanFile(value, ScreenContextBuffer.selectedIdx);
+
+            ScreenContextBuffer.loaderSource = ""
         }
+
         onClose: {
             getFileDialog.source = ""
+        }
+    }
+
+    function handleBtnClicked()
+    {
+        if (LecturesManager.fileExist(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting))
+        {
+            ScreenContextBuffer.edit = false
+            ScreenContextBuffer.loaderSource = ""
+        }
+        else
+        {
+            var params
+
+            if (ScreenContextBuffer.screenType === LecturesManager.LiteratureListFile)
+            {
+                params = {
+                    title: qsTr("Literature list"),
+                    label: qsTr("What would you like to do?"),
+                    leftBtnText: qsTr("Create literature list"),
+                    rightBtnText: qsTr("Import literature list")
+                }
+            }
+            else if (ScreenContextBuffer.screenType === LecturesManager.EducationProgramFile)
+            {
+                params = {
+                    title: qsTr("Education program"),
+                    label: qsTr("What would you like to do?"),
+                    leftBtnText: qsTr("Create education program"),
+                    rightBtnText: qsTr("Import education program")
+                }
+            }
+            else if (ScreenContextBuffer.screenType === LecturesManager.EducationPlanFile)
+            {
+                params = {
+                    title: qsTr("Education plan"),
+                    label: qsTr("What would you like to do?"),
+                    leftBtnText: qsTr("Create education plan"),
+                    rightBtnText: qsTr("Import education plan")
+                }
+            }
+
+            var callback = function(value)
+            {
+                if (value === 1) // import
+                {
+                    getFileDialog.source = "../../../components/dialogs/SelectFileDialog.qml"
+                }
+                else // create
+                {
+                    ScreenContextBuffer.edit = true
+
+                    if (ScreenContextBuffer.screenType === LecturesManager.LiteratureListFile)
+                        LecturesManager.createLiterListFile(ScreenContextBuffer.selectedIdx)
+                    else if (ScreenContextBuffer.screenType === LecturesManager.EducationProgramFile)
+                        LecturesManager.createEducProgFile(ScreenContextBuffer.selectedIdx)
+                    else if (ScreenContextBuffer.screenType === LecturesManager.EducationPlanFile)
+                        LecturesManager.createEducPlanFile(ScreenContextBuffer.selectedIdx);
+
+                    ScreenContextBuffer.loaderSource = ""
+                }
+            }
+            dialog.open(dialog.types.insert, params, callback)
         }
     }
 }

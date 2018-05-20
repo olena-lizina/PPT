@@ -61,6 +61,7 @@ public:
     Q_INVOKABLE void removeChapter(const int& idx);
     Q_INVOKABLE void removeTheme(const int& idx);
     Q_INVOKABLE void removeSubtheme(const int& idx);
+    Q_INVOKABLE void removeFile(const LecturesManager::FileType& type, const int& idx, const int& nesting = 0);
 
     Q_INVOKABLE void insertDiscipline(const QString& name, const int& idx);
     Q_INVOKABLE void insertChapter(const QString& name, const int& idx);
@@ -78,15 +79,15 @@ public:
 
     Q_INVOKABLE void createLiterListFile(const int& idx);
     Q_INVOKABLE void saveLiterListFileContent(const QString& text, const int& idx);
-    Q_INVOKABLE void copyLiterListLectureFile(QString path, const int& idx);
+    Q_INVOKABLE void copyLiterListFile(QString path, const int& idx);
 
     Q_INVOKABLE void createEducPlanFile(const int& idx);
     Q_INVOKABLE void saveEducPlanFileContent(const QString& text, const int& idx);
-    Q_INVOKABLE void copyEducPlanLectureFile(QString path, const int& idx);
+    Q_INVOKABLE void copyEducPlanFile(QString path, const int& idx);
 
     Q_INVOKABLE void createEducProgFile(const int& idx);
     Q_INVOKABLE void saveEducProgFileContent(const QString& text, const int& idx);
-    Q_INVOKABLE void copyEducProgLectureFile(QString path, const int& idx);
+    Q_INVOKABLE void copyEducProgFile(QString path, const int& idx);
 
 public:
     QList<QObject*> labsTree();
@@ -114,6 +115,9 @@ private:
     bool literListFileExist(const int& idx);
     bool educPlanFileExist(const int& idx);
     bool educProgFileExist(const int& idx);
+
+    void removeLectureFile(const int& nesting, const int& idx);
+    void removeDisciplineFiles(const int& idx, const LecturesManager::FileType& type);
 
 private:
     static SaveManager::Ptr mSaveManager;

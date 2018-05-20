@@ -240,6 +240,19 @@ void LecturesManager::removeSubtheme(const int& idx)
     emit labsTreeChanged();
 }
 
+void LecturesManager::removeFile(const LecturesManager::FileType& type, const int& idx, const int& nesting)
+{
+    qDebug() << "removeFile: " << idx;
+    switch(type)
+    {
+    case LectureFile: return removeLectureFile(nesting, idx);
+    case LiteratureListFile: return removeDisciplineFiles(idx, LiteratureListFile);
+    case EducationPlanFile: return removeDisciplineFiles(idx, EducationPlanFile);
+    case EducationProgramFile: return removeDisciplineFiles(idx, EducationProgramFile);
+    default: break;
+    }
+}
+
 void LecturesManager::insertDiscipline(const QString& name, const int& idx)
 {
     qDebug() << "insertDiscipline: " << idx << " " << name;
@@ -454,6 +467,42 @@ QString LecturesManager::getFileContent(const LecturesManager::FileType& type, c
     case EducationPlanFile: return getEducPlanFileContent(idx);
     case EducationProgramFile: return getEducProgFileContent(idx);
     default: return QString();
+    }
+}
+
+void LecturesManager::removeLectureFile(const int& nesting, const int& idx)
+{
+    qDebug() << "removeLectureFile";
+
+    if (nesting == 3)
+    {
+        auto fileIter = std::find_if(mSubthemeLectureFiles.begin(), mSubthemeLectureFiles.end(),
+                                     [&idx](SubthemeLectureFile& file){ return file.subthemeId == idx; });
+
+        if (mSubthemeLectureFiles.end() == fileIter)
+        {
+            qDebug() << "Unable to delete file";
+            return;
+        }
+
+        mSaveManager->delSubthemeLectureFile(fileIter->id);
+        QFile::remove(fileIter->path);
+        mSubthemeLectureFiles = mSaveManager->loadSubthemeLectureFile();
+    }
+    else if (nesting == 2)
+    {
+        auto fileIter = std::find_if(mThemeLectureFiles.begin(), mThemeLectureFiles.end(),
+                                     [&idx](ThemeLectureFile& file){ return file.themeId == idx; });
+
+        if (mThemeLectureFiles.end() == fileIter)
+        {
+            qDebug() << "Unable to delete file";
+            return;
+        }
+
+        mSaveManager->delThemeLectureFile(fileIter->id);
+        QFile::remove(fileIter->path);
+        mThemeLectureFiles = mSaveManager->loadThemeLectureFile();
     }
 }
 
@@ -737,7 +786,7 @@ void LecturesManager::saveLiterListFileContent(const QString& text, const int& i
     file.close();
 }
 
-void LecturesManager::copyLiterListLectureFile(QString path, const int& idx)
+void LecturesManager::copyLiterListFile(QString path, const int& idx)
 {
     QString baseFolder {"Lectures\\Literatures"};
 
@@ -844,7 +893,7 @@ void LecturesManager::saveEducPlanFileContent(const QString& text, const int& id
     file.close();
 }
 
-void LecturesManager::copyEducPlanLectureFile(QString path, const int& idx)
+void LecturesManager::copyEducPlanFile(QString path, const int& idx)
 {
     QString baseFolder {"Lectures\\Literatures"};
 
@@ -950,7 +999,7 @@ void LecturesManager::saveEducProgFileContent(const QString& text, const int& id
     file.close();
 }
 
-void LecturesManager::copyEducProgLectureFile(QString path, const int& idx)
+void LecturesManager::copyEducProgFile(QString path, const int& idx)
 {
     QString baseFolder {"Lectures\\Literatures"};
 
@@ -1061,5 +1110,27 @@ void LecturesManager::saveEducProgFile(const QString& path, const int& idx)
 
     disc->educProgPath = path;
     qDebug() << "New education program path: " << disc->educProgPath;
+    mSaveManager->updDiscipline(*disc);
+}
+
+void LecturesManager::removeDisciplineFiles(const int& idx, const LecturesManager::FileType& type)
+{
+    qDebug() << "removeLiteratureListFile";
+
+    auto disc = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                             [&idx](DisciplineTeach& d){ return d.id == idx; });
+
+    if (mDisciplines.end() == disc)
+    {
+        qDebug() << "Cannot remove literature list file";
+        return;
+    }
+
+    switch(type)
+    {
+    case LiteratureListFile: disc->literPath = ""; break;
+    case EducationPlanFile: disc->educPlanPath = ""; break;
+    case EducationProgramFile: disc->educProgPath = ""; break;
+    }
     mSaveManager->updDiscipline(*disc);
 }

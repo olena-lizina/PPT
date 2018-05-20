@@ -58,9 +58,9 @@ Rectangle {
                         anchors.fill: parent
 
                         onClicked: {
+                            ScreenContextBuffer.screenType = LecturesManager.LectureFile;
                             LecturesManager.createFile(ScreenContextBuffer.nesting, ScreenContextBuffer.selectedIdx)
                             ScreenContextBuffer.edit = true;
-                            ScreenContextBuffer.screenType = LecturesManager.LectureFile;
                             ScreenContextBuffer.loaderSource = "education/lectures/EditTextScreen.qml"
                         }
                     }
