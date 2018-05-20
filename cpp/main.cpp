@@ -22,12 +22,14 @@
 #include <QTranslator>
 #include "StudentManager.h"
 #include "LecturesManager.h"
-#include "SyntaxHighlighter.h"
 #include "ScreenContextBuffer.h"
+#include "MailServiceManager.h"
 
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
+
+    setlocale(LC_CTYPE, "ukr");
 
     QTranslator translator;
     translator.load("ppt_" + QLocale::system().name(), QCoreApplication::applicationDirPath());
@@ -41,13 +43,14 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonType<StudentManager>("StudentManager", 1, 1, "StudentManager", &StudentManager::studentManagerProvider);
     qmlRegisterSingletonType<LecturesManager>("LecturesManager", 1, 1, "LecturesManager", &LecturesManager::lecturesManagerProvider);
     qmlRegisterSingletonType<ScreenContextBuffer>("ScreenContextBuffer", 1, 1, "ScreenContextBuffer", &ScreenContextBuffer::screenContextBufferProvider);
+    qmlRegisterSingletonType<MailServiceManager>("MailServiceManager", 1, 1, "MailServiceManager", &MailServiceManager::mailServiceManagerProvider);
 
     SaveManager::Ptr saveManager(new SaveManager());
     StudentManager::setSaveManager(saveManager);
     LecturesManager::setSaveManager(saveManager);
+    MailServiceManager::setSaveManager(saveManager);
 
     qmlRegisterType<SyntaxHighlighter>("SyntaxHighlighter", 1, 1, "SyntaxHighlighter");
-    //qmlRegisterType<ScreenContextBuffer>("ScreenContextBuffer", 1, 1, "ScreenContextBuffer");
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("applicationDirPath", QGuiApplication::applicationDirPath());
@@ -56,6 +59,7 @@ int main(int argc, char *argv[])
     StudentManager::setQmlEngine(&engine);
     LecturesManager::setQmlEngine(&engine);
     ScreenContextBuffer::setQmlEngine(&engine);
+    MailServiceManager::setQmlEngine(&engine);
 
     return app.exec();
 }

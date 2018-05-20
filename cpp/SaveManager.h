@@ -74,6 +74,8 @@ public:
     void updStudent(const Student& info);
     void updSubtheme(const Subtheme& info);
     void updTheme(const Theme& info);
+    void updTeacherMail(const QString& mail);
+    void updStudentsCourses(const int& courseId, int studIds);
 
     void updChapterIdx(const int& oldIdx, const int& newIdx);
     void updDisciplineIdx(const int& oldIdx, const int& newIdx);
@@ -92,9 +94,13 @@ public:
     QList<Student> loadStudent();
     QList<Subtheme> loadSubtheme();
     QList<Theme> loadTheme();
+    QString loadTeacherMail();
+
+    QStringList studentsEmails(const int& courseId);
 
 protected:
     void initTables();
+    void addTeacherMail(const QString& mail);
 
 protected:
     SQLiteManager mSqlManager;

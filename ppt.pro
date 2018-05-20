@@ -16,10 +16,6 @@ RESOURCES += \
     ppt_resources.qrc
 
 HEADERS += \
-#    cpp/ProjectManager.h \
-    cpp/QMLHighlighter.h \
-    cpp/SyntaxHighlighter.h \
-#    cpp/MessageHandler.h \
     cpp/StudentManager.h \
     cpp/SaveManager.h \
     cpp/LecturesManager.h \
@@ -27,24 +23,18 @@ HEADERS += \
     cpp/DataTypes.h \
     cpp/StudentModel.h \
     cpp/TreeItem.h \
-    cpp/LanguageManager.h \
     cpp/ScreenContextBuffer.h \
-    cpp/TextParser.h
+    cpp/MailServiceManager.h
 
 SOURCES += \
     cpp/main.cpp \
-#    cpp/ProjectManager.cpp \
-    cpp/QMLHighlighter.cpp \
-    cpp/SyntaxHighlighter.cpp \
-#    cpp/MessageHandler.cpp \
     cpp/StudentManager.cpp \
     cpp/SaveManager.cpp \
     cpp/LecturesManager.cpp \
     cpp/DBManager.cpp \
     cpp/TreeItem.cpp \
-    cpp/LanguageManager.cpp \
     cpp/ScreenContextBuffer.cpp \
-    cpp/TextParser.cpp
+    cpp/MailServiceManager.cpp
 
 lupdate_only {
 SOURCES += \
@@ -85,3 +75,13 @@ ios {
     QMAKE_INFO_PLIST = $$PWD/platform-specific/ios/Project-Info.plist
     OTHER_FILES += $$QMAKE_INFO_PLIST
 }
+
+# Location of SMTP Library
+SMTP_LIBRARY_LOCATION = $$PWD/Libs
+
+win32:CONFIG(release, debug|release): LIBS += -L$$SMTP_LIBRARY_LOCATION/release/ -lSMTPEmail
+else:win32:CONFIG(debug, debug|release): LIBS += -L$$SMTP_LIBRARY_LOCATION/debug/ -lSMTPEmail
+else:unix: LIBS += -L$$SMTP_LIBRARY_LOCATION/release -lSMTPEmail
+
+INCLUDEPATH += $$SMTP_LIBRARY_LOCATION/include/
+DEPENDPATH += $$SMTP_LIBRARY_LOCATION/include/

@@ -65,7 +65,15 @@ BlankScreen {
                 text: qsTr("Students")
                 icon: "\uD83D\uDC65"
                 onClicked: stackView.push(Qt.resolvedUrl("admins/StudentScreen.qml"))
-            }                      
+            }
+
+            CNavigationButton {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                text: qsTr("Course settings")
+                icon: "\uD83D\uDC65"
+                onClicked: stackView.push(Qt.resolvedUrl("admins/CourseSettingsScreen.qml"))
+            }
         }
     }
 

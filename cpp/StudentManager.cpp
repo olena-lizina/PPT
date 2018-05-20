@@ -159,10 +159,18 @@ QStringList StudentManager::getGroups()
     QStringList result;    
     result << tr("All groups");
 
-    for(auto& it: mGroupMap)
+    for (auto& it: mGroupMap)
         result << it;
 
     return result;
+}
+
+int StudentManager::getGroupIdx(QString name)
+{
+    if (!name.compare("All groups"))
+        return 0;
+
+    return mGroupMap.key(name);
 }
 
 QList<QObject*> StudentManager::getAllStudents()

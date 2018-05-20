@@ -41,6 +41,8 @@ LecturesManager::LecturesManager(QObject* parent)
     mThemeLectureFiles = mSaveManager->loadThemeLectureFile();
     mSubthemeLectureFiles = mSaveManager->loadSubthemeLectureFile();
 
+    mTeacherEmail = mSaveManager->loadTeacherMail();
+
     initLabsTree();
 }
 
@@ -1133,4 +1135,49 @@ void LecturesManager::removeDisciplineFiles(const int& idx, const LecturesManage
     case EducationProgramFile: disc->educProgPath = ""; break;
     }
     mSaveManager->updDiscipline(*disc);
+}
+
+QString LecturesManager::teacherEmail() const
+{
+    return mTeacherEmail;
+}
+
+void LecturesManager::setTeacherEmail(const QString& email)
+{
+    qDebug() << "setTeacherEmail: " << email;
+    mTeacherEmail = email;
+    mSaveManager->updTeacherMail(email);
+    emit teacherEmailChanged();
+}
+
+void LecturesManager::saveStudentCourses(QString courseName, int groupId)
+{
+    auto disc = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                 [&courseName](DisciplineTeach& d){ return !d.name.compare(courseName); });
+
+    if (mDisciplines.end() == disc)
+    {
+        qDebug() << "cannot find discipline with name " << courseName;
+        return;
+    }
+
+    mSaveManager->updStudentsCourses(disc->id, groupId);
+}
+
+void LecturesManager::saveTeacherEmail(const QString& email)
+{
+    qDebug() << "saveTeacherEmail: " << email;
+    mTeacherEmail = email;
+    mSaveManager->updTeacherMail(email);
+    emit teacherEmailChanged();
+}
+
+QStringList LecturesManager::getCourses()
+{
+    QStringList result;
+
+    for(auto& it: mDisciplines)
+        result << it.name;
+
+    return result;
 }

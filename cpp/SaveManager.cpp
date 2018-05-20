@@ -271,6 +271,56 @@ void SaveManager::addTheme(const Theme& info)
         qDebug() << "Cannot save theme";
 }
 
+void SaveManager::updStudentsCourses(const int& courseId, int groupId)
+{
+    auto res = mSqlManager.execute(getLastIdTemp.arg("StudentsCourses"));
+    int lastId = 0;
+
+    if (res.first && !res.second.isEmpty() && !res.second.at(0).isEmpty())
+    {
+        qDebug() << "Cannot get last student course";
+        lastId = res.second.at(0).at(0).toInt();
+    }
+
+    QString tempAddStr("INSERT INTO StudentsCourses(Id, StudId, CourseId) VALUES ");
+    QString tempExStr("SELECT * FROM StudentsCourses WHERE StudId='%1' AND CourseId='%2'");
+
+    QString selStudsStr;
+
+    if (groupId > 0)
+        selStudsStr = QString("SELECT Id FROM Student WHERE Group_Id='%1'").arg(groupId);
+    else
+        selStudsStr = "SELECT * FROM Student";
+
+    auto studIds = mSqlManager.execute(selStudsStr);
+    if (!studIds.first || studIds.second.isEmpty() || studIds.second.at(0).isEmpty())
+    {
+        qDebug() << "Cannot get last student ids";
+        return;
+    }
+
+    for (auto stud : studIds.second)
+    {
+        auto tmp = mSqlManager.execute(tempExStr.arg(stud.at(0).toInt()).arg(courseId));
+        if (tmp.first && !tmp.second.isEmpty() && !tmp.second.at(0).isEmpty())
+            continue;
+        tempAddStr.append(QString("(" + QString::number(++lastId) + "," + QString::number(stud.at(0).toInt()) + "," + QString::number(courseId) + "),"));
+    }
+
+    tempAddStr = tempAddStr.left(tempAddStr.length() - 1);
+
+    if (!mSqlManager.execute(tempAddStr).first)
+        qDebug() << "Cannot save addStudentsCourses";
+}
+
+void SaveManager::addTeacherMail(const QString& mail)
+{
+    const QString tempAddStr("INSERT INTO TeacherEmail(Id,Email) VALUES (1, \"%1\")");
+
+    if (!mSqlManager.execute(tempAddStr.arg(mail)).first)
+        qDebug() << "Cannot save teacher email";
+}
+
 void SaveManager::delChapter(const int& id)
 {
     const QString tempDelStr("DELETE FROM Chapter WHERE Id='%1'");
@@ -453,6 +503,20 @@ void SaveManager::updTheme(const Theme& info)
 
     if (!mSqlManager.execute(tempUpdStr.arg(info.name).arg(info.orderId).arg(info.chapterId).arg(info.id)).first)
         qDebug() << "Cannot update theme";
+}
+
+void SaveManager::updTeacherMail(const QString& mail)
+{
+    auto exist = mSqlManager.execute("SELECT * FROM TeacherEmail");
+    if (!exist.first || exist.second.isEmpty() || exist.second.at(0).isEmpty())
+    {
+        addTeacherMail(mail);
+        return;
+    }
+
+    const QString tempAddStr("UPDATE TeacherEmail SET Email=\"%1\" WHERE Id=1");
+    if (!mSqlManager.execute(tempAddStr.arg(mail)).first)
+        qDebug() << "Cannot update teacher email";
 }
 
 void SaveManager::updChapterIdx(const int& oldIdx, const int& newIdx)
@@ -811,9 +875,54 @@ QList<Theme> SaveManager::loadTheme()
     return themes;
 }
 
+QString SaveManager::loadTeacherMail()
+{
+    const QString tempLoadStr("SELECT Email FROM TeacherEmail");
+    auto res = mSqlManager.execute(tempLoadStr);
+
+    if (!res.first || res.second.isEmpty() || res.second.at(0).isEmpty())
+    {
+        qDebug() << "Cannot load TeacherEmail";
+        return QString();
+    }
+
+    qDebug() << res.second.at(0).at(0).toString();
+    return res.second.at(0).at(0).toString();
+}
+
+QStringList SaveManager::studentsEmails(const int& courseId)
+{
+    const QString tempLoadStr("SELECT * FROM StudentsCourses WHERE CourseId='%1'");
+    auto res = mSqlManager.execute(tempLoadStr.arg(courseId));
+
+    if (!res.first || res.second.isEmpty() || res.second.at(0).isEmpty())
+    {
+        qDebug() << "Cannot load StudentsCourses";
+        return QStringList();
+    }
+
+    QStringList emails;
+
+    for (auto st : res.second)
+    {
+        const QString tempLoadStr("SELECT Email FROM Student WHERE Id='%1'");
+        auto em = mSqlManager.execute(tempLoadStr.arg(st.at(0).toInt()));
+
+        if (!em.first || em.second.isEmpty() || em.second.at(0).isEmpty())
+        {
+            qDebug() << "Cannot load Student";
+            continue;
+        }
+        emails << em.second.at(0).at(0).toString();
+    }
+
+    return emails;
+}
+
 void SaveManager::initTables()
 {
     const QStringList commonValues {
+        "CREATE TABLE IF NOT EXISTS TeacherEmail (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Email TEXT)",
         "CREATE TABLE IF NOT EXISTS Chapter (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Order_Id INTEGER, Discipline_Id INTEGER, FOREIGN KEY (Discipline_Id) REFERENCES Discipline(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS Lab_Work (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Theme_Id INTEGER, Finish_Date INTEGER, Name TEXT, Path TEXT, FOREIGN KEY (Theme_Id) REFERENCES Theme(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS Subtheme_Lecture_File (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Subtheme_Id INTEGER, Path TEXT, FOREIGN KEY (Subtheme_Id) REFERENCES Subtheme(Id) ON DELETE CASCADE)",
@@ -821,13 +930,14 @@ void SaveManager::initTables()
         "CREATE TABLE IF NOT EXISTS Report (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Lab_Id INTEGER, Delivery_Date INTEGER, Mark TEXT, Evaluation_Date INTEGER, Stud_Id INTEGER, FOREIGN KEY (Lab_Id) REFERENCES Lab_Work(Id) ON DELETE CASCADE, FOREIGN KEY (Stud_Id) REFERENCES Student(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS Report_File (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Report_Id INTEGER, Path TEXT, FOREIGN KEY (Report_Id) REFERENCES Report(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS Subtheme (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Order_Id INTEGER, Theme_Id INTEGER, FOREIGN KEY (Theme_Id) REFERENCES Theme(Id) ON DELETE CASCADE)",
-        "CREATE TABLE IF NOT EXISTS Theme (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Order_Id INTEGER, Chapter_Id INTEGER, FOREIGN KEY (Chapter_Id) REFERENCES Chapter(Id) ON DELETE CASCADE)"
+        "CREATE TABLE IF NOT EXISTS Theme (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Order_Id INTEGER, Chapter_Id INTEGER, FOREIGN KEY (Chapter_Id) REFERENCES Chapter(Id) ON DELETE CASCADE)"        
     };
 
     const QStringList teacherValues {
         "CREATE TABLE IF NOT EXISTS Discipline (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Liter_Path TEXT, Educ_Plan_Path TEXT, Educ_Progr_Path TEXT)",
         "CREATE TABLE IF NOT EXISTS 'Group' (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT)",
         "CREATE TABLE IF NOT EXISTS Student (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Phone TEXT, Email TEXT, Photo_Path TEXT, Group_Id INTEGER, FOREIGN KEY (Group_Id) REFERENCES 'Group'(Id) ON DELETE CASCADE)",
+        "CREATE TABLE IF NOT EXISTS StudentsCourses (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, StudId INTEGER, CourseId INTEGER, FOREIGN KEY (StudId) REFERENCES Student(Id) ON DELETE CASCADE, FOREIGN KEY (CourseId) REFERENCES Discipline(Id) ON DELETE CASCADE)"
     };
 
     const QStringList studentValues {

@@ -53,6 +53,7 @@ public:
     Q_INVOKABLE QObject* selectedStudent() const;
 
     Q_INVOKABLE void loadStudentsFromDB();
+    Q_INVOKABLE int getGroupIdx(QString name);
 
     Q_INVOKABLE QString copyExternalPhoto(QString path);
 

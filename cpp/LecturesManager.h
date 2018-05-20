@@ -32,6 +32,7 @@ class LecturesManager: public QObject
     Q_ENUMS(FileType)
 
     Q_PROPERTY(QList<QObject*> labsTree READ labsTree NOTIFY labsTreeChanged)
+    Q_PROPERTY(QString teacherEmail READ teacherEmail WRITE setTeacherEmail NOTIFY teacherEmailChanged)
 
 public:
 
@@ -89,6 +90,15 @@ public:
     Q_INVOKABLE void saveEducProgFileContent(const QString& text, const int& idx);
     Q_INVOKABLE void copyEducProgFile(QString path, const int& idx);
 
+    Q_INVOKABLE void saveTeacherEmail(const QString& email);
+
+    QString teacherEmail() const;
+    void setTeacherEmail(const QString& email);
+
+    Q_INVOKABLE void saveStudentCourses(QString courseName, int groupId);
+
+    Q_INVOKABLE QStringList getCourses();
+
 public:
     QList<QObject*> labsTree();
     Q_INVOKABLE bool isEmptyTree() { return m_labsTree.size() <= 0; }
@@ -96,6 +106,7 @@ public:
 signals:
     void labsTreeChanged();
     void fileContentChanged();
+    void teacherEmailChanged();
 
 private:
     void initLabsTree();
@@ -131,6 +142,8 @@ private:
 
     QList<ThemeLectureFile> mThemeLectureFiles;
     QList<SubthemeLectureFile> mSubthemeLectureFiles;
+
+    QString mTeacherEmail;
 };
 
 #endif // LECTURESMANAGER_H

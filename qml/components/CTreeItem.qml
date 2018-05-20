@@ -66,6 +66,8 @@ Row {
                         {
                             if (modelData.nesting === 0)
                             {
+                                ScreenContextBuffer.courseId = modelData.idx
+                                ScreenContextBuffer.courseName = modelData.text
                                 ScreenContextBuffer.screenType = LecturesManager.LectureFile
                                 ScreenContextBuffer.loaderSource = ""
                             }

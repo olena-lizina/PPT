@@ -185,5 +185,6 @@
         <file>qml/screens/education/lectures/AddFileScreen.qml</file>
         <file>qml/screens/education/lectures/AddDisciplineFilesScreen.qml</file>
         <file>qml/screens/education/lectures/EditTextScreen.qml</file>
+        <file>qml/screens/admins/CourseSettingsScreen.qml</file>
     </qresource>
 </RCC>

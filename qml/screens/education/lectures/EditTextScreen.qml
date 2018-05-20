@@ -21,6 +21,7 @@ import QtQuick.Layouts 1.2
 import QtQuick.Controls 1.4
 import LecturesManager 1.1
 import ScreenContextBuffer 1.1
+import MailServiceManager 1.1
 import "../../../components"
 import "../.."
 
@@ -131,6 +132,8 @@ Item {
                     btn6.visible = true
                     visible = false
                     ScreenContextBuffer.edit = false
+
+                    MailServiceManager.sendEducationMaterials(ScreenContextBuffer.courseName, ScreenContextBuffer.courseId)
                 }
             }
 

@@ -73,6 +73,16 @@ bool ScreenContextBuffer::edit() const
     return mEdit;
 }
 
+int ScreenContextBuffer::courseId() const
+{
+    return mCourseId;
+}
+
+QString ScreenContextBuffer::courseName() const
+{
+    return mCourseName;
+}
+
 void ScreenContextBuffer::setNesting(const int& nesting)
 {
     qDebug() << "setNesting: " << nesting;
@@ -131,4 +141,14 @@ void ScreenContextBuffer::setEdit(bool edit)
         emit editChanged();
         qDebug() << "emit editChanged";
     }
+}
+
+void ScreenContextBuffer::setCourseId(const int& id)
+{
+    mCourseId = id;
+}
+
+void ScreenContextBuffer::setCourseName(const QString& name)
+{
+    mCourseName = name;
 }

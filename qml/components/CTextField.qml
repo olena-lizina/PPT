@@ -30,6 +30,7 @@ Item {
     property alias readonlyText: textInput.readOnly
     property alias placeholder: placeholderTextInput.text
     property alias validator: textInput.validator
+    property alias horizontalAlignment: textInput.horizontalAlignment
 
     Rectangle {
         anchors.fill: parent
