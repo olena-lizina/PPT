@@ -79,7 +79,7 @@ BlankScreen {
                 anchors.right: parent.right
                 text: qsTr("Manual")
                 icon: "\uf1c9"
-                //onClicked: stackView.push(Qt.resolvedUrl("ModulesScreen.qml"))
+                //onClicked: stackView.push(Qt.resolvedUrl("PlaygroundScreen.qml"))
             }
 
             CNavigationButton {

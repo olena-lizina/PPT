@@ -63,7 +63,7 @@ BlankScreen {
             CNavigationButton {
                 anchors.left: parent.left
                 anchors.right: parent.right
-                text: qsTr("Work done")
+                text: qsTr("Laboratory works")
                 icon: "\u2611"
 //                onClicked: {
 //                    ProjectManager.baseFolder = ProjectManager.Examples
@@ -74,29 +74,10 @@ BlankScreen {
             CNavigationButton {
                 anchors.left: parent.left
                 anchors.right: parent.right
-                text: qsTr("Work on execution")
-                icon: "\u26A0"
-//                onClicked: {
-//                    ProjectManager.baseFolder = ProjectManager.Projects
-//                    stackView.push(Qt.resolvedUrl("AdministrationScreen.qml")) //
-//                }
-            }
-
-            CNavigationButton {
-                anchors.left: parent.left
-                anchors.right: parent.right
                 text: qsTr("Gradebook")
                 icon: "\uD83D\uDCCA"
                 //onClicked: stackView.push(Qt.resolvedUrl("SettingsScreen.qml"))
             }
-
-            CNavigationButton {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                text: qsTr("Reports")
-                icon: "\u2709"
-                //onClicked: stackView.push(Qt.resolvedUrl("ModulesScreen.qml"))
-            }            
         }
     }
 
