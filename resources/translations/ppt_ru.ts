@@ -9,6 +9,60 @@
     </message>
 </context>
 <context>
+    <name>AddDisciplineFilesScreen</name>
+    <message>
+        <source>Literature list</source>
+        <translation>Список литературы</translation>
+    </message>
+    <message>
+        <source>Education program</source>
+        <translation>Учебная программа</translation>
+    </message>
+    <message>
+        <source>Education plan</source>
+        <translation>Учебный план</translation>
+    </message>
+    <message>
+        <source>What would you like to do?</source>
+        <translation>Что вы желаете сделать?</translation>
+    </message>
+    <message>
+        <source>Create literature list</source>
+        <translation>Создать список литературы</translation>
+    </message>
+    <message>
+        <source>Import literature list</source>
+        <translation>Имортировать список литературы</translation>
+    </message>
+    <message>
+        <source>Create education program</source>
+        <translation>Создать учебную программу</translation>
+    </message>
+    <message>
+        <source>Import education program</source>
+        <translation>Импортировать учебную программу</translation>
+    </message>
+    <message>
+        <source>Create education plan</source>
+        <translation>Создать учебный план</translation>
+    </message>
+    <message>
+        <source>Import education plan</source>
+        <translation>Импортировать учебный план</translation>
+    </message>
+</context>
+<context>
+    <name>AddFileScreen</name>
+    <message>
+        <source>Create lecture</source>
+        <translation>Создать лекцию</translation>
+    </message>
+    <message>
+        <source>Import lecture</source>
+        <translation>Импортировать лекцию</translation>
+    </message>
+</context>
+<context>
     <name>AdministrationScreen</name>
     <message>
         <source>Administration</source>
@@ -18,27 +72,16 @@
         <source>Students</source>
         <translation>Студенты</translation>
     </message>
+    <message>
+        <source>Course settings</source>
+        <translation>Настройки курсов</translation>
+    </message>
 </context>
 <context>
     <name>BaseLecturesScreen</name>
     <message>
         <source>Educational materials</source>
         <translation>Учебные материалы</translation>
-    </message>
-</context>
-<context>
-    <name>CCodeArea</name>
-    <message>
-        <source>Undo</source>
-        <translation>Отменить</translation>
-    </message>
-    <message>
-        <source>Redo</source>
-        <translation>Повторить</translation>
-    </message>
-    <message>
-        <source>Paste</source>
-        <translation>Вставить</translation>
     </message>
 </context>
 <context>
@@ -199,33 +242,6 @@
     </message>
 </context>
 <context>
-    <name>ChapterScreen</name>
-    <message>
-        <source>New chapter</source>
-        <translation>Новый раздел</translation>
-    </message>
-    <message>
-        <source>Enter chapter name :</source>
-        <translation>Введите название раздела:</translation>
-    </message>
-    <message>
-        <source>Edit chapter</source>
-        <translation>Редактировать раздел</translation>
-    </message>
-    <message>
-        <source>Chapter name :</source>
-        <translation>Название раздела:</translation>
-    </message>
-    <message>
-        <source>Delete the chapter</source>
-        <translation>Удалить раздел</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete &quot;%1&quot;?</source>
-        <translation>Вы уверенны, что хотите удалить раздел &quot;%1&quot;?</translation>
-    </message>
-</context>
-<context>
     <name>ConfirmationDialog</name>
     <message>
         <source>Cancel</source>
@@ -237,34 +253,30 @@
     </message>
 </context>
 <context>
-    <name>DisciplineScreen</name>
+    <name>CourseSettingsScreen</name>
     <message>
-        <source>Disciplines</source>
-        <translation>Дисциплины</translation>
+        <source>Course settings</source>
+        <translation>Настройки курсов</translation>
     </message>
     <message>
-        <source>New discipline</source>
-        <translation>Новая дисциплина</translation>
+        <source>Teacher email address:</source>
+        <translation>Електронная почта преподавателя:</translation>
     </message>
     <message>
-        <source>Enter discipline name :</source>
-        <translation>Введите название дисциплины:</translation>
+        <source>Save email</source>
+        <translation>Сохранить електронную почту</translation>
     </message>
     <message>
-        <source>Edit discipline</source>
-        <translation>Редактировать дисциплину</translation>
+        <source>Course name:</source>
+        <translation>Название курса:</translation>
     </message>
     <message>
-        <source>Discipline name :</source>
-        <translation>Название дисциплины:</translation>
+        <source>Assign for group:</source>
+        <translation>Назначить группе:</translation>
     </message>
     <message>
-        <source>Delete the discipline</source>
-        <translation>Удалить дисциплину</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete &quot;%1&quot;?</source>
-        <translation>Вы уверенны, что хотите удалить дисциплину &quot;%1&quot;?</translation>
+        <source>Assign</source>
+        <translation>Назначить</translation>
     </message>
 </context>
 <context>
@@ -330,10 +342,10 @@
     </message>
 </context>
 <context>
-    <name>EditorLectureScreen</name>
+    <name>EditTextScreen</name>
     <message>
         <source>Select all</source>
-        <translation>Выбрать всё</translation>
+        <translation>Выбрать все</translation>
     </message>
     <message>
         <source>Copy</source>
@@ -342,29 +354,26 @@
     <message>
         <source>Cut</source>
         <translation>Вырезать</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation>Редактировать</translation>
     </message>
     <message>
         <source>Save lecture</source>
         <translation>Сохранить лекцию</translation>
     </message>
-</context>
-<context>
-    <name>EditorScreen</name>
     <message>
-        <source>Select all</source>
-        <translation>Выбрать всё</translation>
+        <source>Delete</source>
+        <translation>Удалить</translation>
     </message>
     <message>
-        <source>Copy</source>
-        <translation>Копировать</translation>
+        <source>Delete file</source>
+        <translation>Удалить файл</translation>
     </message>
     <message>
-        <source>Cut</source>
-        <translation>Вырезать</translation>
-    </message>
-    <message>
-        <source>Run</source>
-        <translation>Запустить</translation>
+        <source>Are you sure you want to delete this file?</source>
+        <translation>Вы уверены, что хотите удалить этот файл?</translation>
     </message>
 </context>
 <context>
@@ -425,13 +434,6 @@
     <message>
         <source>OK</source>
         <translation>ОК</translation>
-    </message>
-</context>
-<context>
-    <name>LectureScreen</name>
-    <message>
-        <source>Select all</source>
-        <translation>Выбрать все</translation>
     </message>
 </context>
 <context>
@@ -538,33 +540,6 @@
     <message>
         <source>Input field cannot be left blank</source>
         <translation>Поле для ввода не может быть пустым</translation>
-    </message>
-</context>
-<context>
-    <name>PartScreen</name>
-    <message>
-        <source>New part</source>
-        <translation>Новая часть</translation>
-    </message>
-    <message>
-        <source>Enter part name :</source>
-        <translation>Введите название части:</translation>
-    </message>
-    <message>
-        <source>Edit part</source>
-        <translation>Редактировать часть</translation>
-    </message>
-    <message>
-        <source>Part name :</source>
-        <translation>Название части:</translation>
-    </message>
-    <message>
-        <source>Delete the part</source>
-        <translation>Удалить часть</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete &quot;%1&quot;?</source>
-        <translation>Вы уверенны, что хотите удалить часть &quot;%1&quot;?</translation>
     </message>
 </context>
 <context>

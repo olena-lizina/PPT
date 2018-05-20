@@ -23,8 +23,8 @@ BasePalette {
 
     background: "#f8f8f8"
 
-    toolBarBackground: "#ffffff"
-    toolBarStripe: "#167ffc"
+    toolBarBackground: "#b3d9ff"
+    toolBarStripe: "#ffcc00"
     toolBarShadowBegin: "#30000000"
     toolBarShadowEnd: "#00000000"
 

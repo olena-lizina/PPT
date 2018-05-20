@@ -33,7 +33,6 @@
         <file>qml/components/CApplicationWindow.qml</file>
         <file>qml/components/CBackButton.qml</file>
         <file>qml/components/CCheckBox.qml</file>
-        <file>qml/components/CCodeArea.qml</file>
         <file>qml/components/CContextMenuButton.qml</file>
         <file>qml/components/CDialogButton.qml</file>
         <file>qml/components/CEditorScrollBar.qml</file>
@@ -172,7 +171,6 @@
         <file>qml/components/CHomeButton.qml</file>
         <file>qml/components/CDragAndDropList.qml</file>
         <file>qml/components/dialogs/EditStudentDialog.qml</file>
-        <file>resources/images/dummy.jpg</file>
         <file>qml/components/dialogs/SelectFileDialog.qml</file>
         <file>qml/screens/BaseLecturesScreen.qml</file>
         <file>qml/components/CTreeItem.qml</file>

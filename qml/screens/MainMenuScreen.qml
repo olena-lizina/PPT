@@ -22,9 +22,6 @@ import "../components"
 BlankScreen {
     id: mainMenuScreen
 
-    Component.onCompleted: {
-    }
-
     CToolBar {
         id: toolBar
         anchors.left: parent.left
@@ -36,15 +33,16 @@ BlankScreen {
             anchors.leftMargin: 5 * settings.pixelDensity
             text: qsTr("PPT")
             font.pixelSize: 10 * settings.pixelDensity
-        }        
+        }
     }
+
 
     CFlickable {
         id: menuFlickable
+
         anchors.left: parent.left
         anchors.right: parent.right
         anchors.top: toolBar.bottom
-        anchors.bottom: parent.bottom
         contentHeight: column.height
 
         Column {

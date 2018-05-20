@@ -9,6 +9,60 @@
     </message>
 </context>
 <context>
+    <name>AddDisciplineFilesScreen</name>
+    <message>
+        <source>Literature list</source>
+        <translation>Список літератури</translation>
+    </message>
+    <message>
+        <source>Education program</source>
+        <translation>Навчальна програма</translation>
+    </message>
+    <message>
+        <source>Education plan</source>
+        <translation>Навчальний план</translation>
+    </message>
+    <message>
+        <source>What would you like to do?</source>
+        <translation>Що ви бажаєте виконати?</translation>
+    </message>
+    <message>
+        <source>Create literature list</source>
+        <translation>Створити список літератури</translation>
+    </message>
+    <message>
+        <source>Import literature list</source>
+        <translation>Імпортувати список літератури</translation>
+    </message>
+    <message>
+        <source>Create education program</source>
+        <translation>Створити навчальну програму</translation>
+    </message>
+    <message>
+        <source>Import education program</source>
+        <translation>Імпортувати навчальну програму</translation>
+    </message>
+    <message>
+        <source>Create education plan</source>
+        <translation>Створити навчальний план</translation>
+    </message>
+    <message>
+        <source>Import education plan</source>
+        <translation>Імпортувати навчальний план</translation>
+    </message>
+</context>
+<context>
+    <name>AddFileScreen</name>
+    <message>
+        <source>Create lecture</source>
+        <translation>Створити лекцію</translation>
+    </message>
+    <message>
+        <source>Import lecture</source>
+        <translation>Імпортувати лекцію</translation>
+    </message>
+</context>
+<context>
     <name>AdministrationScreen</name>
     <message>
         <source>Administration</source>
@@ -18,27 +72,16 @@
         <source>Students</source>
         <translation>Студенти</translation>
     </message>
+    <message>
+        <source>Course settings</source>
+        <translation>Налаштування курсів</translation>
+    </message>
 </context>
 <context>
     <name>BaseLecturesScreen</name>
     <message>
         <source>Educational materials</source>
         <translation>Навчальні матеріали</translation>
-    </message>
-</context>
-<context>
-    <name>CCodeArea</name>
-    <message>
-        <source>Undo</source>
-        <translation>Скасувати</translation>
-    </message>
-    <message>
-        <source>Redo</source>
-        <translation>Повторити</translation>
-    </message>
-    <message>
-        <source>Paste</source>
-        <translation>Вставити</translation>
     </message>
 </context>
 <context>
@@ -199,33 +242,6 @@
     </message>
 </context>
 <context>
-    <name>ChapterScreen</name>
-    <message>
-        <source>New chapter</source>
-        <translation>Новий розділ</translation>
-    </message>
-    <message>
-        <source>Enter chapter name :</source>
-        <translation>Введіть назву розділу:</translation>
-    </message>
-    <message>
-        <source>Edit chapter</source>
-        <translation>Редагувати розділ</translation>
-    </message>
-    <message>
-        <source>Chapter name :</source>
-        <translation>Назва розділу:</translation>
-    </message>
-    <message>
-        <source>Delete the chapter</source>
-        <translation>Видалити розділ</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete &quot;%1&quot;?</source>
-        <translation>Ви впевнені, що хочете видалили розділ &quot;%1&quot;?</translation>
-    </message>
-</context>
-<context>
     <name>ConfirmationDialog</name>
     <message>
         <source>Cancel</source>
@@ -237,34 +253,30 @@
     </message>
 </context>
 <context>
-    <name>DisciplineScreen</name>
+    <name>CourseSettingsScreen</name>
     <message>
-        <source>Disciplines</source>
-        <translation>Дисципліни</translation>
+        <source>Course settings</source>
+        <translation>Налаштування курсів</translation>
     </message>
     <message>
-        <source>New discipline</source>
-        <translation>Нова дисципліна</translation>
+        <source>Teacher email address:</source>
+        <translation>Електронна пошта викладача:</translation>
     </message>
     <message>
-        <source>Enter discipline name :</source>
-        <translation>Введіть назву дисципліни:</translation>
+        <source>Save email</source>
+        <translation>Зберегти електронну пошту</translation>
     </message>
     <message>
-        <source>Edit discipline</source>
-        <translation>Редагувати дисципліну</translation>
+        <source>Course name:</source>
+        <translation>Назва курсу:</translation>
     </message>
     <message>
-        <source>Discipline name :</source>
-        <translation>Назва дисципліни:</translation>
+        <source>Assign for group:</source>
+        <translation>Призначити групі:</translation>
     </message>
     <message>
-        <source>Delete the discipline</source>
-        <translation>Видалити дисципліну</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete &quot;%1&quot;?</source>
-        <translation>Ви впевнені, що хочете видалити дисципліну &quot;%1&quot;?</translation>
+        <source>Assign</source>
+        <translation>Призначити</translation>
     </message>
 </context>
 <context>
@@ -330,7 +342,7 @@
     </message>
 </context>
 <context>
-    <name>EditorLectureScreen</name>
+    <name>EditTextScreen</name>
     <message>
         <source>Select all</source>
         <translation>Обрати все</translation>
@@ -342,29 +354,26 @@
     <message>
         <source>Cut</source>
         <translation>Вирізати</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation>Редагувати</translation>
     </message>
     <message>
         <source>Save lecture</source>
         <translation>Зберегти лекцію</translation>
     </message>
-</context>
-<context>
-    <name>EditorScreen</name>
     <message>
-        <source>Select all</source>
-        <translation>Обрати все</translation>
+        <source>Delete</source>
+        <translation>Видалити</translation>
     </message>
     <message>
-        <source>Copy</source>
-        <translation>Копіювати</translation>
+        <source>Delete file</source>
+        <translation>Видалити файл</translation>
     </message>
     <message>
-        <source>Cut</source>
-        <translation>Вирізати</translation>
-    </message>
-    <message>
-        <source>Run</source>
-        <translation>Старт</translation>
+        <source>Are you sure you want to delete this file?</source>
+        <translation>Ви впевнені, що хочете видалити цей файл?</translation>
     </message>
 </context>
 <context>
@@ -425,13 +434,6 @@
     <message>
         <source>OK</source>
         <translation>ОК</translation>
-    </message>
-</context>
-<context>
-    <name>LectureScreen</name>
-    <message>
-        <source>Select all</source>
-        <translation>Обрати все</translation>
     </message>
 </context>
 <context>
@@ -538,33 +540,6 @@
     <message>
         <source>Input field cannot be left blank</source>
         <translation>Поле для вводу не може бути пустим</translation>
-    </message>
-</context>
-<context>
-    <name>PartScreen</name>
-    <message>
-        <source>New part</source>
-        <translation>Нова частина</translation>
-    </message>
-    <message>
-        <source>Enter part name :</source>
-        <translation>Введіть назву частини:</translation>
-    </message>
-    <message>
-        <source>Edit part</source>
-        <translation>Редагувати частину</translation>
-    </message>
-    <message>
-        <source>Part name :</source>
-        <translation>Назва частини:</translation>
-    </message>
-    <message>
-        <source>Delete the part</source>
-        <translation>Видалити частину</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete &quot;%1&quot;?</source>
-        <translation>Ви впевнені, що хочете видалили частину &quot;%1&quot;?</translation>
     </message>
 </context>
 <context>

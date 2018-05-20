@@ -15,6 +15,8 @@ MOBILITY =
 RESOURCES += \
     ppt_resources.qrc
 
+RC_ICONS = $$PWD/resources/images/48icon.ico
+
 HEADERS += \
     cpp/StudentManager.h \
     cpp/SaveManager.h \

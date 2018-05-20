@@ -20,6 +20,7 @@ import QtQuick 2.5
 import QtQuick.Controls 1.4
 import QtQuick.Layouts 1.2
 import QtQuick.Window 2.0
+import QtQuick.Controls.Styles 1.4
 
 Item {
     id: cFilterItem
@@ -74,6 +75,21 @@ Item {
                     topMargin: 3 * settings.pixelDensity
                     bottomMargin: 3 * settings.pixelDensity
                 }
+
+                style: ComboBoxStyle {
+                    id: style1
+                    dropDownButtonWidth: 4 * settings.pixelDensity
+                    background: Rectangle {
+                        anchors.fill: parent
+                        color: palette.textFieldBackground
+                        border.width: Math.max(1, Math.round(0.3 * settings.pixelDensity))
+                        border.color: palette.textFieldBorder
+                    }
+
+                    label: CLabel {
+                        text: control.currentText
+                    }
+                }
             }
 
             CLabel {
@@ -87,7 +103,7 @@ Item {
                 }
             }
 
-            TextField {
+            CTextField {
                 id: textFieldIt
                 width: 0.15 * Screen.width
                 anchors {

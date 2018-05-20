@@ -21,63 +21,66 @@ import QtQuick 2.5
 BasePalette {
     id: cutePalette
 
-    background: "#f2f2f2"
+    background: "#e6f0ff"
 
-    toolBarBackground: "#ffffff"
-    toolBarStripe: "#80c342"
-    toolBarShadowBegin: "#20000000"
+    toolBarBackground: "#b3d9ff"
+    toolBarStripe: "#0099e6"
+    toolBarShadowBegin: "#30000000"
     toolBarShadowEnd: "#00000000"
 
-    label: "#1e1b18"
-    description: "#006325"
-    icon: "#1e1b18"
+    label: "#0033cc"
+    description: "#001a66"
+    icon: "#000099"
     warning: "#ff0000"
-    link: "#006325"
+    link: "#990099"
 
-    textFieldBackground: "#ffffff"
-    textFieldBorder: "#ccddd5"
-    textFieldPlaceholder: "#aaaaaa"
-    textFieldSelection: "#aaaaaa"
+    textFieldBackground: "#e6f2ff"
+    textFieldBorder: "#ccccff"
+    textFieldPlaceholder: "#9999ff"
+    textFieldSelection: "#ccccff"
 
-    button: "#80c342"
+    button: "#99b3e6"
 
-    separator: "#ccddd5"
+    contextBackground: "#99b3e6"
+    contextButton: "#8080ff"
+
+    separator: "#9999ff"
 
     scrollBar: "#30000000"
 
-    dialogOverlay: "#30000000"
+    dialogOverlay: "#e6e6ff"
     dialogBackground: "#f2f2f2"
-    dialogShadow: "#ff000000"
+    dialogShadow: "#00004d"
 
-    sliderFilledStripe: "#80c342"
-    sliderEmptyStripe: "#ccddd5"
+    sliderFilledStripe: "#5c5c8a";
+    sliderEmptyStripe: "#b3b3cc";
     sliderHandle: "#ffffff"
-    sliderHandleBorder: "#006325"
+    sliderHandleBorder: "#47476b"
 
-    tooltipBackground: "#cc222222"
+    tooltipBackground: "#47476b"
     tooltipText: "#ffffff"
 
     switcherBackground: "#ffffff"
-    switcherBorder: "#ccddd5"
-    switcherHandle: "#80c342"
+    switcherBorder: "#47476b"
+    switcherHandle: "#ffffff"
 
-    contextMenuButton: "#cc222222"
-    contextMenuButtonPressed: "#ff222222"
+    contextMenuButton: "#cc000000"
+    contextMenuButtonPressed: "#ff000000"
     contextMenuButtonText: "#ffffff"
 
-    lineNumbersBackground:"#e8e8e8"
-    lineNumber: "#999999"
+    lineNumbersBackground:"#d1d1e0"
+    lineNumber: "#9494b8"
 
-    editorSelection: "#80c342"
+    editorSelection: "#9494b8"
     editorSelectedText: "#ffffff"
 
-    editorSelectionHandle: "#006325"
+    editorSelectionHandle: "#777777"
 
-    editorNormal: "#1e1b18"
+    editorNormal: "#000000"
     editorComment: "#008000"
     editorNumber: "#000080"
     editorString: "#008000"
-    editorOperator: "#1e1b18"
+    editorOperator: "#000000"
     editorKeyword: "#808000"
     editorBuiltIn: "#0055af"
     editorMarker: "#ffff00"

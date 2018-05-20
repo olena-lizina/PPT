@@ -21,57 +21,57 @@ import QtQuick 2.5
 QtObject {
     id: basePalette
 
-    property color background: "#eeeeee"
+    property color background: "#e6f0ff"
 
-    property color toolBarBackground: "#ffffff"
-    property color toolBarStripe: "#aaaaaa"
+    property color toolBarBackground: "#b3d9ff"
+    property color toolBarStripe: "#0099e6"
     property color toolBarShadowBegin: "#30000000"
     property color toolBarShadowEnd: "#00000000"
 
-    property color label: "#000000"
-    property color description: "#222222"
-    property color icon: "#000000"
+    property color label: "#0033cc"
+    property color description: "#001a66"
+    property color icon: "#ffff00"
     property color warning: "#ff0000"
-    property color link: "#777777"
+    property color link: "#990099"
 
-    property color textFieldBackground: "#ffffff"
-    property color textFieldBorder: "#cccccc"
-    property color textFieldPlaceholder: "#aaaaaa"
-    property color textFieldSelection: "#aaaaaa"
+    property color textFieldBackground: "#e6f2ff"
+    property color textFieldBorder: "#ccccff"
+    property color textFieldPlaceholder: "#9999ff"
+    property color textFieldSelection: "#ccccff"
 
-    property color button: "#aaaaaa"
+    property color button: "#ccccff"
 
-    property color contextBackground: "#80c342"
-    property color contextButton: "#58882b"
+    property color contextBackground: "#ccccff"
+    property color contextButton: "#8080ff"
 
-    property color separator: "#cccccc"
+    property color separator: "#9999ff"
 
     property color scrollBar: "#30000000"
 
-    property color dialogOverlay: "#30000000"
-    property color dialogBackground: "#ffffff"
-    property color dialogShadow: "#ff000000"
+    property color dialogOverlay: "#e6e6ff"
+    property color dialogBackground: "#ccccff"
+    property color dialogShadow: "#00004d"
 
-    property color sliderFilledStripe: "#000000";
-    property color sliderEmptyStripe: "#aaaaaa";
+    property color sliderFilledStripe: "#5c5c8a";
+    property color sliderEmptyStripe: "#b3b3cc";
     property color sliderHandle: "#ffffff"
-    property color sliderHandleBorder: "#555555"
+    property color sliderHandleBorder: "#47476b"
 
-    property color tooltipBackground: "#cc000000"
+    property color tooltipBackground: "#47476b"
     property color tooltipText: "#ffffff"
 
     property color switcherBackground: "#ffffff"
-    property color switcherBorder: "#cccccc"
-    property color switcherHandle: "#dddddd"
+    property color switcherBorder: "#47476b"
+    property color switcherHandle: "#ffffff"
 
     property color contextMenuButton: "#cc000000"
     property color contextMenuButtonPressed: "#ff000000"
     property color contextMenuButtonText: "#ffffff"
 
-    property color lineNumbersBackground:"#dddddd"
-    property color lineNumber: "#aaaaaa"
+    property color lineNumbersBackground:"#d1d1e0"
+    property color lineNumber: "#9494b8"
 
-    property color editorSelection: "#aaaaaa"
+    property color editorSelection: "#9494b8"
     property color editorSelectedText: "#ffffff"
 
     property color editorSelectionHandle: "#777777"

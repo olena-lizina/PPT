@@ -18,8 +18,13 @@
 
 import QtQuick 2.5
 
-Item {
+Rectangle {
     id: blankScreen
+
+    gradient: Gradient {
+        GradientStop { position: 0.0; color: "#ffffb3" }
+        GradientStop { position: 1.0; color: "#b3d9ff" }
+    }
 
     enabled: !stackView.busy
 }

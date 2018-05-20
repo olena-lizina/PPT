@@ -67,6 +67,7 @@ Item {
             CToolButton {
                 id: btn1
                 Layout.fillHeight: true
+                Layout.alignment: Qt.AlignRight
                 icon: "\uf034"
                 tooltipText: qsTr("Select all")
                 onClicked: codeArea.selectAll()
@@ -76,6 +77,7 @@ Item {
                 id: btn2
                 visible: true
                 Layout.fillHeight: true
+                Layout.alignment: Qt.AlignRight
                 icon: "\uf0c5"
                 tooltipText: qsTr("Copy")
                 onClicked: codeArea.copy()
@@ -85,6 +87,7 @@ Item {
                 id: btn3
                 visible: true
                 Layout.fillHeight: true
+                Layout.alignment: Qt.AlignRight
                 icon: "\uf0c4"
                 tooltipText: qsTr("Cut")
                 onClicked: codeArea.cut()
@@ -93,6 +96,7 @@ Item {
             CToolButton {
                 id: btn4
                 Layout.fillHeight: true
+                Layout.fillWidth: ScreenContextBuffer.edit
                 icon: "\u270e"
                 tooltipText: qsTr("Edit")
                 onClicked: {
@@ -110,6 +114,7 @@ Item {
                 id: btn5
                 visible: true
                 Layout.fillHeight: true
+                Layout.alignment: Qt.AlignRight
                 icon: "\u2714"
                 tooltipText: qsTr("Save lecture")
                 onClicked: {
@@ -140,6 +145,7 @@ Item {
             CToolButton {
                 id: btn6
                 Layout.fillHeight: true
+                Layout.alignment: Qt.AlignRight
                 icon: "\u2716"
                 tooltipText: qsTr("Delete")
                 onClicked: {

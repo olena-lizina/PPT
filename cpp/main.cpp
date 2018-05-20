@@ -19,6 +19,7 @@
 #include <QGuiApplication>
 #include <QQmlApplicationEngine>
 #include <QtQml>
+#include <QIcon>
 #include <QTranslator>
 #include "StudentManager.h"
 #include "LecturesManager.h"
@@ -28,8 +29,6 @@
 int main(int argc, char *argv[])
 {
     QGuiApplication app(argc, argv);
-
-    setlocale(LC_CTYPE, "ukr");
 
     QTranslator translator;
     translator.load("ppt_" + QLocale::system().name(), QCoreApplication::applicationDirPath());
@@ -49,8 +48,6 @@ int main(int argc, char *argv[])
     StudentManager::setSaveManager(saveManager);
     LecturesManager::setSaveManager(saveManager);
     MailServiceManager::setSaveManager(saveManager);
-
-    qmlRegisterType<SyntaxHighlighter>("SyntaxHighlighter", 1, 1, "SyntaxHighlighter");
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("applicationDirPath", QGuiApplication::applicationDirPath());

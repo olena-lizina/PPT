@@ -61,6 +61,19 @@ BlankScreen {
             left: parent.left
             top: toolBar.bottom
         }
+
+
+    }
+
+    Rectangle {
+        id: separator
+        anchors.top: toolBar.bottom
+        anchors.bottom: parent.bottom
+        anchors.left: leftMenu.right
+        anchors.leftMargin: 3
+        width: Math.max(1, Math.round(0.8 * settings.pixelDensity))
+        color: palette.toolBarStripe
+        z: 2
     }
 
     Rectangle {
@@ -70,9 +83,9 @@ BlankScreen {
         height: settings.windowHeight - toolBar.height
 
         anchors {
-            left: leftMenu.right
-            leftMargin: 3
+            left: separator.right
             top: toolBar.bottom
+            bottom: parent.bottom
         }
 
         Component.onCompleted: {

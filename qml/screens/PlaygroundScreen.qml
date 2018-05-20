@@ -91,12 +91,6 @@ BlankScreen {
                     messagesFlickable.scrollDown()
             }
         }
-
-        Connections {
-            target: messageHandler
-            onMessageReceived:
-                messages.append(message)
-        }
     }
 
     Component.onCompleted: {

@@ -54,7 +54,7 @@ ApplicationWindow {
         id: settings
 
         // configurable
-        property string font: "Ubuntu Mono"
+        property string font: "Source Code Pro"
         property int fontSize: 40
         property string palette: "Cute"
         property int indentSize: 4
@@ -71,10 +71,6 @@ ApplicationWindow {
 
         property alias windowWidth: cApplicationWindow.width
         property alias windowHeight: cApplicationWindow.height
-
-        // used between screens
-        property int nestingLevel
-        property int selectedId
     }
 
     Settings {
@@ -101,16 +97,6 @@ ApplicationWindow {
     }
 
     property alias palette: paletteLoader.palette
-
-    // Message Handler
-
-    QtObject {
-        id: messageHandler
-        objectName: "messageHandler"
-        signal messageReceived(string message)
-    }
-
-    property alias messageHandler: messageHandler
 
     // Focus Management
 
