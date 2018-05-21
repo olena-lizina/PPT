@@ -65,23 +65,22 @@ BlankScreen {
                 anchors.right: parent.right
                 text: qsTr("Laboratory works")
                 icon: "\u2611"
-//                onClicked: {
-//                    ProjectManager.baseFolder = ProjectManager.Examples
-//                    stackView.push(Qt.resolvedUrl("ExamplesScreen.qml")) // EducationalMaterials.qml
-//                }
+                onClicked: {
+                    stackView.push(Qt.resolvedUrl("education/labs/LabsScreen.qml"))
+                }
             }
 
-            CNavigationButton {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                text: qsTr("Gradebook")
-                icon: "\uD83D\uDCCA"
-                //onClicked: stackView.push(Qt.resolvedUrl("SettingsScreen.qml"))
-            }
+//            CNavigationButton {
+//                anchors.left: parent.left
+//                anchors.right: parent.right
+//                text: qsTr("Gradebook")
+//                icon: "\uD83D\uDCCA"
+//                //onClicked: stackView.push(Qt.resolvedUrl("SettingsScreen.qml"))
+//            }
         }
     }
 
     CScrollBar {
-        flickableItem: listView
+        flickableItem: menuFlickable
     }
 }

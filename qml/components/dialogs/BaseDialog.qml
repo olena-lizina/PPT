@@ -29,6 +29,7 @@ Item {
     function initialize(parameters) {}
 
     signal process(var value)
+    signal longProcess(var value1, var value2)
     signal close()
 
     Rectangle {

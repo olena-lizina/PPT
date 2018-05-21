@@ -18,31 +18,9 @@
 
 import QtQuick 2.5
 
-Item {
-    id: cButton
-
-    property alias text: buttonLabel.text
-    signal clicked()
-
-    Rectangle {
-        id: background
-        anchors.fill: parent
-        color: mouseArea.pressed ? palette.contextMenuButtonPressed : palette.contextMenuButton
-        opacity: 0.5
-    }
-
-    CLabel {
-        id: buttonLabel
-        anchors.fill: parent
-        font.pixelSize: 3 * settings.pixelDensity
-        horizontalAlignment: Text.AlignHCenter
-        color: palette.contextMenuButtonText
-    }
-
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        onClicked:
-            cButton.clicked()
+Column{
+    Repeater{
+        model: modelData.childItems
+        delegate: CLabTreeItem {}
     }
 }

@@ -64,8 +64,8 @@ BasePalette {
     switcherBorder: "#47476b"
     switcherHandle: "#ffffff"
 
-    contextMenuButton: "#cc000000"
-    contextMenuButtonPressed: "#ff000000"
+    contextMenuButton: "#00a3cc"
+    contextMenuButtonPressed: "#008fb3"
     contextMenuButtonText: "#ffffff"
 
     lineNumbersBackground:"#d1d1e0"

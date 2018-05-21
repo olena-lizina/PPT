@@ -2,6 +2,7 @@
 #include <QMessageBox>
 #include <QDebug>
 #include <QFile>
+#include <QDir>
 #include <QByteArray>
 #include <QProcess>
 
@@ -81,9 +82,9 @@ void MailServiceManager::sendEducationMaterials(const QString& courseName, const
 
     message.addPart(&content);
 
-    zipFile("ppt.db", "ppt.rar");
+    zipFile("Lectures", "Lectures.rar");
 
-    message.addPart(new MimeAttachment(new QFile("ppt.rar")));
+    message.addPart(new MimeAttachment(new QFile("Lectures.rar")));
 
     if (!smtp.connectToHost())
     {
@@ -109,19 +110,116 @@ void MailServiceManager::sendEducationMaterials(const QString& courseName, const
     }
 
     smtp.quit();
+
+    QFile::remove("Lectures.rar");
 }
 
-void MailServiceManager::zipFile(QString fileName, QString zipName)
+void MailServiceManager::sendLabWorks(const QString courseName, const int courseId, const QString labName)
 {
-    QFile::copy(fileName, ("Lectures\\" + fileName));
+    qDebug() << "sendLabWorks";
+
+    SmtpClient smtp (host, port, ssl ? SmtpClient::SslConnection : SmtpClient::TcpConnection);
+
+    MimeMessage message;
+
+    message.setSender(new EmailAddress(sender));
+
+    QString subject("ППЗ \"%1\" Вам надійшла лабораторна робота");
+
+    message.setSubject(subject.arg(courseName));
+    auto emails = mSaveManager->studentsEmails(courseId);
+
+    for (auto email : emails)
+    {
+        message.addRecipient(new EmailAddress(email));
+    }
+
+    MimeHtml content;
+    content.setHtml(labsTemplate.arg(labName));
+
+    message.addPart(&content);
+
+    zipFile("Labs", "Labs.rar");
+
+    message.addPart(new MimeAttachment(new QFile("Labs.rar")));
+
+    if (!smtp.connectToHost())
+    {
+        qDebug() << ("Connection Failed");
+        return;
+    }
+
+    if (auth)
+        if (!smtp.login(user, password))
+        {
+            qDebug() << ("Authentification Failed");
+            return;
+        }
+
+    if (!smtp.sendMail(message))
+    {
+        qDebug() << ("Mail sending failed");
+        return;
+    }
+    else
+    {
+        qDebug() << ("The email was succesfully sent.");
+    }
+
+    smtp.quit();
+
+    QFile::remove("Labs.rar");
+}
+
+void MailServiceManager::zipFile(QString dir, QString zipName)
+{
+    QString srcFilePath(dir);
+    QString tgtFilePath("toSend/"+ dir);
+
+    if (!QDir("toSend").exists())
+        QDir().mkdir("toSend");
+
+    copyPath(srcFilePath, tgtFilePath);
+    QFile::copy("ppt.db", QString(QString("toSend/") + "ppt.db"));
 
     QProcess zip;
-    zip.start("C:\\Program Files (x86)\\WinRAR\\WinRAR.exe", QStringList() << "a" << zipName << ("Lectures\\" + fileName));
+    zip.start("C:\\Program Files (x86)\\WinRAR\\WinRAR.exe", QStringList() << "a" << zipName << "toSend");
 
     if (!zip.waitForFinished())
         qDebug() << "WinRAR failed:" << zip.errorString();
-    else
-        qDebug() << "WinRAR output:" << zip.readAll();
 
-    QFile::remove(("Lectures\\" + fileName));
+    QDir toRm("toSend");
+    toRm.removeRecursively();
+}
+
+bool MailServiceManager::copyPath(const QString &srcFilePath,
+                            const QString &tgtFilePath)
+{
+    QFileInfo srcFileInfo(srcFilePath);
+
+    if (srcFileInfo.isDir())
+    {
+        QDir targetDir(tgtFilePath);
+        targetDir.cdUp();
+        if (!targetDir.mkdir(QFileInfo(tgtFilePath).fileName()))
+            return false;
+
+        QDir sourceDir(srcFilePath);
+        QStringList fileNames = sourceDir.entryList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot | QDir::Hidden | QDir::System);
+        foreach (const QString &fileName, fileNames)
+        {
+            const QString newSrcFilePath
+                    = srcFilePath + QLatin1Char('/') + fileName;
+            const QString newTgtFilePath
+                    = tgtFilePath + QLatin1Char('/') + fileName;
+            if (!copyPath(newSrcFilePath, newTgtFilePath))
+                return false;
+        }
+    }
+    else
+    {
+        if (!QFile::copy(srcFilePath, tgtFilePath))
+            return false;
+    }
+    return true;
 }

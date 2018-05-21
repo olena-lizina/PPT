@@ -30,6 +30,10 @@ class StudentManager: public QObject
     Q_PROPERTY(int selectGroupId READ selectGroupId WRITE setSelectGroupId NOTIFY selectGroupIdChanged)
 
 public:
+
+    using WPtr = std::weak_ptr<StudentManager>;
+    using Ptr = std::shared_ptr<StudentManager>;
+
     explicit StudentManager(QObject *parent = nullptr);
 
     // singleton type provider function

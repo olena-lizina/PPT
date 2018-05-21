@@ -44,7 +44,7 @@ Loader {
         property string editStudentDialog: "EditStudentDialog.qml"
         property string insert: "ThemeClickedDialog.qml"
         property string getFile: "SelectFileDialog.qml"
-
+        property string createLab: "CreateLabDialog.qml"
     }
 
     function open(type, parameters, callback) {
@@ -66,6 +66,11 @@ Loader {
         onProcess: {
             dialogLoader.source = ""
             dialogLoader.callback(value)
+        }
+
+        onLongProcess: {
+            dialogLoader.source = ""
+            dialogLoader.callback(value1, value2)
         }
 
         onClose: {

@@ -60,8 +60,6 @@
         <file>qml/components/CFilterItem.qml</file>
         <file>qml/components/dialogs/NewLectureDialog.qml</file>
         <file>qml/components/dialogs/EditLectureDialog.qml</file>
-        <file>qml/screens/education/lectures/ThemesScreen.qml</file>
-        <file>qml/screens/education/lectures/SubThemesScreen.qml</file>
         <file>qml/components/CThemeButton.qml</file>
         <file>qml/components/CEditOrRemoveButton.qml</file>
         <file>qml/screens/admins/StudentScreen.qml</file>
@@ -83,5 +81,14 @@
         <file>qml/screens/education/lectures/AddDisciplineFilesScreen.qml</file>
         <file>qml/screens/education/lectures/EditTextScreen.qml</file>
         <file>qml/screens/admins/CourseSettingsScreen.qml</file>
+        <file>qml/screens/education/labs/LabsScreen.qml</file>
+        <file>qml/components/CLabTreeItem.qml</file>
+        <file>resources/images/60Image.png</file>
+        <file>qml/screens/education/labs/AddLabScreen.qml</file>
+        <file>qml/screens/education/labs/DummyScreen.qml</file>
+        <file>qml/components/dialogs/CreateLabDialog.qml</file>
+        <file>qml/screens/education/labs/LabInfoScreen.qml</file>
+        <file>qml/components/CLabChildTreeList.qml</file>
+        <file>qml/screens/education/labs/EditLabScreen.qml</file>
     </qresource>
 </RCC>

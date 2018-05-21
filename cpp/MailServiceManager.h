@@ -22,7 +22,7 @@ public:
 
     // to student
     Q_INVOKABLE void sendEducationMaterials(const QString& courceName, const int& courseId);
-    Q_INVOKABLE void sendLabs() {}
+    Q_INVOKABLE void sendLabWorks(const QString courseName, const int courseId, const QString labName);
     Q_INVOKABLE void sendMarks() {}
 
     // to teacher
@@ -30,6 +30,8 @@ public:
 
 private:
     void zipFile(QString fileName, QString zipName);
+    bool copyPath(const QString &srcFilePath,
+                  const QString &tgtFilePath);
 
 private:
     static SaveManager::Ptr mSaveManager;

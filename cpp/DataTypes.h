@@ -71,8 +71,8 @@ struct Group {
 
 struct LabWork {
     int id;
-    int themeId;
-    int finishDate;
+    int disciplineId;
+    QString finishDate;
     QString name;
     QString path;
 };

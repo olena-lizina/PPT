@@ -74,13 +74,13 @@ BlankScreen {
                 onClicked: stackView.push(Qt.resolvedUrl("ProgressScreen.qml"))
             }
 
-            CNavigationButton {
-                anchors.left: parent.left
-                anchors.right: parent.right
-                text: qsTr("Manual")
-                icon: "\uf1c9"
-                //onClicked: stackView.push(Qt.resolvedUrl("PlaygroundScreen.qml"))
-            }
+//            CNavigationButton {
+//                anchors.left: parent.left
+//                anchors.right: parent.right
+//                text: qsTr("Manual")
+//                icon: "\uf1c9"
+//                //onClicked: stackView.push(Qt.resolvedUrl("PlaygroundScreen.qml"))
+//            }
 
             CNavigationButton {
                 anchors.left: parent.left

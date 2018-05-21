@@ -83,9 +83,24 @@ QString ScreenContextBuffer::courseName() const
     return mCourseName;
 }
 
+int ScreenContextBuffer::labsNesting() const
+{
+    return mLabsNesting;
+}
+
+int ScreenContextBuffer::labDisciplineId() const
+{
+    return mLabDisId;
+}
+
+int ScreenContextBuffer::labId() const
+{
+    return mLabId;
+}
+
 void ScreenContextBuffer::setNesting(const int& nesting)
 {
-    qDebug() << "setNesting: " << nesting;
+    //qDebug() << "setNesting: " << nesting;
 
     if (mNesting != nesting)
     {
@@ -133,13 +148,13 @@ void ScreenContextBuffer::setScreenType(const int& type)
 
 void ScreenContextBuffer::setEdit(bool edit)
 {
-    qDebug() << "setEdit: " << edit;
+    //qDebug() << "setEdit: " << edit;
 
     if (mEdit != edit)
     {
         mEdit = edit;
         emit editChanged();
-        qDebug() << "emit editChanged";
+        //qDebug() << "emit editChanged";
     }
 }
 
@@ -151,4 +166,40 @@ void ScreenContextBuffer::setCourseId(const int& id)
 void ScreenContextBuffer::setCourseName(const QString& name)
 {
     mCourseName = name;
+}
+
+void ScreenContextBuffer::setLabsNesting(const int& nesting)
+{
+    //qDebug() << "setLabsNesting: " << nesting;
+
+    if (mLabsNesting != nesting)
+    {
+        mLabsNesting = nesting;
+        emit labsNestingChanged();
+        qDebug() << "emit labsNestingChanged";
+    }
+}
+
+void ScreenContextBuffer::setLabDisciplineId(int id)
+{
+    //qDebug() << "setLabDisciplineId: " << nesting;
+
+    if (mLabDisId != id)
+    {
+        mLabDisId = id;
+        emit labDisciplineIdChanged();
+        qDebug() << "emit labDisciplineIdChanged";
+    }
+}
+
+void ScreenContextBuffer::setLabId(int id)
+{
+    //qDebug() << "setLabId: " << nesting;
+
+    if (mLabId != id)
+    {
+        mLabId = id;
+        emit labIdChanged();
+        qDebug() << "emit labIdChanged";
+    }
 }

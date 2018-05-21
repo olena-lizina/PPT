@@ -129,9 +129,9 @@ void SaveManager::addLabWork(const LabWork& info)
     }
 
     int lastId = res.second.at(0).at(0).toInt();
-    const QString tempAddLabWork("INSERT INTO Lab_Work(Id,Theme_Id,Finish_Date,Name,Path) VALUES ('%1','%2','%3',\"%4\",\"%5\")");
+    const QString tempAddLabWork("INSERT INTO Lab_Work(Id,Discipline_Id,Finish_Date,Name,Path) VALUES ('%1','%2',\"%3\",\"%4\",\"%5\")");
 
-    if (!mSqlManager.execute(tempAddLabWork.arg(++lastId).arg(info.themeId).arg(info.finishDate).arg(info.name).arg(info.path)).first)
+    if (!mSqlManager.execute(tempAddLabWork.arg(++lastId).arg(info.disciplineId).arg(info.finishDate).arg(info.name).arg(info.path)).first)
         qDebug() << "Cannot save lab_work";
 }
 
@@ -443,9 +443,9 @@ void SaveManager::updGroup(const Group& info)
 
 void SaveManager::updLabWork(const LabWork& info)
 {
-    const QString tempUpdStr("UPDATE Lab_Work SET Theme_Id='%1',Finish_Date='%2',Name=\"%3\",Path=\"%4\" WHERE Id='%5'");
+    const QString tempUpdStr("UPDATE Lab_Work SET Discipline_Id='%1',Finish_Date=\"%2\",Name=\"%3\",Path=\"%4\" WHERE Id='%5'");
 
-    if (!mSqlManager.execute(tempUpdStr.arg(info.themeId).arg(info.finishDate).arg(info.name).arg(info.path).arg(info.id)).first)
+    if (!mSqlManager.execute(tempUpdStr.arg(info.disciplineId).arg(info.finishDate).arg(info.name).arg(info.path).arg(info.id)).first)
         qDebug() << "Cannot update lab_work";
 }
 
@@ -674,8 +674,8 @@ QList<LabWork> SaveManager::loadLabWork()
     {
         LabWork tmp;
         tmp.id = work.at(0).toInt();
-        tmp.themeId = work.at(1).toInt();
-        tmp.finishDate = work.at(2).toInt();
+        tmp.disciplineId = work.at(1).toInt();
+        tmp.finishDate = work.at(2).toString();
         tmp.name = work.at(3).toString();
         tmp.path = work.at(4).toString();
         labWorks << tmp;
@@ -892,7 +892,7 @@ QString SaveManager::loadTeacherMail()
 
 QStringList SaveManager::studentsEmails(const int& courseId)
 {
-    const QString tempLoadStr("SELECT * FROM StudentsCourses WHERE CourseId='%1'");
+    const QString tempLoadStr("SELECT StudId FROM StudentsCourses WHERE CourseId='%1'");
     auto res = mSqlManager.execute(tempLoadStr.arg(courseId));
 
     if (!res.first || res.second.isEmpty() || res.second.at(0).isEmpty())
@@ -906,6 +906,8 @@ QStringList SaveManager::studentsEmails(const int& courseId)
     for (auto st : res.second)
     {
         const QString tempLoadStr("SELECT Email FROM Student WHERE Id='%1'");
+        qDebug() << tempLoadStr.arg(st.at(0).toInt());
+
         auto em = mSqlManager.execute(tempLoadStr.arg(st.at(0).toInt()));
 
         if (!em.first || em.second.isEmpty() || em.second.at(0).isEmpty())
@@ -924,7 +926,7 @@ void SaveManager::initTables()
     const QStringList commonValues {
         "CREATE TABLE IF NOT EXISTS TeacherEmail (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Email TEXT)",
         "CREATE TABLE IF NOT EXISTS Chapter (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Order_Id INTEGER, Discipline_Id INTEGER, FOREIGN KEY (Discipline_Id) REFERENCES Discipline(Id) ON DELETE CASCADE)",
-        "CREATE TABLE IF NOT EXISTS Lab_Work (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Theme_Id INTEGER, Finish_Date INTEGER, Name TEXT, Path TEXT, FOREIGN KEY (Theme_Id) REFERENCES Theme(Id) ON DELETE CASCADE)",
+        "CREATE TABLE IF NOT EXISTS Lab_Work (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Discipline_Id INTEGER, Finish_Date TEXT, Name TEXT, Path TEXT, FOREIGN KEY (Discipline_Id) REFERENCES Discipline(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS Subtheme_Lecture_File (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Subtheme_Id INTEGER, Path TEXT, FOREIGN KEY (Subtheme_Id) REFERENCES Subtheme(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS Theme_Lecture_File (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Theme_Id INTEGER, Path TEXT, FOREIGN KEY (Theme_Id) REFERENCES Theme(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS Report (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Lab_Id INTEGER, Delivery_Date INTEGER, Mark TEXT, Evaluation_Date INTEGER, Stud_Id INTEGER, FOREIGN KEY (Lab_Id) REFERENCES Lab_Work(Id) ON DELETE CASCADE, FOREIGN KEY (Stud_Id) REFERENCES Student(Id) ON DELETE CASCADE)",

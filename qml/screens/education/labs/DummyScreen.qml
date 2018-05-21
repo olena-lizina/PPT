@@ -18,31 +18,13 @@
 
 import QtQuick 2.5
 
-Item {
-    id: cButton
+Rectangle {
 
-    property alias text: buttonLabel.text
-    signal clicked()
+    width: 0.75 * settings.windowWidth
+    height: settings.windowHeight - toolBar.height
 
-    Rectangle {
-        id: background
-        anchors.fill: parent
-        color: mouseArea.pressed ? palette.contextMenuButtonPressed : palette.contextMenuButton
-        opacity: 0.5
-    }
-
-    CLabel {
-        id: buttonLabel
-        anchors.fill: parent
-        font.pixelSize: 3 * settings.pixelDensity
-        horizontalAlignment: Text.AlignHCenter
-        color: palette.contextMenuButtonText
-    }
-
-    MouseArea {
-        id: mouseArea
-        anchors.fill: parent
-        onClicked:
-            cButton.clicked()
-    }
+    gradient: Gradient {
+            GradientStop { position: 0.0; color: "#ffffb3" }
+            GradientStop { position: 1.0; color: "#b3d9ff" }
+        }
 }

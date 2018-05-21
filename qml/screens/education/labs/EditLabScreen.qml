@@ -19,7 +19,7 @@
 import QtQuick 2.5
 import QtQuick.Layouts 1.2
 import QtQuick.Controls 1.4
-import LecturesManager 1.1
+import LabsManager 1.1
 import ScreenContextBuffer 1.1
 import MailServiceManager 1.1
 import "../../../components"
@@ -28,11 +28,10 @@ import "../.."
 Item {
     id: rootItem
 
-    property string textItText: LecturesManager.getFileContent(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting)
-
+    property string textItText
     Component.onCompleted: {
-        codeArea.myNesting = ScreenContextBuffer.nesting
-        codeArea.myIdx = ScreenContextBuffer.selectedIdx
+        textItText = LabsManager.fileContent
+        codeArea.myIdx = ScreenContextBuffer.labId
     }
 
     CToolBar {
@@ -58,22 +57,22 @@ Item {
 
             CToolButton {
                 id: btn2
-                visible: ScreenContextBuffer.edit
                 Layout.fillHeight: true
                 Layout.alignment: Qt.AlignRight
                 icon: "\uf0c5"
                 tooltipText: qsTr("Copy")
                 onClicked: codeArea.copy()
+                visible: ScreenContextBuffer.edit
             }
 
             CToolButton {
                 id: btn3
-                visible: ScreenContextBuffer.edit
                 Layout.fillHeight: true
                 Layout.alignment: Qt.AlignRight
                 icon: "\uf0c4"
                 tooltipText: qsTr("Cut")
                 onClicked: codeArea.cut()
+                visible: ScreenContextBuffer.edit
             }
 
             CToolButton {
@@ -82,62 +81,28 @@ Item {
                 Layout.fillWidth: ScreenContextBuffer.edit
                 icon: "\u270e"
                 tooltipText: qsTr("Edit")
+                onClicked: {
+                    ScreenContextBuffer.edit = true
+                }
                 visible: !ScreenContextBuffer.edit
-                onClicked: ScreenContextBuffer.edit = true
             }
 
             CToolButton {
                 id: btn5
-                visible: ScreenContextBuffer.edit
                 Layout.fillHeight: true
                 Layout.alignment: Qt.AlignRight
                 icon: "\u2714"
                 tooltipText: qsTr("Save lecture")
+                visible: ScreenContextBuffer.edit
                 onClicked: {
-
                     if (textItText !== codeArea.text)
                     {
-                        if (ScreenContextBuffer.screenType === LecturesManager.LiteratureListFile)
-                            LecturesManager.saveLiterListFileContent(codeArea.text, ScreenContextBuffer.selectedIdx)
-                        else if (ScreenContextBuffer.screenType === LecturesManager.EducationProgramFile)
-                            LecturesManager.saveEducProgFileContent(codeArea.text, ScreenContextBuffer.selectedIdx)
-                        else if (ScreenContextBuffer.screenType === LecturesManager.EducationPlanFile)
-                            LecturesManager.saveEducPlanFileContent(codeArea.text, ScreenContextBuffer.selectedIdx);
-                        else
-                            LecturesManager.saveFileContent(codeArea.text, ScreenContextBuffer.nesting, ScreenContextBuffer.selectedIdx)
-
-                        MailServiceManager.sendEducationMaterials(ScreenContextBuffer.courseName, ScreenContextBuffer.courseId)
+                        LabsManager.saveFileContent(codeArea.text, ScreenContextBuffer.labId)
+                        MailServiceManager.sendLabWorks(LabsManager.getDisciplineName(ScreenContextBuffer.labDisciplineId), ScreenContextBuffer.labDisciplineId, LabsManager.getLabName(ScreenContextBuffer.labId))
                     }
-
-                    LecturesManager.clearComponentCache()
+                    LabsManager.clearComponentCache()
                     Qt.inputMethod.hide()
                     ScreenContextBuffer.edit = false
-                }
-            }
-
-            CToolButton {
-                id: btn6
-                Layout.fillHeight: true
-                Layout.alignment: Qt.AlignRight
-                icon: "\u2716"
-                tooltipText: qsTr("Delete")
-                visible: !ScreenContextBuffer.edit
-                onClicked: {
-                    var parameters = {
-                        title: qsTr("Delete file"),
-                        text: qsTr("Are you sure you want to delete this file?")
-                    }
-
-                    var callback = function(value)
-                    {
-                        if (value)
-                        {
-                            LecturesManager.removeFile(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting);
-                            ScreenContextBuffer.loaderSource = ""
-                        }
-                    }
-
-                    dialog.open(dialog.types.confirmation, parameters, callback)
                 }
             }
         }
@@ -146,18 +111,10 @@ Item {
     TextArea {
         id: codeArea
 
-        property int myNesting
         property int myIdx
 
         Component.onDestruction: {
-            if (ScreenContextBuffer.screenType === LecturesManager.LiteratureListFile)
-                LecturesManager.saveLiterListFileContent(codeArea.text, myIdx)
-            else if (ScreenContextBuffer.screenType === LecturesManager.EducationProgramFile)
-                LecturesManager.saveEducProgFileContent(codeArea.text, myIdx)
-            else if (ScreenContextBuffer.screenType === LecturesManager.EducationPlanFile)
-                LecturesManager.saveEducPlanFileContent(codeArea.text, myIdx);
-            else
-                LecturesManager.saveFileContent(codeArea.text, myNesting, myIdx)
+            LabsManager.saveFileContent(codeArea.text, myIdx)
         }
 
         anchors.top: toolBar.bottom

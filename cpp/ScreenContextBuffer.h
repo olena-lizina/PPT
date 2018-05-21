@@ -15,12 +15,18 @@ class ScreenContextBuffer: public QObject
     Q_PROPERTY(int courseId READ courseId WRITE setCourseId NOTIFY courseIdChanged)
     Q_PROPERTY(QString courseName READ courseName WRITE setCourseName NOTIFY courseNameChanged)
 
+    Q_PROPERTY(int labsNesting READ labsNesting WRITE setLabsNesting NOTIFY labsNestingChanged)
+    Q_PROPERTY(int labDisciplineId READ labDisciplineId WRITE setLabDisciplineId NOTIFY labDisciplineIdChanged)
+    Q_PROPERTY(int labId READ labId WRITE setLabId NOTIFY labIdChanged)
+
 public:
     ScreenContextBuffer(QObject *parent = 0);
     // singleton type provider function
     static QObject* screenContextBufferProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
     static void setQmlEngine(QQmlApplicationEngine *engine);
     Q_INVOKABLE void clearComponentCache();
+
+    Q_INVOKABLE void openLabScreen() { emit onOpenLabScreen(); }
 
     Q_INVOKABLE void setNestingAndIndex(const int& nesting, const int& idx);
 
@@ -31,6 +37,9 @@ public:
     bool edit() const;
     int courseId() const;
     QString courseName() const;
+    int labsNesting() const;
+    int labDisciplineId() const;
+    int labId() const;
 
     void setNesting(const int& nesting);
     void setSelectedIdx(const int& idx);
@@ -39,6 +48,9 @@ public:
     void setEdit(bool edit);
     void setCourseId(const int& id);
     void setCourseName(const QString& name);
+    void setLabsNesting(const int& nesting);
+    void setLabDisciplineId(int id);
+    void setLabId(int id);
 
 signals:
     void nestingChanged();
@@ -49,6 +61,10 @@ signals:
     void editChanged();
     void courseIdChanged();
     void courseNameChanged();
+    void labsNestingChanged();
+    void labDisciplineIdChanged();
+    void labIdChanged();
+    void onOpenLabScreen();
 
 private:
     static QQmlApplicationEngine *m_qmlEngine;
@@ -59,6 +75,9 @@ private:
     bool mEdit;
     int mCourseId;
     QString mCourseName;
+    int mLabsNesting;
+    int mLabDisId;
+    int mLabId;
 };
 
 #endif // SCREENCONTEXTBUFFER_H

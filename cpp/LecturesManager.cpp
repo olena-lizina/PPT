@@ -77,7 +77,7 @@ QList<QObject*> LecturesManager::labsTree()
 {
     if (m_labsTree.size() <= 0)
     {
-        TreeItem * d_item =  new TreeItem(tr("Add discipline"), -1, 0);
+        TreeItem * d_item =  new TreeItem("Додати дисципліну", -1, 0);
         m_labsTree << d_item;
     }
 
@@ -528,6 +528,7 @@ bool LecturesManager::lectureFileExist(const int& nesting, const int& idx)
             return false;
         }
 
+        file.close();
         return true;
     }
     else if (nesting == 2)
@@ -546,6 +547,7 @@ bool LecturesManager::lectureFileExist(const int& nesting, const int& idx)
             return false;
         }
 
+        file.close();
         return true;
     }
     return false;
@@ -714,6 +716,7 @@ bool LecturesManager::literListFileExist(const int& idx)
         qDebug() << "Unable to open file " << fileIter->literPath << file.errorString();
         return false;
     }
+    file.close();
     return true;
 }
 
@@ -821,6 +824,7 @@ bool LecturesManager::educPlanFileExist(const int& idx)
         qDebug() << "Unable to open file " << fileIter->educPlanPath << file.errorString();
         return false;
     }
+    file.close();
     return true;
 }
 
@@ -926,7 +930,7 @@ bool LecturesManager::educProgFileExist(const int& idx)
         qDebug() << "Unable to open file " << fileIter->educProgPath << file.errorString();
         return false;
     }
-
+    file.close();
     return true;
 }
 

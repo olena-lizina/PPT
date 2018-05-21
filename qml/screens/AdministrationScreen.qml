@@ -70,8 +70,8 @@ BlankScreen {
             CNavigationButton {
                 anchors.left: parent.left
                 anchors.right: parent.right
-                text: qsTr("Course settings")
-                icon: "\uD83D\uDC65"
+                text: qsTr("Manage courses")
+                icon: "\uf085"
                 onClicked: stackView.push(Qt.resolvedUrl("admins/CourseSettingsScreen.qml"))
             }
         }

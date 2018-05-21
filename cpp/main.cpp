@@ -25,6 +25,7 @@
 #include "LecturesManager.h"
 #include "ScreenContextBuffer.h"
 #include "MailServiceManager.h"
+#include "LabsManager.h"
 
 int main(int argc, char *argv[])
 {
@@ -43,11 +44,13 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonType<LecturesManager>("LecturesManager", 1, 1, "LecturesManager", &LecturesManager::lecturesManagerProvider);
     qmlRegisterSingletonType<ScreenContextBuffer>("ScreenContextBuffer", 1, 1, "ScreenContextBuffer", &ScreenContextBuffer::screenContextBufferProvider);
     qmlRegisterSingletonType<MailServiceManager>("MailServiceManager", 1, 1, "MailServiceManager", &MailServiceManager::mailServiceManagerProvider);
+    qmlRegisterSingletonType<LabsManager>("LabsManager", 1, 1, "LabsManager", &LabsManager::labsManagerProvider);
 
     SaveManager::Ptr saveManager(new SaveManager());
     StudentManager::setSaveManager(saveManager);
     LecturesManager::setSaveManager(saveManager);
     MailServiceManager::setSaveManager(saveManager);
+    LabsManager::setSaveManager(saveManager);
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("applicationDirPath", QGuiApplication::applicationDirPath());
@@ -57,6 +60,7 @@ int main(int argc, char *argv[])
     LecturesManager::setQmlEngine(&engine);
     ScreenContextBuffer::setQmlEngine(&engine);
     MailServiceManager::setQmlEngine(&engine);
+    LabsManager::setQmlEngine(&engine);
 
     return app.exec();
 }

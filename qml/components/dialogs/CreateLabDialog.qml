@@ -18,16 +18,24 @@
 
 import QtQuick 2.5
 import QtGraphicalEffects 1.0
+import QtQuick.Controls 1.4
+import LecturesManager 1.1
 import ".."
 
 BaseDialog {
-    id: newFileDialog
+    id: newLectureDialog
 
+    property alias label: labName.text
+    property alias text: labNameText.text
+    property alias dateLabel: date.text
+    property alias date: calend.selectedDate
     property alias title: titleLabel.text
+
+    property alias calendar: calend
 
     function initialize(parameters) {
         for (var attr in parameters) {
-            newFileDialog[attr] = parameters[attr]
+            newLectureDialog[attr] = parameters[attr]
         }
     }
 
@@ -78,7 +86,7 @@ BaseDialog {
             }
         }
 
-        Flickable {
+        CFlickable {
             id: flickable
 
             anchors.left: parent.left
@@ -105,34 +113,18 @@ BaseDialog {
                 spacing: 2 * settings.pixelDensity
 
                 CLabel {
+                    id: labName
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    text: qsTr("File name") + ":"
                 }
 
                 CTextField {
-                    id: fileNameTextField
-
-                    validator: RegExpValidator {
-                        regExp: new RegExp("^[A-Z][a-zA-Z0-9]*")
-                    }
+                    id: labNameText
 
                     onTextChanged: {
                         if (warningLabel.visible)
                             warningLabel.visible = false
                     }
-                }
-
-                CLabel {
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    text: qsTr("File type") + ":"
-                }
-
-                CSwitcher {
-                    id: fileTypeSwitcher
-                    leftText: "QML"
-                    rightText: "JS"
                 }
 
                 CLabel {
@@ -145,10 +137,15 @@ BaseDialog {
                 }
 
                 CLabel {
+                    id: date
                     anchors.left: parent.left
                     anchors.right: parent.right
-                    text: qsTr("Note: the file name must start with a capital letter and cannot contain spaces (e.g., MyItem.qml)")
-                    wrapMode: Text.Wrap
+                }
+
+                Calendar {
+                    id: calend
+                    minimumDate: new Date(2018, 0, 1)
+                    maximumDate: new Date(2028, 0, 1)
                 }
             }
         }
@@ -162,7 +159,7 @@ BaseDialog {
             anchors.right: footer.left
             anchors.bottom: parent.bottom
             text: qsTr("Cancel")
-            onClicked: newFileDialog.close()
+            onClicked: newLectureDialog.close()
         }
 
         CVerticalSeparator {
@@ -177,30 +174,14 @@ BaseDialog {
             anchors.bottom: parent.bottom
             text: qsTr("OK")
             onClicked: {
-                var fileName = fileNameTextField.text
-                var fileExtension = fileTypeSwitcher.leftPosition ? "qml" : "js"
-
-                if (fileName.length === 0)
+                if (labNameText.text.length === 0)
                 {
-                    warningLabel.text = qsTr("The file name cannot be left blank")
+                    warningLabel.text = qsTr("Input field cannot be left blank")
                     warningLabel.visible = true
                 }
                 else
                 {
-                    if (ProjectManager.fileExists(fileName + "." + fileExtension))
-                    {
-                        warningLabel.text = qsTr("The file already exists")
-                        warningLabel.visible = true
-                    }
-                    else
-                    {
-                        var value = {
-                            fileName: fileName,
-                            fileExtension: fileExtension
-                        }
-
-                        newFileDialog.process(value)
-                    }
+                    newLectureDialog.longProcess(labNameText.text, calendar.selectedDate.toLocaleDateString(Qt.locale(), "dd.MM.yyyy"))
                 }
             }
         }

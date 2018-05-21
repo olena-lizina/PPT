@@ -26,7 +26,9 @@ HEADERS += \
     cpp/StudentModel.h \
     cpp/TreeItem.h \
     cpp/ScreenContextBuffer.h \
-    cpp/MailServiceManager.h
+    cpp/MailServiceManager.h \
+    cpp/LabsManager.h \
+    cpp/ReportInfoModel.h
 
 SOURCES += \
     cpp/main.cpp \
@@ -36,7 +38,8 @@ SOURCES += \
     cpp/DBManager.cpp \
     cpp/TreeItem.cpp \
     cpp/ScreenContextBuffer.cpp \
-    cpp/MailServiceManager.cpp
+    cpp/MailServiceManager.cpp \
+    cpp/LabsManager.cpp
 
 lupdate_only {
 SOURCES += \
@@ -46,6 +49,7 @@ SOURCES += \
     qml/screens/*.qml \
     qml/screens/admins/*.qml \
     qml/screens/education/lectures/*.qml \
+    qml/screens/education/labs/*.qml \
     qml/*.qml
 }
 
