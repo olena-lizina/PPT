@@ -20,9 +20,6 @@
 #include <QVariant>
 #include <QDebug>
 
-//#define STUDENT_MODE
-#define TEACHER_MODE
-
 const QString getLastIdTemp = "SELECT MAX(Id) from '%1'";
 
 SaveManager::SaveManager(): mSqlManager("ppt.db")
@@ -38,24 +35,24 @@ void SaveManager::appendChapter(const Chapter& info)
 {
     auto res = mSqlManager.execute(getLastIdTemp.arg("Chapter"));
 
-    if (!res.first)
+    if (!res.first || res.second.isEmpty() || res.second.at(0).isEmpty())
     {
         qDebug() << "Cannot get last chapter id";
         return;
     }
 
     int lastId = res.second.at(0).at(0).toInt();
-    const QString tempAddChapter("INSERT INTO Chapter (Id,Name,Order_Id,Discipline_Id) VALUES ('%1',\"%2\",'%3','%4')");
+    const QString tempAddChapter("INSERT INTO Chapter (Id,Name,Discipline_Id) VALUES ('%1',\"%2\",'%3')");
 
-    if (!mSqlManager.execute(tempAddChapter.arg(++lastId).arg(info.name).arg(info.orderId).arg(info.disciplineId)).first)
+    if (!mSqlManager.execute(tempAddChapter.arg(++lastId).arg(info.name).arg(info.disciplineId)).first)
         qDebug() << "Cannot save chapter";
 }
 
-void SaveManager::addChapter(const Chapter& info)
+void SaveManager::insChapter(const Chapter& info)
 {
-    const QString tempAddChapter("INSERT INTO Chapter (Id,Name,Order_Id,Discipline_Id) VALUES ('%1',\"%2\",'%3','%4')");
+    const QString tempAddChapter("INSERT INTO Chapter (Id,Name,Discipline_Id) VALUES ('%1',\"%2\",'%3')");
 
-    if (!mSqlManager.execute(tempAddChapter.arg(info.id).arg(info.name).arg(info.orderId).arg(info.disciplineId)).first)
+    if (!mSqlManager.execute(tempAddChapter.arg(info.id).arg(info.name).arg(info.disciplineId)).first)
         qDebug() << "Cannot save chapter";
 }
 
@@ -578,33 +575,7 @@ QList<Chapter> SaveManager::loadChapters()
     return chapters;
 }
 
-QList<DisciplineStud> SaveManager::loadStudDiscipline()
-{
-    const QString tempLoadStr("SELECT * FROM Discipline");
-    auto res = mSqlManager.execute(tempLoadStr);
-
-    if (!res.first)
-    {
-        qDebug() << "Cannot load student's disciplines";
-        return QList<DisciplineStud>();
-    }
-
-    QList<DisciplineStud> disciplines;
-
-    for (auto discipline : res.second)
-    {
-        DisciplineStud tmp;
-        tmp.id = discipline.at(0).toInt();
-        tmp.name = discipline.at(1).toString();
-        tmp.literPath = discipline.at(2).toString();
-        disciplines << tmp;
-        //qDebug() << tmp.name;
-    }
-
-    return disciplines;
-}
-
-QList<DisciplineTeach> SaveManager::loadTeachDiscipline()
+QList<Discipline> SaveManager::loadDiscipline()
 {
     const QString tempLoadStr("SELECT * FROM Discipline");
     auto res = mSqlManager.execute(tempLoadStr);
@@ -923,40 +894,24 @@ QStringList SaveManager::studentsEmails(const int& courseId)
 
 void SaveManager::initTables()
 {
-    const QStringList commonValues {
+    const QStringList values {
         "CREATE TABLE IF NOT EXISTS TeacherEmail (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Email TEXT)",
-        "CREATE TABLE IF NOT EXISTS Chapter (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Order_Id INTEGER, Discipline_Id INTEGER, FOREIGN KEY (Discipline_Id) REFERENCES Discipline(Id) ON DELETE CASCADE)",
+        "CREATE TABLE IF NOT EXISTS Chapter (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Discipline_Id INTEGER, FOREIGN KEY (Discipline_Id) REFERENCES Discipline(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS Lab_Work (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Discipline_Id INTEGER, Finish_Date TEXT, Name TEXT, Path TEXT, FOREIGN KEY (Discipline_Id) REFERENCES Discipline(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS Subtheme_Lecture_File (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Subtheme_Id INTEGER, Path TEXT, FOREIGN KEY (Subtheme_Id) REFERENCES Subtheme(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS Theme_Lecture_File (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Theme_Id INTEGER, Path TEXT, FOREIGN KEY (Theme_Id) REFERENCES Theme(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS Report (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Lab_Id INTEGER, Delivery_Date INTEGER, Mark TEXT, Evaluation_Date INTEGER, Stud_Id INTEGER, FOREIGN KEY (Lab_Id) REFERENCES Lab_Work(Id) ON DELETE CASCADE, FOREIGN KEY (Stud_Id) REFERENCES Student(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS Report_File (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Report_Id INTEGER, Path TEXT, FOREIGN KEY (Report_Id) REFERENCES Report(Id) ON DELETE CASCADE)",
-        "CREATE TABLE IF NOT EXISTS Subtheme (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Order_Id INTEGER, Theme_Id INTEGER, FOREIGN KEY (Theme_Id) REFERENCES Theme(Id) ON DELETE CASCADE)",
-        "CREATE TABLE IF NOT EXISTS Theme (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Order_Id INTEGER, Chapter_Id INTEGER, FOREIGN KEY (Chapter_Id) REFERENCES Chapter(Id) ON DELETE CASCADE)"        
-    };
-
-    const QStringList teacherValues {
+        "CREATE TABLE IF NOT EXISTS Subtheme (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Theme_Id INTEGER, FOREIGN KEY (Theme_Id) REFERENCES Theme(Id) ON DELETE CASCADE)",
+        "CREATE TABLE IF NOT EXISTS Theme (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Chapter_Id INTEGER, FOREIGN KEY (Chapter_Id) REFERENCES Chapter(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS Discipline (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Liter_Path TEXT, Educ_Plan_Path TEXT, Educ_Progr_Path TEXT)",
         "CREATE TABLE IF NOT EXISTS 'Group' (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT)",
         "CREATE TABLE IF NOT EXISTS Student (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Phone TEXT, Email TEXT, Photo_Path TEXT, Group_Id INTEGER, FOREIGN KEY (Group_Id) REFERENCES 'Group'(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS StudentsCourses (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, StudId INTEGER, CourseId INTEGER, FOREIGN KEY (StudId) REFERENCES Student(Id) ON DELETE CASCADE, FOREIGN KEY (CourseId) REFERENCES Discipline(Id) ON DELETE CASCADE)"
     };
 
-    const QStringList studentValues {
-        "CREATE TABLE IF NOT EXISTS Discipline (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Liter_Path	TEXT)"
-    };
-
-    for (auto val : commonValues)
+    for (auto val : values)
         if (!mSqlManager.execute(val).first)
             qDebug() << "Cannot init table: " << val;
 
-#ifdef STUDENT_MODE
-    for (auto val : studentValues)
-        if (!mSqlManager.execute(val).first)
-            qDebug() << "Cannot init table: " << val;
-#else
-    for (auto val : teacherValues)
-        if (!mSqlManager.execute(val).first)
-            qDebug() << "Cannot init table: " << val;
-#endif
 }

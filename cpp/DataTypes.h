@@ -15,47 +15,52 @@
 ** limitations under the License.
 **
 ****************************************************************************/
-#ifndef LECTURE_H
-#define LECTURE_H
+#ifndef DATATYPES_H
+#define DATATYPES_H
 #include <QString>
 #include <QList>
 
-struct Chapter {
+struct BaseItem {
+    virtual ~BaseItem() {}
+    int id;
+};
+
+struct Chapter: public BaseItem {
     int id;
     QString name;
-    int orderId;
     int disciplineId;
+
+    Chapter(int id_, QString name_, int discId_)
+        : BaseItem(id_)
+        , name(name_)
+        , disciplineId(discId_)
+    {
+    }
 
     bool operator==(const Chapter& rhs)
     {
         return id == rhs.id
                 && name.compare(rhs.name)
-                && orderId == rhs.orderId
                 && disciplineId == rhs.disciplineId;
     }
 };
 
-struct DisciplineStud {
-    int id;
-    QString name;
-    QString literPath;
-
-    bool operator==(const DisciplineStud& rhs)
-    {
-        return id == rhs.id
-                && name.compare(rhs.name)
-                && literPath.compare(rhs.literPath);
-    }
-};
-
-struct DisciplineTeach {
+struct Discipline: public BaseItem {
     int id;
     QString name;
     QString literPath;
     QString educPlanPath;
     QString educProgPath;
 
-    bool operator==(const DisciplineTeach& rhs)
+    Discipline(int id_, QString name_, QString literPath_, QString educPlanPath_, QString educProgPath_)
+        : BaseItem(id_)
+        , name(name_)
+        , literPath(literPath_)
+        , educPlanPath(educPlanPath_)
+        , educProgPath(educProgPath_)
+    {}
+
+    bool operator==(const Discipline& rhs)
     {
         return id == rhs.id
                 && name.compare(rhs.name)
@@ -64,83 +69,162 @@ struct DisciplineTeach {
     }
 };
 
-struct Group {
+struct Group: public BaseItem {
     int id;
     QString name;
+
+    Group(int id_, QString name_)
+        : BaseItem(id_)
+        , name(name_)
+    {}
+
+    bool operator==(const Group& rhs)
+    {
+        return id == rhs.id && name == rhs.name;
+    }
 };
 
-struct LabWork {
+struct LabWork: public BaseItem {
     int id;
     int disciplineId;
     QString finishDate;
     QString name;
     QString path;
+
+    LabWork(int id_, int disciplineId_, QString finishDate_, QString name_, QString path_)
+        :BaseItem(id_)
+        , disciplineId(disciplineId_)
+        , finishDate(finishDate_)
+        , name(name_)
+        , path(path_)
+    {}
+
+    bool operator==(const LabWork& rhs)
+    {
+        return id == rhs.id
+                && disciplineId == rhs.disciplineId
+                && finishDate.compare(rhs.finishDate)
+                && name.compare(rhs.name)
+                && path.compare(rhs.path);
+    }
 };
 
-struct ThemeLectureFile {
+struct ThemeLectureFile: public BaseItem {
     int id;
     int themeId;
     QString path;
+
+    ThemeLectureFile(int id_, int themeId_, QString path_)
+        : BaseItem(id_)
+        , themeId(themeId_)
+        , path(path_)
+    {}
+
+    bool operator==(const ThemeLectureFile& rhs)
+    {
+        return id == rhs.id
+                && themeId == rhs.themeId
+                && path.compare(rhs.path);
+    }
 };
 
-struct SubthemeLectureFile {
+struct SubthemeLectureFile: public BaseItem {
     int id;
     int subthemeId;
     QString path;
+
+    SubthemeLectureFile(int id_, int subthemeId_, QString path_)
+        : BaseItem(id_)
+        , subthemeId(subthemeId_)
+        , path(path_)
+    {}
+
+    bool operator==(const SubthemeLectureFile& rhs)
+    {
+        return id == rhs.id
+                && subthemeId == rhs.subthemeId
+                && path.compare(rhs.path);
+    }
 };
 
-struct Report {
+struct Report: public BaseItem {
     int id;
     int labId;
     int delivDate;
     QString mark;
     int evalDate;
     int studId;
+
+    Report()
+    {}
+
+    bool operator==(const Report& rhs)
+    {
+        return id == rhs.id
+                && labId == rhs.labId
+                && delivDate == rhs.delivDate
+                && mark.compare(rhs.mark)
+                && evalDate == rhs.evalDate
+                && studId == rhs.studId;
+    }
 };
 
-struct ReportFile {
+struct ReportFile: public BaseItem {
     int id;
     int reportId;
     QString path;
+
+    bool operator==(const ReportFile& rhs)
+    {
+        return id == rhs.id
+                && reportId == rhs.reportId
+                && path.compare(rhs.path);
+    }
 };
 
-struct Student {
+struct Student: public BaseItem {
     int id;
     QString name;
     QString phone;
     QString email;
     QString photoPath;
     int groupId;
+
+    bool operator==(const Student& rhs)
+    {
+        return id == rhs.id
+                && name.compare(rhs.name)
+                && phone.compare(rhs.phone)
+                && email.compare(rhs.email)
+                && photoPath.compare(rhs.photoPath)
+                && groupId == rhs.groupId;
+    }
 };
 
-struct Subtheme {
+struct Subtheme: public BaseItem {
     int id;
     QString name;
-    int orderId;
     int themeId;
 
     bool operator==(const Subtheme& rhs)
     {
         return id == rhs.id
                 && name.compare(rhs.name)
-                && orderId == rhs.orderId
                 && themeId == rhs.themeId;
     }
 };
 
-struct Theme {
+struct Theme: public BaseItem {
     int id;
     QString name;
-    int orderId;
     int chapterId;
 
     bool operator==(const Theme& rhs)
     {
         return id == rhs.id
                 && name.compare(rhs.name)
-                && orderId == rhs.orderId
                 && chapterId == rhs.chapterId;
     }
 };
 
-#endif // LECTURE_H
+#endif // DATATYPES_H

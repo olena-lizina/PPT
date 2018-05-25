@@ -1,4 +1,4 @@
-#include "DBManager.h"
+#include "SQLiteManager.h"
 #include <mutex>
 
 SQLiteManager::SQLiteManager(const QString& dbName)

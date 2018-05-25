@@ -27,45 +27,18 @@
 /*static*/ SaveManager::Ptr StudentManager::mSaveManager;
 
 StudentManager::StudentManager(QObject *parent)
-    : QObject(parent)
+    : ManagerInterface(parent)
     , mSelectedGroupIdx(0)
 {
 }
 
-/*static*/ QObject* StudentManager::studentManagerProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
+/*static*/ QObject* StudentManager::managerProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine)
     Q_UNUSED(scriptEngine)
 
-    StudentManager *studentManager = new StudentManager();
-    return studentManager;
-}
-
-/*static*/ void StudentManager::setQmlEngine(QQmlApplicationEngine *engine)
-{
-    StudentManager::m_qmlEngine = engine;
-}
-
-/*static*/ void StudentManager::setSaveManager(std::shared_ptr<SaveManager> saveMgr)
-{
-    StudentManager::mSaveManager = saveMgr;
-}
-
-void StudentManager::clearComponentCache()
-{
-    StudentManager::m_qmlEngine->clearComponentCache();
-}
-
-void StudentManager::selectedStudent(const int& id)
-{
-    auto studIter = std::find_if(mStudentList.cbegin(), mStudentList.cend(),
-                                 [&id](const Student& stud){ return stud.id == id; });
-    mSelectedStudent = mStudentList.cend() == studIter ? Student() : *studIter;
-}
-
-QObject* StudentManager::selectedStudent() const
-{
-    return new StudentModel(mSelectedStudent, mGroupMap[mSelectedStudent.groupId]);
+    StudentManager *manager = new StudentManager();
+    return manager;
 }
 
 bool StudentManager::existsStudent(const QString&, const QString&)

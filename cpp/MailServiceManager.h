@@ -1,24 +1,17 @@
 #ifndef MAILSERVICEMANAGER_H
 #define MAILSERVICEMANAGER_H
-#include <QObject>
+#include "ManagerInterface.h"
 #include "SmtpMime"
 #include "SaveManager.h"
 #include "DataTypes.h"
-#include <QQmlApplicationEngine>
 
-class MailServiceManager: public QObject
+class MailServiceManager: public ManagerInterface
 {
     Q_OBJECT
 
 public:
     explicit MailServiceManager(QObject* parent = nullptr);
-    virtual ~MailServiceManager();
-
-    // singleton type provider function
-    static QObject* mailServiceManagerProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
-    static void setQmlEngine(QQmlApplicationEngine *engine);
-    static void setSaveManager(std::shared_ptr<SaveManager> saveMgr);
-    Q_INVOKABLE void clearComponentCache();
+    static QObject* managerProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
 
     // to student
     Q_INVOKABLE void sendEducationMaterials(const QString& courceName, const int& courseId);
@@ -34,8 +27,6 @@ private:
                   const QString &tgtFilePath);
 
 private:
-    static SaveManager::Ptr mSaveManager;
-    static QQmlApplicationEngine *m_qmlEngine;
 
     const QString host;
     const int port;

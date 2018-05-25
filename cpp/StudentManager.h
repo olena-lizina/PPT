@@ -18,13 +18,11 @@
 
 #ifndef STUDENTMANAGER_H
 #define STUDENTMANAGER_H
-#include <QObject>
+#include "ManagerInterface.h"
 #include <memory>
-#include "SaveManager.h"
 #include "DataTypes.h"
-#include <QQmlApplicationEngine>
 
-class StudentManager: public QObject
+class StudentManager: public ManagerInterface
 {
     Q_OBJECT
     Q_PROPERTY(int selectGroupId READ selectGroupId WRITE setSelectGroupId NOTIFY selectGroupIdChanged)
@@ -35,12 +33,7 @@ public:
     using Ptr = std::shared_ptr<StudentManager>;
 
     explicit StudentManager(QObject *parent = nullptr);
-
-    // singleton type provider function
-    static QObject* studentManagerProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
-    static void setQmlEngine(QQmlApplicationEngine *engine);
-    static void setSaveManager(std::shared_ptr<SaveManager> saveMgr);
-    Q_INVOKABLE void clearComponentCache();
+    static QObject* managerProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
 
     Q_INVOKABLE bool existsStudent(const QString& name, const QString& group);
 
@@ -75,8 +68,6 @@ protected:
     QMap<int, QString> mGroupMap;
     Student mSelectedStudent;
     int mSelectedGroupIdx;
-    static SaveManager::Ptr mSaveManager;
-    static QQmlApplicationEngine *m_qmlEngine;
 
     QList<QObject*> model;
 };

@@ -31,7 +31,7 @@
 /*static*/ SaveManager::Ptr LabsManager::mSaveManager;
 
 LabsManager::LabsManager(QObject* parent)
-    : QObject(parent)
+    : ManagerInterface(parent)
 {
     mLabWorks = mSaveManager->loadLabWork();
     mReports = mSaveManager->loadReport();
@@ -40,31 +40,17 @@ LabsManager::LabsManager(QObject* parent)
     initLabsTree();
 }
 
-LabsManager::~LabsManager()
-{
-}
-
-/*static*/ QObject* LabsManager::labsManagerProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
+/*static*/ QObject* LabsManager::managerProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine)
     Q_UNUSED(scriptEngine)
-    LabsManager *lectureManager = new LabsManager();
-    return lectureManager;
-}
-
-/*static*/ void LabsManager::setQmlEngine(QQmlApplicationEngine *engine)
-{
-    LabsManager::m_qmlEngine = engine;
+    LabsManager *manager = new LabsManager();
+    return manager;
 }
 
 /*static*/ void LabsManager::setSaveManager(std::shared_ptr<SaveManager> saveMgr)
 {
     LabsManager::mSaveManager = saveMgr;
-}
-
-void LabsManager::clearComponentCache()
-{
-    LabsManager::m_qmlEngine->clearComponentCache();
 }
 
 QList<QObject*> LabsManager::labsTree()

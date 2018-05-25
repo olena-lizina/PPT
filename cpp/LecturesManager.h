@@ -18,14 +18,12 @@
 
 #ifndef LECTURESMANAGER_H
 #define LECTURESMANAGER_H
-#include <QObject>
-#include <QQmlApplicationEngine>
+#include "ManagerInterface.h"
 #include <memory>
-#include "SaveManager.h"
 #include "DataTypes.h"
 #include <QList>
 
-class LecturesManager: public QObject
+class LecturesManager: public ManagerInterface
 {
     Q_OBJECT
 
@@ -44,13 +42,7 @@ public:
     };
 
     explicit LecturesManager(QObject* parent = nullptr);
-    ~LecturesManager();
-
-    // singleton type provider function
-    static QObject* lecturesManagerProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
-    static void setQmlEngine(QQmlApplicationEngine *engine);
-    static void setSaveManager(std::shared_ptr<SaveManager> saveMgr);
-    Q_INVOKABLE void clearComponentCache();
+    static QObject* managerProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
 
 public:
     Q_INVOKABLE void updateDiscipline(const QString& name, const int& idx);

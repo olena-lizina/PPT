@@ -18,15 +18,13 @@
 
 #ifndef LABSMANAGER_H
 #define LABSMANAGER_H
-#include <QObject>
-#include <QQmlApplicationEngine>
-#include <memory>
-#include "SaveManager.h"
-#include "StudentManager.h"
+#include "ManagerInterface.h"
 #include "DataTypes.h"
+
+#include <memory>
 #include <QList>
 
-class LabsManager: public QObject
+class LabsManager: public ManagerInterface
 {
     Q_OBJECT
 
@@ -37,13 +35,7 @@ class LabsManager: public QObject
 public:
 
     explicit LabsManager(QObject* parent = nullptr);
-    ~LabsManager();
-
-    // singleton type provider function
-    static QObject* labsManagerProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
-    static void setQmlEngine(QQmlApplicationEngine *engine);
-    static void setSaveManager(std::shared_ptr<SaveManager> saveMgr);
-    Q_INVOKABLE void clearComponentCache();
+    static QObject* managerProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
 
 public:
     QList<QObject*> labsTree();
@@ -77,15 +69,11 @@ private:
     void initLabsTree();    
 
 private:
-    static SaveManager::Ptr mSaveManager;
-    static QQmlApplicationEngine *m_qmlEngine;
     QList<QObject*> m_labsTree;
-
     QList<LabWork> mLabWorks;
     QList<Report> mReports;
     QList<ReportFile> mReportFiles;
-    QList<DisciplineTeach> mDisciplines;
-
+    QList<Discipline> mDisciplines;
     int mSelectedLab;
 };
 

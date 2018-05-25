@@ -26,7 +26,7 @@
 /*static*/ SaveManager::Ptr LecturesManager::mSaveManager;
 
 LecturesManager::LecturesManager(QObject* parent)
-    : QObject(parent)
+    : ManagerInterface(parent)
 {
 #ifdef STUDENT_MODE
     mDisciplines = mSaveManager->loadStudDiscipline();
@@ -46,31 +46,12 @@ LecturesManager::LecturesManager(QObject* parent)
     initLabsTree();
 }
 
-LecturesManager::~LecturesManager()
-{
-}
-
-/*static*/ QObject* LecturesManager::lecturesManagerProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
+/*static*/ QObject* LecturesManager::managerProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine)
     Q_UNUSED(scriptEngine)
-    LecturesManager *lectureManager = new LecturesManager();
-    return lectureManager;
-}
-
-/*static*/ void LecturesManager::setQmlEngine(QQmlApplicationEngine *engine)
-{
-    LecturesManager::m_qmlEngine = engine;
-}
-
-/*static*/ void LecturesManager::setSaveManager(std::shared_ptr<SaveManager> saveMgr)
-{
-    LecturesManager::mSaveManager = saveMgr;
-}
-
-void LecturesManager::clearComponentCache()
-{
-    LecturesManager::m_qmlEngine->clearComponentCache();
+    LecturesManager *manager = new LecturesManager();
+    return manager;
 }
 
 QList<QObject*> LecturesManager::labsTree()

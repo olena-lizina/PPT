@@ -21,25 +21,29 @@ HEADERS += \
     cpp/StudentManager.h \
     cpp/SaveManager.h \
     cpp/LecturesManager.h \
-    cpp/DBManager.h \
     cpp/DataTypes.h \
     cpp/StudentModel.h \
     cpp/TreeItem.h \
     cpp/ScreenContextBuffer.h \
     cpp/MailServiceManager.h \
     cpp/LabsManager.h \
-    cpp/ReportInfoModel.h
+    cpp/ReportInfoModel.h \
+    cpp/ManagerInterface.h \
+    cpp/GradesManager.h \
+    cpp/SQLiteManager.h
 
 SOURCES += \
     cpp/main.cpp \
     cpp/StudentManager.cpp \
     cpp/SaveManager.cpp \
     cpp/LecturesManager.cpp \
-    cpp/DBManager.cpp \
     cpp/TreeItem.cpp \
     cpp/ScreenContextBuffer.cpp \
     cpp/MailServiceManager.cpp \
-    cpp/LabsManager.cpp
+    cpp/LabsManager.cpp \
+    cpp/ManagerInterface.cpp \
+    cpp/GradesManager.cpp \
+    cpp/SQLiteManager.cpp
 
 lupdate_only {
 SOURCES += \

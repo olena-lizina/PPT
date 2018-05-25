@@ -21,7 +21,7 @@
 #include <QList>
 #include <memory>
 #include "DataTypes.h"
-#include "DBManager.h"
+#include "SQLiteManager.h"
 
 class SaveManager
 {
@@ -34,7 +34,7 @@ public:
     virtual ~SaveManager();
 
     void appendChapter(const Chapter& info);
-    void addChapter(const Chapter& info);
+    void insChapter(const Chapter& info);
     void appendDiscipline(const DisciplineStud& info);
     void appendDiscipline(const DisciplineTeach& info);
     void addDiscipline(const DisciplineTeach& info);
@@ -83,8 +83,7 @@ public:
     void updThemeIdx(const int& oldIdx, const int& newIdx);
 
     QList<Chapter> loadChapters();
-    QList<DisciplineStud> loadStudDiscipline();
-    QList<DisciplineTeach> loadTeachDiscipline();
+    QList<Discipline> loadDiscipline();
     QList<Group> loadGroup();
     QList<LabWork> loadLabWork();
     QList<ThemeLectureFile> loadThemeLectureFile();

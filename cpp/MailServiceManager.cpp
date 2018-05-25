@@ -19,7 +19,7 @@ const QString marksSubj("[ППЗ][\"%1\"]Ви отримали нову оцін
 const QString homeSubj("[ППЗ][\"%1\"]Звіт з лабораторної роботи");
 
 MailServiceManager::MailServiceManager(QObject* parent)
-    : QObject(parent)
+    : ManagerInterface(parent)
     , host("smtp.gmail.com")
     , port(465)
     , ssl(true)
@@ -31,32 +31,13 @@ MailServiceManager::MailServiceManager(QObject* parent)
 
 }
 
-MailServiceManager::~MailServiceManager()
-{
-}
-
-/*static*/ QObject* MailServiceManager::mailServiceManagerProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
+/*static*/ QObject* MailServiceManager::managerProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
 {
     Q_UNUSED(engine)
     Q_UNUSED(scriptEngine)
 
-    MailServiceManager *mailServiceManager = new MailServiceManager();
-    return mailServiceManager;
-}
-
-/*static*/ void MailServiceManager::setQmlEngine(QQmlApplicationEngine *engine)
-{
-    MailServiceManager::m_qmlEngine = engine;
-}
-
-/*static*/ void MailServiceManager::setSaveManager(std::shared_ptr<SaveManager> saveMgr)
-{
-    MailServiceManager::mSaveManager = saveMgr;
-}
-
-void MailServiceManager::clearComponentCache()
-{
-    MailServiceManager::m_qmlEngine->clearComponentCache();
+    MailServiceManager *manager = new MailServiceManager();
+    return manager;
 }
 
 void MailServiceManager::sendEducationMaterials(const QString& courseName, const int& courseId)
