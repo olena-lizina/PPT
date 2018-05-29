@@ -26,7 +26,6 @@ struct BaseItem {
 };
 
 struct Chapter: public BaseItem {
-    int id;
     QString name;
     int disciplineId;
 
@@ -46,7 +45,6 @@ struct Chapter: public BaseItem {
 };
 
 struct Discipline: public BaseItem {
-    int id;
     QString name;
     QString literPath;
     QString educPlanPath;
@@ -70,7 +68,6 @@ struct Discipline: public BaseItem {
 };
 
 struct Group: public BaseItem {
-    int id;
     QString name;
 
     Group(int id_, QString name_)
@@ -85,7 +82,6 @@ struct Group: public BaseItem {
 };
 
 struct LabWork: public BaseItem {
-    int id;
     int disciplineId;
     QString finishDate;
     QString name;
@@ -110,7 +106,6 @@ struct LabWork: public BaseItem {
 };
 
 struct ThemeLectureFile: public BaseItem {
-    int id;
     int themeId;
     QString path;
 
@@ -129,7 +124,6 @@ struct ThemeLectureFile: public BaseItem {
 };
 
 struct SubthemeLectureFile: public BaseItem {
-    int id;
     int subthemeId;
     QString path;
 
@@ -148,14 +142,19 @@ struct SubthemeLectureFile: public BaseItem {
 };
 
 struct Report: public BaseItem {
-    int id;
     int labId;
     int delivDate;
     QString mark;
     int evalDate;
     int studId;
 
-    Report()
+    Report(int id_, int labId_, int delivDate_, QString mark_, int evalDate_, int studId_)
+        : BaseItem(id_)
+        , labId(labId_)
+        , delivDate(delivDate_)
+        , mark(mark_)
+        , evalDate(evalDate_)
+        , studId(studId_)
     {}
 
     bool operator==(const Report& rhs)
@@ -170,9 +169,14 @@ struct Report: public BaseItem {
 };
 
 struct ReportFile: public BaseItem {
-    int id;
     int reportId;
     QString path;
+
+    ReportFile(int id_, int reportId_, QString path_)
+        : BaseItem(id_)
+        , reportId(reportId_)
+        , path(path_)
+    {}
 
     bool operator==(const ReportFile& rhs)
     {
@@ -183,12 +187,20 @@ struct ReportFile: public BaseItem {
 };
 
 struct Student: public BaseItem {
-    int id;
     QString name;
     QString phone;
     QString email;
     QString photoPath;
     int groupId;
+
+    Student(int id_, QString name_, QString phone_, QString email_, QString photoPath_, int groupId_)
+        : BaseItem(id_)
+        , name(name_)
+        , phone(phone_)
+        , email(email_)
+        , photoPath(photoPath_)
+        , groupId(groupId_)
+    {}
 
     bool operator==(const Student& rhs)
     {
@@ -202,9 +214,14 @@ struct Student: public BaseItem {
 };
 
 struct Subtheme: public BaseItem {
-    int id;
     QString name;
     int themeId;
+
+    Subtheme(int id_, QString name_, int themeId_)
+        : BaseItem(id_)
+        , name(name_)
+        , themeId(themeId_)
+    {}
 
     bool operator==(const Subtheme& rhs)
     {
@@ -215,9 +232,14 @@ struct Subtheme: public BaseItem {
 };
 
 struct Theme: public BaseItem {
-    int id;
     QString name;
     int chapterId;
+
+    Theme(int id_, QString name_, int chapterId_):
+        BaseItem(id_)
+      , name(name_)
+      , chapterId(chapterId_)
+    {}
 
     bool operator==(const Theme& rhs)
     {

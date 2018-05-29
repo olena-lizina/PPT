@@ -183,7 +183,7 @@ void LecturesManager::removeDiscipline(const int& idx)
 {
     qDebug() << "removeDiscipline: " << idx;
 
-    mSaveManager->delDiscipline(idx);
+    mSaveManager->deleteItem(idx, SaveManager::TYPE_DISCIPLINE);
     mDisciplines.clear();
     mDisciplines = mSaveManager->loadTeachDiscipline();
     initLabsTree();
@@ -194,7 +194,7 @@ void LecturesManager::removeChapter(const int& idx)
 {
     qDebug() << "removeChapter: " << idx;
 
-    mSaveManager->delChapter(idx);
+    mSaveManager->deleteItem(idx, SaveManager::TYPE_CHAPTER);
     mChapters.clear();
     mChapters = mSaveManager->loadChapters();
     initLabsTree();
@@ -205,7 +205,7 @@ void LecturesManager::removeTheme(const int& idx)
 {
     qDebug() << "removeTheme: " << idx;
 
-    mSaveManager->delTheme(idx);
+    mSaveManager->deleteItem(idx, SaveManager::TYPE_THEME);
     mThemes.clear();
     mThemes = mSaveManager->loadTheme();
     initLabsTree();
@@ -216,7 +216,7 @@ void LecturesManager::removeSubtheme(const int& idx)
 {
     qDebug() << "removeSubtheme: " << idx;
 
-    mSaveManager->delSubtheme(idx);
+    mSaveManager->deleteItem(idx, SaveManager::TYPE_SUBTHEME);
     mSubtheme.clear();
     mSubtheme = mSaveManager->loadSubtheme();
     initLabsTree();
@@ -253,18 +253,25 @@ void LecturesManager::insertDiscipline(const QString& name, const int& idx)
         --it;
     }
 
-    DisciplineTeach add;
-    add.name = name;
-    add.literPath = "";
-    add.educPlanPath = "";
-    add.educProgPath = "";
+    int id = 0;
 
     if (-1 == idx)
-        add.id = 1;
+        id = 1;
     else
-        add.id = idx + 1;
+        id = idx + 1;
 
-    mSaveManager->addDiscipline(add);
+    BaseItem * add = new Discipline(id, name, "", "", "");
+
+    if (!add)
+    {
+        qDebug() << "Cannot create instance of Discipline";
+        return;
+    }
+
+    mSaveManager->insertItem(add, SaveManager::TYPE_DISCIPLINE);
+
+    if (add)
+        delete add;
 
     mDisciplines.clear();
     mDisciplines = mSaveManager->loadTeachDiscipline();
@@ -294,12 +301,18 @@ void LecturesManager::insertChapter(const QString& name, const int& idx)
         --it;
     }
 
-    Chapter add;
-    add.name = name;
-    add.id = idx + 1;
-    add.disciplineId = discIdx;
-    add.orderId = 0;
-    mSaveManager->addChapter(add);
+    BaseItem * add = new Chapter(idx + 1, name, idx);
+
+    if (!add)
+    {
+        qDebug() << "Cannot create instance of Chapter";
+        return;
+    }
+
+    mSaveManager->insertItem(add, SaveManager::TYPE_CHAPTER);
+
+    if (add)
+        delete add;
 
     mChapters.clear();
     mChapters = mSaveManager->loadChapters();
@@ -309,13 +322,20 @@ void LecturesManager::insertChapter(const QString& name, const int& idx)
 
 void LecturesManager::appendChapter(const QString& name, const int& idx)
 {
-    qDebug() << "insertFirstChapter: " << idx << " " << name;
+    qDebug() << "appendChapter: " << idx << " " << name;
 
-    Chapter add;
-    add.name = name;
-    add.disciplineId = idx;
-    add.orderId = 0;
-    mSaveManager->appendChapter(add);
+    BaseItem * add = new Chapter(0, name, idx);
+
+    if (!add)
+    {
+        qDebug() << "Cannot create instance of Chapter";
+        return;
+    }
+
+    mSaveManager->appendItem(add, SaveManager::TYPE_CHAPTER);
+
+    if (add)
+        delete add;
 
     mChapters.clear();
     mChapters = mSaveManager->loadChapters();
@@ -345,12 +365,18 @@ void LecturesManager::insertTheme(const QString& name, const int& idx)
         --it;
     }
 
-    Theme add;
-    add.name = name;
-    add.id = idx + 1;
-    add.chapterId = chaptIdx;
-    add.orderId = 0;
-    mSaveManager->addTheme(add);
+    BaseItem * add = new Theme(idx + 1, chaptIdx);
+
+    if (!add)
+    {
+        qDebug() << "Cannot create instance of Theme";
+        return;
+    }
+
+    mSaveManager->insertItem(add, SaveManager::TYPE_THEME);
+
+    if (add)
+        delete add;
 
     mThemes.clear();
     mThemes = mSaveManager->loadTheme();
@@ -362,11 +388,18 @@ void LecturesManager::appendTheme(const QString& name, const int& idx)
 {
     qDebug() << "appendTheme: " << idx << " " << name;
 
-    Theme add;
-    add.name = name;
-    add.chapterId = idx;
-    add.orderId = 0;
-    mSaveManager->appendTheme(add);
+    BaseItem * add = new Theme(0, name, idx);
+
+    if (!add)
+    {
+        qDebug() << "Cannot create instance of Theme";
+        return;
+    }
+
+    mSaveManager->appendItem(add, SaveManager::TYPE_THEME);
+
+    if (add)
+        delete add;
 
     mThemes.clear();
     mThemes = mSaveManager->loadTheme();
@@ -396,12 +429,18 @@ void LecturesManager::insertSubtheme(const QString& name, const int& idx)
         --it;
     }
 
-    Subtheme add;
-    add.name = name;
-    add.id = idx + 1;
-    add.themeId = themeIdx;
-    add.orderId = 0;
-    mSaveManager->addSubtheme(add);
+    BaseItem * add = new Subtheme(idx + 1, name, themeIdx);
+
+    if (!add)
+    {
+        qDebug() << "Cannot create instance of Subtheme";
+        return;
+    }
+
+    mSaveManager->insertItem(add, SaveManager::TYPE_SUBTHEME);
+
+    if (add)
+        delete add;
 
     mSubtheme.clear();
     mSubtheme = mSaveManager->loadSubtheme();
@@ -413,11 +452,18 @@ void LecturesManager::appendSubtheme(const QString& name, const int& idx)
 {
     qDebug() << "appendSubtheme: " << idx << " " << name;
 
-    Subtheme add;
-    add.name = name;
-    add.themeId = idx;
-    add.orderId = 0;
-    mSaveManager->appendSubtheme(add);
+    BaseItem * add = new Subtheme(0, name, idx);
+
+    if (!add)
+    {
+        qDebug() << "Cannot create instance of Subtheme";
+        return;
+    }
+
+    mSaveManager->appendItem(add, SaveManager::TYPE_SUBTHEME);
+
+    if (add)
+        delete add;
 
     mSubtheme.clear();
     mSubtheme = mSaveManager->loadSubtheme();
@@ -468,7 +514,7 @@ void LecturesManager::removeLectureFile(const int& nesting, const int& idx)
             return;
         }
 
-        mSaveManager->delSubthemeLectureFile(fileIter->id);
+        mSaveManager->deleteItem(fileIter->id, SaveManager::TYPE_SUBTHEME_LECTURE);
         QFile::remove(fileIter->path);
         mSubthemeLectureFiles = mSaveManager->loadSubthemeLectureFile();
     }
@@ -483,7 +529,7 @@ void LecturesManager::removeLectureFile(const int& nesting, const int& idx)
             return;
         }
 
-        mSaveManager->delThemeLectureFile(fileIter->id);
+        mSaveManager->deleteItem(fileIter->id, SaveManager::TYPE_THEME_LECTURE);
         QFile::remove(fileIter->path);
         mThemeLectureFiles = mSaveManager->loadThemeLectureFile();
     }
@@ -1011,10 +1057,19 @@ void LecturesManager::saveThemeLectureFile(const QString& path, const int& idx)
 
     if (mThemeLectureFiles.end() == fileIter)
     {
-        ThemeLectureFile add;
-        add.path = path;
-        add.themeId = idx;
-        mSaveManager->addThemeLectureFile(add);
+        BaseItem * add = new ThemeLectureFile(0, path, idx);
+
+        if (!add)
+        {
+            qDebug() << "Cannot create instance of ThemeLectureFile";
+            return;
+        }
+
+        mSaveManager->appendItem(add, SaveManager::TYPE_THEME_LECTURE);
+
+        if (add)
+            delete add;
+
         mThemeLectureFiles = mSaveManager->loadThemeLectureFile();
     }
     else
@@ -1033,10 +1088,19 @@ void LecturesManager::saveSubthemeLectureFile(const QString& path, const int& id
 
     if (mSubthemeLectureFiles.end() == fileIter)
     {
-        SubthemeLectureFile add;
-        add.path = path;
-        add.subthemeId = idx;
-        mSaveManager->addSubthemeLectureFile(add);
+        BaseItem * add = new SubthemeLectureFile(0, path, idx);
+
+        if (!add)
+        {
+            qDebug() << "Cannot create instance of SubthemeLectureFile";
+            return;
+        }
+
+        mSaveManager->appendItem(add, SaveManager::TYPE_SUBTHEME_LECTURE);
+
+        if (add)
+            delete add;
+
         mSubthemeLectureFiles = mSaveManager->loadSubthemeLectureFile();
     }
     else

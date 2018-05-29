@@ -24,6 +24,7 @@ const QString getLastIdTemp = "SELECT MAX(Id) from '%1'";
 
 SaveManager::SaveManager(): mSqlManager("ppt.db")
 {
+    initTypeNames();
     initTables();
 }
 
@@ -31,241 +32,283 @@ SaveManager::SaveManager(): mSqlManager("ppt.db")
 {
 }
 
-void SaveManager::appendChapter(const Chapter& info)
+void SaveManager::initTypeNames()
 {
-    auto res = mSqlManager.execute(getLastIdTemp.arg("Chapter"));
+    mTypeNames[TYPE_CHAPTER] = "Chapter";
+    mTypeNames[TYPE_DISCIPLINE] = "Discipline";
+    mTypeNames[TYPE_THEME] = "Theme";
+    mTypeNames[TYPE_SUBTHEME] = "Subtheme";
+    mTypeNames[TYPE_LAB_WORK] = "Lab_Work";
+    mTypeNames[TYPE_THEME_LECTURE] = "Theme_Lecture_File";
+    mTypeNames[TYPE_SUBTHEME_LECTURE] = "Subtheme_Lecture_File";
+    mTypeNames[TYPE_REPORT] = "Report";
+    mTypeNames[TYPE_REPORT_FILE] = "Report_File";
+    mTypeNames[TYPE_GROUP] = "'Group'";
+    mTypeNames[TYPE_STUDENT] = "Student";
+    mTypeNames[TYPE_STUDENTS_COURSES] = "StudentsCourses";
+}
+
+void SaveManager::initInsertStrs()
+{
+    mInsertStr[TYPE_CHAPTER] = "INSERT INTO Chapter (Id,Name,Discipline_Id) VALUES ('%1',\"%2\",'%3')";
+    mInsertStr[TYPE_DISCIPLINE] = "INSERT INTO Discipline (Id,Name,Liter_Path) VALUES ('%1',\"%2\",\"%3\")";
+    mInsertStr[TYPE_THEME] = "INSERT INTO Theme (Id,Name,Chapter_Id) VALUES ('%1',\"%2\",'%3')";
+    mInsertStr[TYPE_SUBTHEME] = "INSERT INTO Subtheme(Id,Name,Theme_Id) VALUES ('%1',\"%2\",'%3')";
+    mInsertStr[TYPE_LAB_WORK] = "INSERT INTO Lab_Work (Id,Discipline_Id,Finish_Date,Name,Path) VALUES ('%1','%2',\"%3\",\"%4\",\"%5\")";
+    mInsertStr[TYPE_THEME_LECTURE] = "INSERT INTO Theme_Lecture_File (Id,Theme_Id,Path) VALUES ('%1','%2',\"%3\")";
+    mInsertStr[TYPE_SUBTHEME_LECTURE] = "INSERT INTO Subtheme_Lecture_File (Id,Subtheme_Id,Path) VALUES ('%1','%2',\"%3\")";
+    mInsertStr[TYPE_REPORT] = "INSERT INTO Report (Id,Lab_Id,Delivery_Date,Mark,Evaluation_Date) VALUES ('%1','%2',\"%3\",\"%4\",\"%5\")";
+    mInsertStr[TYPE_REPORT_FILE] = "INSERT INTO Report_File (Id,Report_Id,Path) VALUES ('%1','%2',\"%3\")";
+    mInsertStr[TYPE_GROUP] = "INSERT INTO 'Group' (Id,Name) VALUES ('%1',\"%2\")";
+    mInsertStr[TYPE_STUDENT] = "INSERT INTO Student (Id,Name,Phone,Email,Photo_Path,Group_Id) VALUES ('%1',\"%2\",\"%3\",\"%4\",\"%5\",'%6')";
+    mInsertStr[TYPE_STUDENTS_COURSES] = "INSERT INTO StudentsCourses (Id,StudId,CourseId) VALUES ";
+}
+
+void SaveManager::initDeleteStrs()
+{
+    mDeleteStr[TYPE_CHAPTER] = "DELETE FROM Chapter WHERE Id='%1'";
+    mDeleteStr[TYPE_DISCIPLINE] = "DELETE FROM Discipline WHERE Id='%1'";
+    mDeleteStr[TYPE_THEME] = "DELETE FROM Theme WHERE Id='%1'";
+    mDeleteStr[TYPE_SUBTHEME] = "DELETE FROM Subtheme WHERE Id='%1'";
+    mDeleteStr[TYPE_LAB_WORK] = "DELETE FROM Lab_Work WHERE Id='%1'";
+    mDeleteStr[TYPE_THEME_LECTURE] = "DELETE FROM Theme_Lecture_File WHERE Id='%1'";
+    mDeleteStr[TYPE_SUBTHEME_LECTURE] = "DELETE FROM Subtheme_Lecture_File WHERE Id='%1'";
+    mDeleteStr[TYPE_REPORT] = "DELETE FROM Report WHERE Id='%1'";
+    mDeleteStr[TYPE_REPORT_FILE] = "DELETE FROM Report_File WHERE Id='%1'";
+    mDeleteStr[TYPE_GROUP] = "DELETE FROM 'Group' WHERE Id='%1'";
+    mDeleteStr[TYPE_STUDENT] = "DELETE FROM Student WHERE Id='%1'";
+    mDeleteStr[TYPE_STUDENTS_COURSES] = "DELETE FROM StudentsCourses WHERE Id='%1'";
+}
+
+void SaveManager::initEditStrs()
+{
+    mEditStr[TYPE_CHAPTER] = "UPDATE Chapter SET Name=\"%1\",Discipline_Id='%2' WHERE Id='%3'";
+    mEditStr[TYPE_DISCIPLINE] = "UPDATE Discipline SET Name=\"%1\",Liter_Path=\"%2\" WHERE Id='%3'";
+    mEditStr[TYPE_THEME] = "Theme";
+    mEditStr[TYPE_SUBTHEME] = "Subtheme";
+    mEditStr[TYPE_LAB_WORK] = "Lab_Work";
+    mEditStr[TYPE_THEME_LECTURE] = "Theme_Lecture_File";
+    mEditStr[TYPE_SUBTHEME_LECTURE] = "Subtheme_Lecture_File";
+    mEditStr[TYPE_REPORT] = "Report";
+    mEditStr[TYPE_REPORT_FILE] = "Report_File";
+    mEditStr[TYPE_GROUP] = "'Group'";
+    mEditStr[TYPE_STUDENT] = "Student";
+    mEditStr[TYPE_STUDENTS_COURSES] = "StudentsCourses";
+}
+
+void SaveManager::saveItem(BaseItem* item, ItemType type, int index)
+{
+    switch (type)
+    {
+    case TYPE_CHAPTER:
+    {
+        Chapter *info = dynamic_cast<Chapter*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to Chapter";
+            return;
+        }
+
+        if (!mSqlManager.execute(mInsertStr[TYPE_CHAPTER].arg(index).arg(info->name).arg(info->disciplineId)).first)
+            qDebug() << "Cannot save chapter";
+    }
+        break;
+    case TYPE_DISCIPLINE:
+    {
+        Discipline * info = dynamic_cast<Discipline*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to Discipline";
+            return;
+        }
+
+        if (!mSqlManager.execute(mInsertStr[TYPE_DISCIPLINE].arg(index).arg(info->name).arg(info->literPath).arg(info->educPlanPath).arg(info->educProgPath)).first)
+            qDebug() << "Cannot save discipline";
+    }
+        break;
+    case TYPE_THEME:
+    {
+        Theme * info = dynamic_cast<Theme*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to Theme";
+            return;
+        }
+
+        if (!mSqlManager.execute(mInsertStr[TYPE_THEME].arg(index).arg(info->name).arg(info->chapterId)).first)
+            qDebug() << "Cannot save theme";
+    }
+        break;
+    case TYPE_SUBTHEME:
+    {
+        Subtheme * info = dynamic_cast<Subtheme*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to Subtheme";
+            return;
+        }
+
+        if (!mSqlManager.execute(mInsertStr[TYPE_SUBTHEME].arg(index).arg(info->name).arg(info->themeId)).first)
+            qDebug() << "Cannot save subtheme";
+    }
+        break;
+    case TYPE_LAB_WORK:
+    {
+        LabWork * info = dynamic_cast<LabWork*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to LabWork";
+            return;
+        }
+
+        if (!mSqlManager.execute(mInsertStr[TYPE_LAB_WORK].arg(index).arg(info->disciplineId).arg(info->finishDate).arg(info->name).arg(info->path)).first)
+            qDebug() << "Cannot save lab_work";
+    }
+        break;
+    case TYPE_THEME_LECTURE:
+    {
+        ThemeLectureFile * info = dynamic_cast<ThemeLectureFile*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to ThemeLectureFile";
+            return;
+        }
+
+        if (!mSqlManager.execute(mInsertStr[TYPE_THEME_LECTURE].arg(index).arg(info->themeId).arg(info->path)).first)
+            qDebug() << "Cannot save theme lecture file";
+    }
+        break;
+    case TYPE_SUBTHEME_LECTURE:
+    {
+        SubthemeLectureFile * info = dynamic_cast<SubthemeLectureFile*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to SubthemeLectureFile";
+            return;
+        }
+
+        if (!mSqlManager.execute(mInsertStr[TYPE_SUBTHEME_LECTURE].arg(index).arg(info->subthemeId).arg(info->path)).first)
+            qDebug() << "Cannot save subtheme lecture file";
+    }
+        break;
+    case TYPE_REPORT:
+    {
+        Report * info = dynamic_cast<Report*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to Report";
+            return;
+        }
+
+        if (!mSqlManager.execute(mInsertStr[TYPE_REPORT].arg(index).arg(info->labId).arg(info->delivDate).arg(info->mark).arg(info->evalDate)).first)
+            qDebug() << "Cannot save report";
+    }
+        break;
+    case TYPE_REPORT_FILE:
+    {
+        ReportFile * info = dynamic_cast<ReportFile*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to ReportFile";
+            return;
+        }
+
+        if (!mSqlManager.execute(mInsertStr[TYPE_REPORT_FILE].arg(index).arg(info->reportId).arg(info->path)).first)
+            qDebug() << "Cannot save report file";
+    }
+        break;
+    case TYPE_GROUP:
+    {
+        Group * info = dynamic_cast<Group*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to Group";
+            return;
+        }
+
+        if (!mSqlManager.execute(mInsertStr[TYPE_GROUP].arg(index).arg(info->name)).first)
+            qDebug() << "Cannot save group";
+    }
+        break;
+    case TYPE_STUDENT:
+    {
+        Student * info = dynamic_cast<Student*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to Student";
+            return;
+        }
+
+        if (!mSqlManager.execute(mInsertStr[TYPE_STUDENT].arg(index).arg(info->name).arg(info->phone).arg(info->email).arg(info->photoPath).arg(info->groupId)).first)
+            qDebug() << "Cannot save student";
+    }
+        break;
+    case TYPE_STUDENTS_COURSES:
+        break;
+    }
+}
+
+void SaveManager::appendItem(BaseItem* item, ItemType type)
+{
+    auto res = mSqlManager.execute(getLastIdTemp.arg(mTypeNames[type]));
 
     if (!res.first || res.second.isEmpty() || res.second.at(0).isEmpty())
     {
-        qDebug() << "Cannot get last chapter id";
+        qDebug() << "Cannot get last " << name << " id";
         return;
     }
-
     int lastId = res.second.at(0).at(0).toInt();
-    const QString tempAddChapter("INSERT INTO Chapter (Id,Name,Discipline_Id) VALUES ('%1',\"%2\",'%3')");
 
-    if (!mSqlManager.execute(tempAddChapter.arg(++lastId).arg(info.name).arg(info.disciplineId)).first)
-        qDebug() << "Cannot save chapter";
+    saveItem(item, type, ++lastId);
 }
 
-void SaveManager::insChapter(const Chapter& info)
+void SaveManager::insertItem(BaseItem* item, ItemType type)
 {
-    const QString tempAddChapter("INSERT INTO Chapter (Id,Name,Discipline_Id) VALUES ('%1',\"%2\",'%3')");
-
-    if (!mSqlManager.execute(tempAddChapter.arg(info.id).arg(info.name).arg(info.disciplineId)).first)
-        qDebug() << "Cannot save chapter";
+    saveItem(item, type, item->id);
 }
 
-void SaveManager::appendDiscipline(const DisciplineStud& info)
+void SaveManager::editItem(BaseItem* item, ItemType type)
 {
-    auto res = mSqlManager.execute(getLastIdTemp.arg("Discipline"));
-
-    if (!res.first)
+    switch (type)
     {
-        qDebug() << "Cannot get last discipline id";
-        return;
+    case TYPE_CHAPTER:
+        if (!mSqlManager.execute(tempUpdStr.arg(info.name).arg(info.orderId).arg(info.disciplineId).arg(info.id)).first)
+            qDebug() << "Cannot update chapter";
+        break;
+    case TYPE_DISCIPLINE:
+        if (!mSqlManager.execute(tempUpdStr.arg(info.name).arg(info.literPath).arg(info.id)).first)
+            qDebug() << "Cannot update discipline";
+        break;
+    case TYPE_THEME: break;
+    case TYPE_SUBTHEME: break;
+    case TYPE_LAB_WORK: break;
+    case TYPE_THEME_LECTURE: break;
+    case TYPE_SUBTHEME_LECTURE: break;
+    case TYPE_REPORT: break;
+    case TYPE_REPORT_FILE: break;
+    case TYPE_GROUP: break;
+    case TYPE_STUDENT: break;
+    case TYPE_STUDENTS_COURSES: break;
     }
 
-    int lastId = res.second.at(0).at(0).toInt();
-    const QString tempAddDiscipline("INSERT INTO Discipline (Id,Name,Liter_Path) VALUES ('%1',\"%2\",\"%3\")");
 
-    if (!mSqlManager.execute(tempAddDiscipline.arg(++lastId).arg(info.name).arg(info.literPath)).first)
-        qDebug() << "Cannot save discipline";
 }
 
-void SaveManager::appendDiscipline(const DisciplineTeach& info)
+void SaveManager::deleteItem(const int& id, ItemType type)
 {
-    auto res = mSqlManager.execute(getLastIdTemp.arg("Discipline"));
-
-    if (!res.first)
-    {
-        qDebug() << "Cannot get last discipline id";
-        return;
-    }
-
-    int lastId = res.second.at(0).at(0).toInt();
-    const QString tempAddDiscipline("INSERT INTO Discipline (Id,Name,Liter_Path,Educ_Plan_Path,Educ_Progr_Path) VALUES ('%1',\"%2\",\"%3\",\"%4\",\"%5\")");
-
-    if (!mSqlManager.execute(tempAddDiscipline.arg(++lastId).arg(info.name).arg(info.literPath).arg(info.educPlanPath).arg(info.educProgPath)).first)
-        qDebug() << "Cannot save discipline";
-}
-
-void SaveManager::addDiscipline(const DisciplineTeach& info)
-{
-    const QString tempAddDiscipline("INSERT INTO Discipline (Id,Name,Liter_Path,Educ_Plan_Path,Educ_Progr_Path) VALUES ('%1',\"%2\",\"%3\",\"%4\",\"%5\")");
-
-    if (!mSqlManager.execute(tempAddDiscipline.arg(info.id).arg(info.name).arg(info.literPath).arg(info.educPlanPath).arg(info.educProgPath)).first)
-        qDebug() << "Cannot save discipline";
-}
-
-void SaveManager::addGroup(const Group& info)
-{
-    auto res = mSqlManager.execute("SELECT MAX(Id) from 'Group'");
-
-    if (!res.first)
-    {
-        qDebug() << "Cannot get last group id";
-        return;
-    }
-
-    int lastId = res.second.at(0).at(0).toInt();
-    const QString tempAddGroup("INSERT INTO 'Group'(Id,Name) VALUES ('%1',\"%2\")");
-
-    if (!mSqlManager.execute(tempAddGroup.arg(++lastId).arg(info.name)).first)
-        qDebug() << "Cannot save group";
-}
-
-void SaveManager::addLabWork(const LabWork& info)
-{
-    auto res = mSqlManager.execute(getLastIdTemp.arg("Lab_Work"));
-
-    if (!res.first)
-    {
-        qDebug() << "Cannot get last lab_work id";
-        return;
-    }
-
-    int lastId = res.second.at(0).at(0).toInt();
-    const QString tempAddLabWork("INSERT INTO Lab_Work(Id,Discipline_Id,Finish_Date,Name,Path) VALUES ('%1','%2',\"%3\",\"%4\",\"%5\")");
-
-    if (!mSqlManager.execute(tempAddLabWork.arg(++lastId).arg(info.disciplineId).arg(info.finishDate).arg(info.name).arg(info.path)).first)
-        qDebug() << "Cannot save lab_work";
-}
-
-void SaveManager::addThemeLectureFile(const ThemeLectureFile& info)
-{
-    auto res = mSqlManager.execute(getLastIdTemp.arg("Theme_Lecture_File"));
-
-    if (!res.first)
-    {
-        qDebug() << "Cannot get last theme lecture file id";
-        return;
-    }
-
-    int lastId = res.second.at(0).at(0).toInt();
-    const QString tempAddLectFile("INSERT INTO Theme_Lecture_File(Id,Theme_Id,Path) VALUES ('%1','%2',\"%3\")");
-
-    if (!mSqlManager.execute(tempAddLectFile.arg(++lastId).arg(info.themeId).arg(info.path)).first)
-        qDebug() << "Cannot save theme lecture file";
-}
-
-void SaveManager::addSubthemeLectureFile(const SubthemeLectureFile& info)
-{
-    auto res = mSqlManager.execute(getLastIdTemp.arg("Subtheme_Lecture_File"));
-
-    if (!res.first)
-    {
-        qDebug() << "Cannot get last subtheme lecture file id";
-        return;
-    }
-
-    int lastId = res.second.at(0).at(0).toInt();
-    const QString tempAddLectFile("INSERT INTO Subtheme_Lecture_File(Id,Subtheme_Id,Path) VALUES ('%1','%2',\"%3\")");
-
-    if (!mSqlManager.execute(tempAddLectFile.arg(++lastId).arg(info.subthemeId).arg(info.path)).first)
-        qDebug() << "Cannot save subtheme lecture file";
-}
-
-
-void SaveManager::addReport(const Report& info)
-{
-    auto res = mSqlManager.execute(getLastIdTemp.arg("Report"));
-
-    if (!res.first)
-    {
-        qDebug() << "Cannot get last report id";
-        return;
-    }
-
-    int lastId = res.second.at(0).at(0).toInt();
-    const QString tempAddReport("INSERT INTO Report(Id,Lab_Id,Delivery_Date,Mark,Evaluation_Date) VALUES ('%1','%2','%3',\"%4\",'%5')");
-
-    if (!mSqlManager.execute(tempAddReport.arg(++lastId).arg(info.labId).arg(info.delivDate).arg(info.mark).arg(info.evalDate)).first)
-        qDebug() << "Cannot save report";
-}
-
-void SaveManager::addReportFile(const ReportFile& info)
-{
-    auto res = mSqlManager.execute(getLastIdTemp.arg("Report_File"));
-
-    if (!res.first)
-    {
-        qDebug() << "Cannot get last report file id";
-        return;
-    }
-
-    int lastId = res.second.at(0).at(0).toInt();
-    const QString tempAddReportFile("INSERT INTO Report_File(Id,Report_Id,Path) VALUES ('%1','%2',\"%3\")");
-
-    if (!mSqlManager.execute(tempAddReportFile.arg(++lastId).arg(info.reportId).arg(info.path)).first)
-        qDebug() << "Cannot save report file";
-}
-
-void SaveManager::addStudent(const Student& info)
-{
-    auto res = mSqlManager.execute(getLastIdTemp.arg("Student"));
-
-    if (!res.first)
-    {
-        qDebug() << "Cannot get last student id";
-        return;
-    }
-
-    int lastId = res.second.at(0).at(0).toInt();
-    const QString tempAddStud("INSERT INTO Student(Id,Name,Phone,Email,Photo_Path,Group_Id) VALUES ('%1',\"%2\",\"%3\",\"%4\",\"%5\",'%6')");
-
-    if (!mSqlManager.execute(tempAddStud.arg(++lastId).arg(info.name).arg(info.phone).arg(info.email).arg(info.photoPath).arg(info.groupId)).first)
-        qDebug() << "Cannot save student";
-}
-
-void SaveManager::appendSubtheme(const Subtheme& info)
-{
-    auto res = mSqlManager.execute(getLastIdTemp.arg("Subtheme"));
-
-    if (!res.first)
-    {
-        qDebug() << "Cannot get last subtheme id";
-        return;
-    }
-
-    int lastId = res.second.at(0).at(0).toInt();
-    const QString tempAddSubtheme("INSERT INTO Subtheme(Id,Name,Order_Id,Theme_Id) VALUES ('%1',\"%2\",'%3','%4')");
-
-    if (!mSqlManager.execute(tempAddSubtheme.arg(++lastId).arg(info.name).arg(info.orderId).arg(info.themeId)).first)
-        qDebug() << "Cannot save subtheme";
-}
-
-void SaveManager::addSubtheme(const Subtheme& info)
-{
-    const QString tempAddSubtheme("INSERT INTO Subtheme(Id,Name,Order_Id,Theme_Id) VALUES ('%1',\"%2\",'%3','%4')");
-
-    if (!mSqlManager.execute(tempAddSubtheme.arg(info.id).arg(info.name).arg(info.orderId).arg(info.themeId)).first)
-        qDebug() << "Cannot save subtheme";
-}
-
-void SaveManager::appendTheme(const Theme& info)
-{
-    auto res = mSqlManager.execute(getLastIdTemp.arg("Theme"));
-
-    if (!res.first)
-    {
-        qDebug() << "Cannot get last theme id";
-        return;
-    }
-
-    int lastId = res.second.at(0).at(0).toInt();
-    const QString tempAddTheme("INSERT INTO Theme(Id,Name,Order_Id,Chapter_Id) VALUES ('%1',\"%2\",'%3','%4')");
-
-    if (!mSqlManager.execute(tempAddTheme.arg(++lastId).arg(info.name).arg(info.orderId).arg(info.chapterId)).first)
-        qDebug() << "Cannot save theme";
-}
-
-void SaveManager::addTheme(const Theme& info)
-{
-    const QString tempAddTheme("INSERT INTO Theme(Id,Name,Order_Id,Chapter_Id) VALUES ('%1',\"%2\",'%3','%4')");
-
-    if (!mSqlManager.execute(tempAddTheme.arg(info.id).arg(info.name).arg(info.orderId).arg(info.chapterId)).first)
-        qDebug() << "Cannot save theme";
+    if (!mSqlManager.execute(mDeleteStr[type].arg(id)).first)
+        qDebug() << "Cannot delete item";
 }
 
 void SaveManager::updStudentsCourses(const int& courseId, int groupId)
@@ -318,108 +361,11 @@ void SaveManager::addTeacherMail(const QString& mail)
         qDebug() << "Cannot save teacher email";
 }
 
-void SaveManager::delChapter(const int& id)
-{
-    const QString tempDelStr("DELETE FROM Chapter WHERE Id='%1'");
-
-    if (!mSqlManager.execute(tempDelStr.arg(id)).first)
-        qDebug() << "Cannot delete chapter";
-}
-
-void SaveManager::delDiscipline(const int& id)
-{
-    const QString tempDelStr("DELETE FROM Discipline WHERE Id='%1'");
-
-    if (!mSqlManager.execute(tempDelStr.arg(id)).first)
-        qDebug() << "Cannot delete student's discipline";
-}
-
-void SaveManager::delGroup(const int& id)
-{
-    const QString tempDelStr("DELETE FROM 'Group' WHERE Id='%1'");
-
-    if (!mSqlManager.execute(tempDelStr.arg(id)).first)
-        qDebug() << "Cannot delete group";
-}
-
-void SaveManager::delLabWork(const int& id)
-{
-    const QString tempDelStr("DELETE FROM Lab_Work WHERE Id='%1'");
-
-    if (!mSqlManager.execute(tempDelStr.arg(id)).first)
-        qDebug() << "Cannot delete lab work";
-}
-
-void SaveManager::delThemeLectureFile(const int& id)
-{
-    const QString tempDelStr("DELETE FROM Theme_Lecture_File WHERE Id='%1'");
-
-    if (!mSqlManager.execute(tempDelStr.arg(id)).first)
-        qDebug() << "Cannot delete theme lecture file";
-}
-
-void SaveManager::delSubthemeLectureFile(const int& id)
-{
-    const QString tempDelStr("DELETE FROM Subtheme_Lecture_File WHERE Id='%1'");
-
-    if (!mSqlManager.execute(tempDelStr.arg(id)).first)
-        qDebug() << "Cannot delete subtheme lecture file";
-}
-
-void SaveManager::delReport(const int& id)
-{
-    const QString tempDelStr("DELETE FROM Report WHERE Id='%1'");
-
-    if (!mSqlManager.execute(tempDelStr.arg(id)).first)
-        qDebug() << "Cannot delete report";
-}
-
-void SaveManager::delReportFile(const int& id)
-{
-    const QString tempDelStr("DELETE FROM Report_File WHERE Id='%1'");
-
-    if (!mSqlManager.execute(tempDelStr.arg(id)).first)
-        qDebug() << "Cannot delete report file";
-}
-
-void SaveManager::delStudent(const int& id)
-{
-    const QString tempDelStr("DELETE FROM Student WHERE Id='%1'");
-
-    if (!mSqlManager.execute(tempDelStr.arg(id)).first)
-        qDebug() << "Cannot delete student";
-}
-
-void SaveManager::delSubtheme(const int& id)
-{
-    const QString tempDelStr("DELETE FROM Subtheme WHERE Id='%1'");
-
-    if (!mSqlManager.execute(tempDelStr.arg(id)).first)
-        qDebug() << "Cannot delete subtheme";
-}
-
-void SaveManager::delTheme(const int& id)
-{
-    const QString tempDelStr("DELETE FROM Theme WHERE Id='%1'");
-
-    if (!mSqlManager.execute(tempDelStr.arg(id)).first)
-        qDebug() << "Cannot delete theme";
-}
-
-void SaveManager::updChapter(const Chapter& info)
-{
-    const QString tempUpdStr("UPDATE Chapter SET Name=\"%1\",Order_Id='%2',Discipline_Id='%3' WHERE Id='%4'");
-
-    if (!mSqlManager.execute(tempUpdStr.arg(info.name).arg(info.orderId).arg(info.disciplineId).arg(info.id)).first)
-        qDebug() << "Cannot update chapter";
-}
-
 void SaveManager::updDiscipline(const DisciplineStud& info)
 {
     const QString tempUpdStr("UPDATE Discipline SET Name=\"%1\",Liter_Path=\"%2\" WHERE Id='%3'");
 
-    if (!mSqlManager.execute(tempUpdStr.arg(info.name).arg(info.literPath).arg(info.id)).first)
-        qDebug() << "Cannot update discipline";
+
 }
 
 void SaveManager::updDiscipline(const DisciplineTeach& info)
@@ -900,7 +846,7 @@ void SaveManager::initTables()
         "CREATE TABLE IF NOT EXISTS Lab_Work (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Discipline_Id INTEGER, Finish_Date TEXT, Name TEXT, Path TEXT, FOREIGN KEY (Discipline_Id) REFERENCES Discipline(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS Subtheme_Lecture_File (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Subtheme_Id INTEGER, Path TEXT, FOREIGN KEY (Subtheme_Id) REFERENCES Subtheme(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS Theme_Lecture_File (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Theme_Id INTEGER, Path TEXT, FOREIGN KEY (Theme_Id) REFERENCES Theme(Id) ON DELETE CASCADE)",
-        "CREATE TABLE IF NOT EXISTS Report (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Lab_Id INTEGER, Delivery_Date INTEGER, Mark TEXT, Evaluation_Date INTEGER, Stud_Id INTEGER, FOREIGN KEY (Lab_Id) REFERENCES Lab_Work(Id) ON DELETE CASCADE, FOREIGN KEY (Stud_Id) REFERENCES Student(Id) ON DELETE CASCADE)",
+        "CREATE TABLE IF NOT EXISTS Report (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Lab_Id INTEGER, Delivery_Date TEXT, Mark TEXT, Evaluation_Date TEXT, Stud_Id INTEGER, FOREIGN KEY (Lab_Id) REFERENCES Lab_Work(Id) ON DELETE CASCADE, FOREIGN KEY (Stud_Id) REFERENCES Student(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS Report_File (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Report_Id INTEGER, Path TEXT, FOREIGN KEY (Report_Id) REFERENCES Report(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS Subtheme (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Theme_Id INTEGER, FOREIGN KEY (Theme_Id) REFERENCES Theme(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS Theme (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Chapter_Id INTEGER, FOREIGN KEY (Chapter_Id) REFERENCES Chapter(Id) ON DELETE CASCADE)",

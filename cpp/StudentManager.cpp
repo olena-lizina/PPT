@@ -76,9 +76,18 @@ void StudentManager::checkGroup(const QString& name)
     if (defaultGroup == mGroupMap.key(name, defaultGroup))
     {
         // no such group
-        Group tmp;
-        tmp.name = name;
-        mSaveManager->addGroup(tmp);
+        BaseItem * add = new Group(0, name);
+
+        if (!add)
+        {
+            qDebug() << "Cannot create instance of Group";
+            return;
+        }
+
+        mSaveManager->appendItem(add, SaveManager::TYPE_GROUP);
+
+        if (add)
+            delete add;
 
         mGroupMap.clear();
         auto groups = mSaveManager->loadGroup();
@@ -92,13 +101,18 @@ void StudentManager::addStudent(QString name, QString phone, QString group, QStr
 {
     checkGroup(group);
 
-    Student add;
-    add.name = name;
-    add.email = email;
-    add.phone = phone;
-    add.photoPath = photo;
-    add.groupId = mGroupMap.key(group);
-    mSaveManager->addStudent(add);
+    BaseItem * add = new Student(0, name, email, phone, photo, mGroupMap.key(group));
+
+    if (!add)
+    {
+        qDebug() << "Cannot create instance of Student";
+        return;
+    }
+
+    mSaveManager->appendItem(add, SaveManager::TYPE_STUDENT);
+
+    if (add)
+        delete add;
 
     mStudentList.clear();
     mStudentList = mSaveManager->loadStudent();
@@ -115,14 +129,14 @@ void StudentManager::deleteStudent(int id)
     }
 
     int groupId = studIter->groupId;
-    mSaveManager->delStudent(id);
+    mSaveManager->deleteItem(id, SaveManager::TYPE_STUDENT);
     mStudentList.erase(studIter);
 
     auto hasGroup = std::find_if(mStudentList.begin(), mStudentList.end(),
                  [groupId](Student& it){ return it.groupId == groupId; });
 
     if (hasGroup == mStudentList.end())
-        mSaveManager->delGroup(groupId);
+        mSaveManager->deleteItem(groupId, SaveManager::TYPE_GROUP);
 
     loadStudentsFromDB();
 }

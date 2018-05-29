@@ -19,6 +19,7 @@
 #ifndef SAVEMANAGER_H
 #define SAVEMANAGER_H
 #include <QList>
+#include <QMap>
 #include <memory>
 #include "DataTypes.h"
 #include "SQLiteManager.h"
@@ -27,55 +28,48 @@ class SaveManager
 {
 public:
 
+    enum ItemType {
+        TYPE_CHAPTER,
+        TYPE_DISCIPLINE,
+        TYPE_THEME,
+        TYPE_SUBTHEME,
+        TYPE_LAB_WORK,
+        TYPE_THEME_LECTURE,
+        TYPE_SUBTHEME_LECTURE,
+        TYPE_REPORT,
+        TYPE_REPORT_FILE,
+        TYPE_GROUP,
+        TYPE_STUDENT,
+        TYPE_STUDENTS_COURSES
+    };
+
+public:
+
     using WPtr = std::weak_ptr<SaveManager>;
     using Ptr = std::shared_ptr<SaveManager>;
 
     explicit SaveManager();
     virtual ~SaveManager();
 
-    void appendChapter(const Chapter& info);
-    void insChapter(const Chapter& info);
-    void appendDiscipline(const DisciplineStud& info);
-    void appendDiscipline(const DisciplineTeach& info);
-    void addDiscipline(const DisciplineTeach& info);
-    void addGroup(const Group& info);
-    void addLabWork(const LabWork& info);
-    void addThemeLectureFile(const ThemeLectureFile& info);
-    void addSubthemeLectureFile(const SubthemeLectureFile& info);
-    void addReport(const Report& info);
-    void addReportFile(const ReportFile& info);
-    void addStudent(const Student& info);
-    void appendSubtheme(const Subtheme& info);
-    void addSubtheme(const Subtheme& info);
-    void appendTheme(const Theme& info);
-    void addTheme(const Theme& info);
+    void appendItem(BaseItem* item, ItemType type);
+    void insertItem(BaseItem* item, ItemType type);
+    void editItem(BaseItem* item, ItemType type);
+    void deleteItem(const int& id, ItemType type);
 
-    void delChapter(const int& id);
-    void delDiscipline(const int& id);
-    void delGroup(const int& id);
-    void delLabWork(const int& id);
-    void delThemeLectureFile(const int& id);
-    void delSubthemeLectureFile(const int& id);
-    void delReport(const int& id);
-    void delReportFile(const int& id);
-    void delStudent(const int& id);
-    void delSubtheme(const int& id);
-    void delTheme(const int& id);
-
-    void updChapter(const Chapter& info);
-    void updDiscipline(const DisciplineStud& info);
-    void updDiscipline(const DisciplineTeach& info);
-    void updGroup(const Group& info);
-    void updLabWork(const LabWork& info);
-    void updThemeLectureFile(const ThemeLectureFile& info);
-    void updSubthemeLectureFile(const SubthemeLectureFile& info);
-    void updReport(const Report& info);
-    void updReportFile(const ReportFile& info);
-    void updStudent(const Student& info);
-    void updSubtheme(const Subtheme& info);
-    void updTheme(const Theme& info);
-    void updTeacherMail(const QString& mail);
-    void updStudentsCourses(const int& courseId, int studIds);
+//    void updChapter(const Chapter& info);
+//    void updDiscipline(const DisciplineStud& info);
+//    void updDiscipline(const DisciplineTeach& info);
+//    void updGroup(const Group& info);
+//    void updLabWork(const LabWork& info);
+//    void updThemeLectureFile(const ThemeLectureFile& info);
+//    void updSubthemeLectureFile(const SubthemeLectureFile& info);
+//    void updReport(const Report& info);
+//    void updReportFile(const ReportFile& info);
+//    void updStudent(const Student& info);
+//    void updSubtheme(const Subtheme& info);
+//    void updTheme(const Theme& info);
+//    void updTeacherMail(const QString& mail);
+//    void updStudentsCourses(const int& courseId, int studIds);
 
     void updChapterIdx(const int& oldIdx, const int& newIdx);
     void updDisciplineIdx(const int& oldIdx, const int& newIdx);
@@ -98,11 +92,26 @@ public:
     QStringList studentsEmails(const int& courseId);
 
 protected:
+    void initTypeNames();
+    void initInsertStrs();
+    void initDeleteStrs();
+    void initEditStrs();
+
+    void saveItem(BaseItem* item, ItemType type, int index);
+
+
     void initTables();
+
+
     void addTeacherMail(const QString& mail);
 
 protected:
     SQLiteManager mSqlManager;
+
+    QMap<ItemType, QString> mTypeNames;
+    QMap<ItemType, QString> mInsertStr;
+    QMap<ItemType, QString> mDeleteStr;
+    QMap<ItemType, QString> mEditStr;
 };
 
 #endif // SAVEMANAGER_H

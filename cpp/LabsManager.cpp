@@ -136,15 +136,20 @@ void LabsManager::createLab(QString name, QString dueDate, int discipline)
     textStream << filePath;
     file.close();
 
-    LabWork work;
-    work.id = idx;
-    work.disciplineId = discipline;
-    work.finishDate = dueDate;
-    work.name = name;
-    work.path = filePath;
+    BaseItem * add = new LabWork(idx, discipline, dueDate, name, filePath);
 
-    mSaveManager->addLabWork(work);
-    mLabWorks.append(work);
+    if (!add)
+    {
+        qDebug() << "Cannot create instance of LabWork";
+        return;
+    }
+
+    mSaveManager->insertItem(add, SaveManager::TYPE_LAB_WORK);
+
+    if (add)
+        delete add;
+
+    //TODO//mLabWorks.append(work);
 
     initLabsTree();
 }
@@ -184,15 +189,20 @@ void LabsManager::importLab(QString name, QString date, int discipline, QString 
 
     int idx = mLabWorks.isEmpty() ? 1 : mLabWorks.last().id + 1;
 
-    LabWork work;
-    work.id = idx;
-    work.disciplineId = discipline;
-    work.finishDate = date;
-    work.name = name;
-    work.path = newPath;
+    BaseItem * add = new LabWork(idx, discipline, date, name, newPath);
 
-    mSaveManager->addLabWork(work);
-    mLabWorks.append(work);
+    if (!add)
+    {
+        qDebug() << "Cannot create instance of LabWork";
+        return;
+    }
+
+    mSaveManager->insertItem(add, SaveManager::TYPE_LAB_WORK);
+
+    if (add)
+        delete add;
+
+    //TODO//mLabWorks.append(work);
 
     initLabsTree();
 }
@@ -296,7 +306,7 @@ QString LabsManager::getLabName(int id)
 
 void LabsManager::removeLab(int id)
 {
-    mSaveManager->delLabWork(id);
+    mSaveManager->deleteItem(id, SaveManager::TYPE_LAB_WORK);
     auto fileIter = std::find_if(mLabWorks.begin(), mLabWorks.end(),
                                      [&id](LabWork& file){ return file.id == id; });
 
