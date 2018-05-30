@@ -56,20 +56,8 @@ public:
     void editItem(BaseItem* item, ItemType type);
     void deleteItem(const int& id, ItemType type);
 
-//    void updChapter(const Chapter& info);
-//    void updDiscipline(const DisciplineStud& info);
-//    void updDiscipline(const DisciplineTeach& info);
-//    void updGroup(const Group& info);
-//    void updLabWork(const LabWork& info);
-//    void updThemeLectureFile(const ThemeLectureFile& info);
-//    void updSubthemeLectureFile(const SubthemeLectureFile& info);
-//    void updReport(const Report& info);
-//    void updReportFile(const ReportFile& info);
-//    void updStudent(const Student& info);
-//    void updSubtheme(const Subtheme& info);
-//    void updTheme(const Theme& info);
-//    void updTeacherMail(const QString& mail);
-//    void updStudentsCourses(const int& courseId, int studIds);
+    void updTeacherMail(const QString& mail);
+    void updStudentsCourses(const int& courseId, int studIds);
 
     void updChapterIdx(const int& oldIdx, const int& newIdx);
     void updDisciplineIdx(const int& oldIdx, const int& newIdx);
@@ -96,13 +84,8 @@ protected:
     void initInsertStrs();
     void initDeleteStrs();
     void initEditStrs();
-
     void saveItem(BaseItem* item, ItemType type, int index);
-
-
     void initTables();
-
-
     void addTeacherMail(const QString& mail);
 
 protected:

@@ -40,11 +40,11 @@ int main(int argc, char *argv[])
     app.setOrganizationName("lizinaolena");
     app.setOrganizationDomain("com.lizinaolena.ppz");
 
-    qmlRegisterSingletonType<StudentManager>("StudentManager", 1, 1, "StudentManager", &StudentManager::studentManagerProvider);
-    qmlRegisterSingletonType<LecturesManager>("LecturesManager", 1, 1, "LecturesManager", &LecturesManager::lecturesManagerProvider);
+    qmlRegisterSingletonType<StudentManager>("StudentManager", 1, 1, "StudentManager", &StudentManager::managerProvider);
+    qmlRegisterSingletonType<LecturesManager>("LecturesManager", 1, 1, "LecturesManager", &LecturesManager::managerProvider);
     qmlRegisterSingletonType<ScreenContextBuffer>("ScreenContextBuffer", 1, 1, "ScreenContextBuffer", &ScreenContextBuffer::screenContextBufferProvider);
-    qmlRegisterSingletonType<MailServiceManager>("MailServiceManager", 1, 1, "MailServiceManager", &MailServiceManager::mailServiceManagerProvider);
-    qmlRegisterSingletonType<LabsManager>("LabsManager", 1, 1, "LabsManager", &LabsManager::labsManagerProvider);
+    qmlRegisterSingletonType<MailServiceManager>("MailServiceManager", 1, 1, "MailServiceManager", &MailServiceManager::managerProvider);
+    qmlRegisterSingletonType<LabsManager>("LabsManager", 1, 1, "LabsManager", &LabsManager::managerProvider);
 
     SaveManager::Ptr saveManager(new SaveManager());
     StudentManager::setSaveManager(saveManager);

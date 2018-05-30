@@ -83,16 +83,16 @@ void SaveManager::initDeleteStrs()
 void SaveManager::initEditStrs()
 {
     mEditStr[TYPE_CHAPTER] = "UPDATE Chapter SET Name=\"%1\",Discipline_Id='%2' WHERE Id='%3'";
-    mEditStr[TYPE_DISCIPLINE] = "UPDATE Discipline SET Name=\"%1\",Liter_Path=\"%2\" WHERE Id='%3'";
-    mEditStr[TYPE_THEME] = "Theme";
-    mEditStr[TYPE_SUBTHEME] = "Subtheme";
-    mEditStr[TYPE_LAB_WORK] = "Lab_Work";
-    mEditStr[TYPE_THEME_LECTURE] = "Theme_Lecture_File";
-    mEditStr[TYPE_SUBTHEME_LECTURE] = "Subtheme_Lecture_File";
-    mEditStr[TYPE_REPORT] = "Report";
-    mEditStr[TYPE_REPORT_FILE] = "Report_File";
-    mEditStr[TYPE_GROUP] = "'Group'";
-    mEditStr[TYPE_STUDENT] = "Student";
+    mEditStr[TYPE_DISCIPLINE] = "UPDATE Discipline SET Name=\"%1\",Liter_Path=\"%2\",Educ_Plan_Path=\"%3\",Educ_Progr_Path=\"%4\" WHERE Id='%5'";
+    mEditStr[TYPE_THEME] = "UPDATE Theme SET Name=\"%1\",Chapter_Id='%2' WHERE Id='%3'";
+    mEditStr[TYPE_SUBTHEME] = "UPDATE Subtheme SET Name=\"%1\",Theme_Id='%2' WHERE Id='%3'";
+    mEditStr[TYPE_LAB_WORK] = "UPDATE Lab_Work SET Discipline_Id='%1',Finish_Date=\"%2\",Name=\"%3\",Path=\"%4\" WHERE Id='%5'";
+    mEditStr[TYPE_THEME_LECTURE] = "UPDATE Theme_Lecture_File SET Theme_Id='%1',Path=\"%2\" WHERE Id='%3'";
+    mEditStr[TYPE_SUBTHEME_LECTURE] = "UPDATE Subtheme_Lecture_File SET Subtheme_Id='%1',Path=\"%2\" WHERE Id='%3'";
+    mEditStr[TYPE_REPORT] = "UPDATE Report SET Lab_Id='%1',Delivery_Date=\"%2\",Mark=\"%3\",Evaluation_Date=\"%4\",Stud_Id='%5' WHERE Id='%6'";
+    mEditStr[TYPE_REPORT_FILE] = "UPDATE Report_File SET Report_Id='%1',Path=\"%2\" WHERE Id='%3'";
+    mEditStr[TYPE_GROUP] = "UPDATE 'Group' SET Name=\"%1\" WHERE Id='%2'";
+    mEditStr[TYPE_STUDENT] = "UPDATE Student SET Name=\"%1\",Phone=\"%2\",Email=\"%3\",Photo_Path=\"%4\",Group_Id='%5' WHERE Id='%6'";
     mEditStr[TYPE_STUDENTS_COURSES] = "StudentsCourses";
 }
 
@@ -265,7 +265,7 @@ void SaveManager::appendItem(BaseItem* item, ItemType type)
 
     if (!res.first || res.second.isEmpty() || res.second.at(0).isEmpty())
     {
-        qDebug() << "Cannot get last " << name << " id";
+        qDebug() << "Cannot get last id";
         return;
     }
     int lastId = res.second.at(0).at(0).toInt();
@@ -283,26 +283,161 @@ void SaveManager::editItem(BaseItem* item, ItemType type)
     switch (type)
     {
     case TYPE_CHAPTER:
-        if (!mSqlManager.execute(tempUpdStr.arg(info.name).arg(info.orderId).arg(info.disciplineId).arg(info.id)).first)
-            qDebug() << "Cannot update chapter";
+    {
+        Chapter *info = dynamic_cast<Chapter*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to Chapter";
+            return;
+        }
+
+        if (!mSqlManager.execute(mEditStr[TYPE_CHAPTER].arg(info->name).arg(info->disciplineId).arg(info->id)).first)
+            qDebug() << "Cannot edit chapter";
+    }
         break;
     case TYPE_DISCIPLINE:
-        if (!mSqlManager.execute(tempUpdStr.arg(info.name).arg(info.literPath).arg(info.id)).first)
-            qDebug() << "Cannot update discipline";
+    {
+        Discipline * info = dynamic_cast<Discipline*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to Discipline";
+            return;
+        }
+
+        if (!mSqlManager.execute(mEditStr[TYPE_DISCIPLINE].arg(info->name).arg(info->literPath).arg(info->educPlanPath).arg(info->educProgPath).arg(info->id)).first)
+            qDebug() << "Cannot edit discipline";
+    }
         break;
-    case TYPE_THEME: break;
-    case TYPE_SUBTHEME: break;
-    case TYPE_LAB_WORK: break;
-    case TYPE_THEME_LECTURE: break;
-    case TYPE_SUBTHEME_LECTURE: break;
-    case TYPE_REPORT: break;
-    case TYPE_REPORT_FILE: break;
-    case TYPE_GROUP: break;
-    case TYPE_STUDENT: break;
+    case TYPE_THEME:
+    {
+        Theme * info = dynamic_cast<Theme*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to Theme";
+            return;
+        }
+
+        if (!mSqlManager.execute(mEditStr[TYPE_THEME].arg(info->name).arg(info->chapterId).arg(info->id)).first)
+            qDebug() << "Cannot edit theme";
+    }
+        break;
+    case TYPE_SUBTHEME:
+    {
+        Subtheme * info = dynamic_cast<Subtheme*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to Subtheme";
+            return;
+        }
+
+        if (!mSqlManager.execute(mEditStr[TYPE_SUBTHEME].arg(info->name).arg(info->themeId).arg(info->id)).first)
+            qDebug() << "Cannot edit subtheme";
+    }
+        break;
+    case TYPE_LAB_WORK:
+    {
+        LabWork * info = dynamic_cast<LabWork*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to LabWork";
+            return;
+        }
+
+        if (!mSqlManager.execute(mEditStr[TYPE_LAB_WORK].arg(info->disciplineId).arg(info->finishDate).arg(info->name).arg(info->path).arg(info->id)).first)
+            qDebug() << "Cannot edit lab_work";
+    }
+        break;
+    case TYPE_THEME_LECTURE:
+    {
+        ThemeLectureFile * info = dynamic_cast<ThemeLectureFile*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to ThemeLectureFile";
+            return;
+        }
+
+        if (!mSqlManager.execute(mEditStr[TYPE_THEME_LECTURE].arg(info->themeId).arg(info->path).arg(info->id)).first)
+            qDebug() << "Cannot edit theme lecture file";
+    }
+        break;
+    case TYPE_SUBTHEME_LECTURE:
+    {
+        SubthemeLectureFile * info = dynamic_cast<SubthemeLectureFile*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to SubthemeLectureFile";
+            return;
+        }
+
+        if (!mSqlManager.execute(mEditStr[TYPE_SUBTHEME_LECTURE].arg(info->subthemeId).arg(info->path).arg(info->id)).first)
+            qDebug() << "Cannot edit subtheme lecture file";
+    }
+        break;
+    case TYPE_REPORT:
+    {
+        Report * info = dynamic_cast<Report*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to Report";
+            return;
+        }
+
+        if (!mSqlManager.execute(mEditStr[TYPE_REPORT].arg(info->labId).arg(info->delivDate).arg(info->mark).arg(info->evalDate).arg(info->id)).first)
+            qDebug() << "Cannot edit report";
+    }
+        break;
+    case TYPE_REPORT_FILE:
+    {
+        ReportFile * info = dynamic_cast<ReportFile*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to ReportFile";
+            return;
+        }
+
+        if (!mSqlManager.execute(mEditStr[TYPE_REPORT_FILE].arg(info->reportId).arg(info->path).arg(info->id)).first)
+            qDebug() << "Cannot edit report file";
+    }
+        break;
+    case TYPE_GROUP:
+    {
+        Group * info = dynamic_cast<Group*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to Group";
+            return;
+        }
+
+        if (!mSqlManager.execute(mEditStr[TYPE_GROUP].arg(info->name).arg(info->id)).first)
+            qDebug() << "Cannot edit group";
+    }
+        break;
+    case TYPE_STUDENT:
+    {
+        Student * info = dynamic_cast<Student*>(item);
+
+        if (!info)
+        {
+            qDebug() << "Cannot dynamic cast BaseItem to Student";
+            return;
+        }
+
+        if (!mSqlManager.execute(mEditStr[TYPE_STUDENT].arg(info->name).arg(info->phone).arg(info->email).arg(info->photoPath).arg(info->groupId).arg(info->id)).first)
+            qDebug() << "Cannot edit student";
+    }
+        break;
     case TYPE_STUDENTS_COURSES: break;
     }
-
-
 }
 
 void SaveManager::deleteItem(const int& id, ItemType type)
@@ -361,96 +496,10 @@ void SaveManager::addTeacherMail(const QString& mail)
         qDebug() << "Cannot save teacher email";
 }
 
-void SaveManager::updDiscipline(const DisciplineStud& info)
-{
-    const QString tempUpdStr("UPDATE Discipline SET Name=\"%1\",Liter_Path=\"%2\" WHERE Id='%3'");
-
-
-}
-
-void SaveManager::updDiscipline(const DisciplineTeach& info)
-{
-    const QString tempUpdStr("UPDATE Discipline SET Name=\"%1\",Liter_Path=\"%2\",Educ_Plan_Path=\"%3\",Educ_Progr_Path=\"%4\" WHERE Id='%5'");
-
-    if (!mSqlManager.execute(tempUpdStr.arg(info.name).arg(info.literPath).arg(info.educPlanPath).arg(info.educProgPath).arg(info.id)).first)
-        qDebug() << "Cannot update discipline";
-}
-
-void SaveManager::updGroup(const Group& info)
-{
-    const QString tempUpdStr("UPDATE 'Group' SET Name=\"%1\" WHERE Id='%2'");
-
-    if (!mSqlManager.execute(tempUpdStr.arg(info.name).arg(info.id)).first)
-        qDebug() << "Cannot update group";
-}
-
-void SaveManager::updLabWork(const LabWork& info)
-{
-    const QString tempUpdStr("UPDATE Lab_Work SET Discipline_Id='%1',Finish_Date=\"%2\",Name=\"%3\",Path=\"%4\" WHERE Id='%5'");
-
-    if (!mSqlManager.execute(tempUpdStr.arg(info.disciplineId).arg(info.finishDate).arg(info.name).arg(info.path).arg(info.id)).first)
-        qDebug() << "Cannot update lab_work";
-}
-
-void SaveManager::updThemeLectureFile(const ThemeLectureFile& info)
-{
-    const QString tempUpdStr("UPDATE Theme_Lecture_File SET Theme_Id='%1',Path=\"%2\" WHERE Id='%3'");
-
-    if (!mSqlManager.execute(tempUpdStr.arg(info.themeId).arg(info.path).arg(info.id)).first)
-        qDebug() << "Cannot update theme lecture file";
-}
-
-void SaveManager::updSubthemeLectureFile(const SubthemeLectureFile& info)
-{
-    const QString tempUpdStr("UPDATE Subtheme_Lecture_File SET Subtheme_Id='%1',Path=\"%2\" WHERE Id='%3'");
-
-    if (!mSqlManager.execute(tempUpdStr.arg(info.subthemeId).arg(info.path).arg(info.id)).first)
-        qDebug() << "Cannot update subtheme lecture file";
-}
-
-void SaveManager::updReport(const Report& info)
-{
-    const QString tempUpdStr("UPDATE Report SET Lab_Id='%1',Delivery_Date='%2',Mark=\"%3\",Evaluation_Date='%4',Stud_Id='%5' WHERE Id='%6'");
-
-    if (!mSqlManager.execute(tempUpdStr.arg(info.labId).arg(info.delivDate).arg(info.mark).arg(info.evalDate).arg(info.studId).arg(info.id)).first)
-        qDebug() << "Cannot update report";
-}
-
-void SaveManager::updReportFile(const ReportFile& info)
-{
-    const QString tempUpdStr("UPDATE Report_File SET Report_Id='%1',Path=\"%2\" WHERE Id='%3'");
-
-    if (!mSqlManager.execute(tempUpdStr.arg(info.reportId).arg(info.path).arg(info.id)).first)
-        qDebug() << "Cannot update report file";
-}
-
-void SaveManager::updStudent(const Student& info)
-{
-    const QString tempUpdStr("UPDATE Student SET Name=\"%1\",Phone=\"%2\",Email=\"%3\",Photo_Path=\"%4\",Group_Id='%5' WHERE Id='%6'");
-
-    if (!mSqlManager.execute(tempUpdStr.arg(info.name).arg(info.phone).arg(info.email).arg(info.photoPath).arg(info.groupId).arg(info.id)).first)
-        qDebug() << "Cannot update student";
-}
-
-void SaveManager::updSubtheme(const Subtheme& info)
-{
-    const QString tempUpdStr("UPDATE Subtheme SET Name=\"%1\",Order_Id='%2',Theme_Id='%3' WHERE Id='%4'");
-
-    if (!mSqlManager.execute(tempUpdStr.arg(info.name).arg(info.orderId).arg(info.themeId).arg(info.id)).first)
-        qDebug() << "Cannot update subtheme";
-}
-
-void SaveManager::updTheme(const Theme& info)
-{
-    const QString tempUpdStr("UPDATE Theme SET Name=\"%1\",Order_Id='%2',Chapter_Id='%3' WHERE Id='%4'");
-
-    if (!mSqlManager.execute(tempUpdStr.arg(info.name).arg(info.orderId).arg(info.chapterId).arg(info.id)).first)
-        qDebug() << "Cannot update theme";
-}
-
 void SaveManager::updTeacherMail(const QString& mail)
 {
     auto exist = mSqlManager.execute("SELECT * FROM TeacherEmail");
+
     if (!exist.first || exist.second.isEmpty() || exist.second.at(0).isEmpty())
     {
         addTeacherMail(mail);
@@ -496,7 +545,7 @@ void SaveManager::updThemeIdx(const int& oldIdx, const int& newIdx)
 
 QList<Chapter> SaveManager::loadChapters()
 {
-    const QString tempLoadStr("SELECT Id,Name,Order_Id,Discipline_Id FROM Chapter");
+    const QString tempLoadStr("SELECT * FROM Chapter");
     auto res = mSqlManager.execute(tempLoadStr);
 
     if (!res.first)
@@ -512,10 +561,8 @@ QList<Chapter> SaveManager::loadChapters()
         Chapter tmp;
         tmp.id = chapt.at(0).toInt();
         tmp.name = chapt.at(1).toString();
-        tmp.orderId = chapt.at(2).toInt();
         tmp.disciplineId = chapt.at(3).toInt();
         chapters << tmp;
-        //qDebug() << tmp.name;
     }
 
     return chapters;
@@ -528,22 +575,21 @@ QList<Discipline> SaveManager::loadDiscipline()
 
     if (!res.first)
     {
-        qDebug() << "Cannot load teacher's disciplines";
-        return QList<DisciplineTeach>();
+        qDebug() << "Cannot load disciplines";
+        return QList<Discipline>();
     }
 
-    QList<DisciplineTeach> disciplines;
+    QList<Discipline> disciplines;
 
     for (auto discipline : res.second)
     {
-        DisciplineTeach tmp;
+        Discipline tmp;
         tmp.id = discipline.at(0).toInt();
         tmp.name = discipline.at(1).toString();
         tmp.literPath = discipline.at(2).toString();
         tmp.educPlanPath = discipline.at(3).toString();
         tmp.educProgPath = discipline.at(4).toString();
         disciplines << tmp;
-        //qDebug() << tmp.name;
     }
 
     return disciplines;
@@ -568,7 +614,6 @@ QList<Group> SaveManager::loadGroup()
         tmp.id = group.at(0).toInt();
         tmp.name = group.at(1).toString();
         groups << tmp;
-        //qDebug() << tmp.name;
     }
 
     return groups;
@@ -596,7 +641,6 @@ QList<LabWork> SaveManager::loadLabWork()
         tmp.name = work.at(3).toString();
         tmp.path = work.at(4).toString();
         labWorks << tmp;
-        //qDebug() << tmp.name;
     }
 
     return labWorks;
@@ -622,7 +666,6 @@ QList<ThemeLectureFile> SaveManager::loadThemeLectureFile()
         tmp.themeId = lect.at(1).toInt();
         tmp.path = lect.at(2).toString();
         themeLectures << tmp;
-        //qDebug() << tmp.themeId;
     }
 
     return themeLectures;
@@ -648,7 +691,6 @@ QList<SubthemeLectureFile> SaveManager::loadSubthemeLectureFile()
         tmp.subthemeId = lect.at(1).toInt();
         tmp.path = lect.at(2).toString();
         subthemeLectures << tmp;
-        //qDebug() << tmp.subthemeId;
     }
 
     return subthemeLectures;
@@ -672,12 +714,11 @@ QList<Report> SaveManager::loadReport()
         Report tmp;
         tmp.id = report.at(0).toInt();
         tmp.labId = report.at(1).toInt();
-        tmp.delivDate = report.at(2).toInt();
+        tmp.delivDate = report.at(2).toString();
         tmp.mark = report.at(3).toString();
-        tmp.evalDate = report.at(4).toInt();
+        tmp.evalDate = report.at(4).toString();
         tmp.studId = report.at(5).toInt();
         reports << tmp;
-        //qDebug() << tmp.labId;
     }
 
     return reports;
@@ -703,7 +744,6 @@ QList<ReportFile> SaveManager::loadReportFile()
         tmp.reportId = file.at(1).toInt();
         tmp.path = file.at(2).toString();
         files << tmp;
-        //qDebug() << tmp.reportId;
     }
 
     return files;
@@ -732,7 +772,6 @@ QList<Student> SaveManager::loadStudent()
         tmp.photoPath = student.at(4).toString();
         tmp.groupId = student.at(5).toInt();
         students << tmp;
-        //qDebug() << tmp.name;
     }
 
     return students;
@@ -756,10 +795,8 @@ QList<Subtheme> SaveManager::loadSubtheme()
         Subtheme tmp;
         tmp.id = subtheme.at(0).toInt();
         tmp.name = subtheme.at(1).toString();
-        tmp.orderId = subtheme.at(2).toInt();
         tmp.themeId = subtheme.at(3).toInt();
         subthemes << tmp;
-        //qDebug() << tmp.name;
     }
 
     return subthemes;
@@ -783,10 +820,8 @@ QList<Theme> SaveManager::loadTheme()
         Theme tmp;
         tmp.id = subtheme.at(0).toInt();
         tmp.name = subtheme.at(1).toString();
-        tmp.orderId = subtheme.at(2).toInt();
         tmp.chapterId = subtheme.at(3).toInt();
         themes << tmp;
-        //qDebug() << tmp.name;
     }
 
     return themes;
@@ -803,36 +838,25 @@ QString SaveManager::loadTeacherMail()
         return QString();
     }
 
-    qDebug() << res.second.at(0).at(0).toString();
     return res.second.at(0).at(0).toString();
 }
 
 QStringList SaveManager::studentsEmails(const int& courseId)
 {
-    const QString tempLoadStr("SELECT StudId FROM StudentsCourses WHERE CourseId='%1'");
+    const QString tempLoadStr("SELECT Email FROM Student WHERE Id IN (SELECT StudId FROM StudentsCourses WHERE CourseId='%1')");
     auto res = mSqlManager.execute(tempLoadStr.arg(courseId));
 
     if (!res.first || res.second.isEmpty() || res.second.at(0).isEmpty())
     {
-        qDebug() << "Cannot load StudentsCourses";
+        qDebug() << "Cannot load studentsEmails";
         return QStringList();
     }
 
     QStringList emails;
 
-    for (auto st : res.second)
+    for (auto email : res.second.at(0))
     {
-        const QString tempLoadStr("SELECT Email FROM Student WHERE Id='%1'");
-        qDebug() << tempLoadStr.arg(st.at(0).toInt());
-
-        auto em = mSqlManager.execute(tempLoadStr.arg(st.at(0).toInt()));
-
-        if (!em.first || em.second.isEmpty() || em.second.at(0).isEmpty())
-        {
-            qDebug() << "Cannot load Student";
-            continue;
-        }
-        emails << em.second.at(0).at(0).toString();
+        emails << email.toString();
     }
 
     return emails;

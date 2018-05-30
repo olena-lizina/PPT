@@ -28,11 +28,19 @@ class LecturesManager: public ManagerInterface
     Q_OBJECT
 
     Q_ENUMS(FileType)
+    Q_ENUMS(ItemType)
 
     Q_PROPERTY(QList<QObject*> labsTree READ labsTree NOTIFY labsTreeChanged)
     Q_PROPERTY(QString teacherEmail READ teacherEmail WRITE setTeacherEmail NOTIFY teacherEmailChanged)
 
 public:
+
+    enum ItemType {
+        DISCIPLINE_ITEM,
+        CHAPTER_ITEM,
+        THEME_ITEM,
+        SUBTHEME_ITEM
+    };
 
     enum FileType {
         LectureFile,
@@ -127,7 +135,7 @@ private:
     static QQmlApplicationEngine *m_qmlEngine;
     QList<QObject*> m_labsTree;
 
-    QList<DisciplineTeach> mDisciplines;
+    QList<Discipline> mDisciplines;
     QList<Chapter> mChapters;
     QList<Theme> mThemes;
     QList<Subtheme> mSubtheme;

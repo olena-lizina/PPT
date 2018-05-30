@@ -21,6 +21,11 @@
 #include <QList>
 
 struct BaseItem {
+
+    BaseItem(int id_)
+        : id(id_)
+    {}
+
     virtual ~BaseItem() {}
     int id;
 };
@@ -29,7 +34,7 @@ struct Chapter: public BaseItem {
     QString name;
     int disciplineId;
 
-    Chapter(int id_, QString name_, int discId_)
+    Chapter(int id_ = 0, QString name_ = "", int discId_ = 0)
         : BaseItem(id_)
         , name(name_)
         , disciplineId(discId_)
@@ -50,7 +55,10 @@ struct Discipline: public BaseItem {
     QString educPlanPath;
     QString educProgPath;
 
-    Discipline(int id_, QString name_, QString literPath_, QString educPlanPath_, QString educProgPath_)
+    Discipline(int id_ = 0, QString name_ = "",
+               QString literPath_ = "",
+               QString educPlanPath_ = "",
+               QString educProgPath_ = "")
         : BaseItem(id_)
         , name(name_)
         , literPath(literPath_)
@@ -70,7 +78,7 @@ struct Discipline: public BaseItem {
 struct Group: public BaseItem {
     QString name;
 
-    Group(int id_, QString name_)
+    Group(int id_ = 0, QString name_ = "")
         : BaseItem(id_)
         , name(name_)
     {}
@@ -87,7 +95,7 @@ struct LabWork: public BaseItem {
     QString name;
     QString path;
 
-    LabWork(int id_, int disciplineId_, QString finishDate_, QString name_, QString path_)
+    LabWork(int id_ = 0, int disciplineId_ = 0, QString finishDate_ = "", QString name_ = "", QString path_ = "")
         :BaseItem(id_)
         , disciplineId(disciplineId_)
         , finishDate(finishDate_)
@@ -109,7 +117,7 @@ struct ThemeLectureFile: public BaseItem {
     int themeId;
     QString path;
 
-    ThemeLectureFile(int id_, int themeId_, QString path_)
+    ThemeLectureFile(int id_ = 0, int themeId_ = 0, QString path_ = "")
         : BaseItem(id_)
         , themeId(themeId_)
         , path(path_)
@@ -127,7 +135,7 @@ struct SubthemeLectureFile: public BaseItem {
     int subthemeId;
     QString path;
 
-    SubthemeLectureFile(int id_, int subthemeId_, QString path_)
+    SubthemeLectureFile(int id_ = 0, int subthemeId_ = 0, QString path_ = "")
         : BaseItem(id_)
         , subthemeId(subthemeId_)
         , path(path_)
@@ -143,12 +151,13 @@ struct SubthemeLectureFile: public BaseItem {
 
 struct Report: public BaseItem {
     int labId;
-    int delivDate;
+    QString delivDate;
     QString mark;
-    int evalDate;
+    QString evalDate;
     int studId;
 
-    Report(int id_, int labId_, int delivDate_, QString mark_, int evalDate_, int studId_)
+    Report(int id_ = 0, int labId_ = 0, QString delivDate_ = "",
+           QString mark_ = "", QString evalDate_ = "", int studId_ = 0)
         : BaseItem(id_)
         , labId(labId_)
         , delivDate(delivDate_)
@@ -161,9 +170,9 @@ struct Report: public BaseItem {
     {
         return id == rhs.id
                 && labId == rhs.labId
-                && delivDate == rhs.delivDate
+                && delivDate.compare(rhs.delivDate)
                 && mark.compare(rhs.mark)
-                && evalDate == rhs.evalDate
+                && evalDate.compare(rhs.evalDate)
                 && studId == rhs.studId;
     }
 };
@@ -172,7 +181,7 @@ struct ReportFile: public BaseItem {
     int reportId;
     QString path;
 
-    ReportFile(int id_, int reportId_, QString path_)
+    ReportFile(int id_ = 0, int reportId_ = 0, QString path_ = "")
         : BaseItem(id_)
         , reportId(reportId_)
         , path(path_)
@@ -193,7 +202,9 @@ struct Student: public BaseItem {
     QString photoPath;
     int groupId;
 
-    Student(int id_, QString name_, QString phone_, QString email_, QString photoPath_, int groupId_)
+    Student(int id_ = 0, QString name_ = "",
+            QString phone_ = "", QString email_ = "",
+            QString photoPath_ = "", int groupId_ = 0)
         : BaseItem(id_)
         , name(name_)
         , phone(phone_)
@@ -217,7 +228,7 @@ struct Subtheme: public BaseItem {
     QString name;
     int themeId;
 
-    Subtheme(int id_, QString name_, int themeId_)
+    Subtheme(int id_ = 0, QString name_ = "", int themeId_ = 0)
         : BaseItem(id_)
         , name(name_)
         , themeId(themeId_)
@@ -235,7 +246,7 @@ struct Theme: public BaseItem {
     QString name;
     int chapterId;
 
-    Theme(int id_, QString name_, int chapterId_):
+    Theme(int id_ = 0, QString name_ = "", int chapterId_ = 0):
         BaseItem(id_)
       , name(name_)
       , chapterId(chapterId_)

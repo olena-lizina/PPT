@@ -19,8 +19,9 @@
 #ifndef STUDENTMANAGER_H
 #define STUDENTMANAGER_H
 #include "ManagerInterface.h"
-#include <memory>
 #include "DataTypes.h"
+
+#include <memory>
 
 class StudentManager: public ManagerInterface
 {

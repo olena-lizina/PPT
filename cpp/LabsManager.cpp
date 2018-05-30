@@ -26,17 +26,13 @@
 #include "ReportInfoModel.h"
 #include "TreeItem.h"
 
-
-/*static*/ QQmlApplicationEngine *LabsManager::m_qmlEngine = nullptr;
-/*static*/ SaveManager::Ptr LabsManager::mSaveManager;
-
 LabsManager::LabsManager(QObject* parent)
     : ManagerInterface(parent)
 {
     mLabWorks = mSaveManager->loadLabWork();
     mReports = mSaveManager->loadReport();
     mReportFiles = mSaveManager->loadReportFile();
-    mDisciplines = mSaveManager->loadTeachDiscipline();
+    mDisciplines = mSaveManager->loadDiscipline();
     initLabsTree();
 }
 
@@ -46,11 +42,6 @@ LabsManager::LabsManager(QObject* parent)
     Q_UNUSED(scriptEngine)
     LabsManager *manager = new LabsManager();
     return manager;
-}
-
-/*static*/ void LabsManager::setSaveManager(std::shared_ptr<SaveManager> saveMgr)
-{
-    LabsManager::mSaveManager = saveMgr;
 }
 
 QList<QObject*> LabsManager::labsTree()
@@ -169,7 +160,20 @@ void LabsManager::editLab(QString name, QString dueDate, int labId)
 
     lab->name = name;
     lab->finishDate = dueDate;
-    mSaveManager->updLabWork(*lab);
+
+    BaseItem * edit = new LabWork(lab->id, lab->disciplineId, lab->finishDate, lab->name, lab->path);
+
+    if (!edit)
+    {
+        qDebug() << "Cannot create instance of LabWork";
+        return;
+    }
+
+    mSaveManager->editItem(edit, SaveManager::TYPE_LAB_WORK);
+
+    if (edit)
+        delete edit;
+
     initLabsTree();
     emit labChanged();
 }
@@ -285,7 +289,7 @@ void LabsManager::saveFileContent(QString text, int labId)
 QString LabsManager::getDisciplineName(int id)
 {
     auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
-                                     [&id](DisciplineTeach& file){ return file.id == id; });
+                                     [&id](Discipline& file){ return file.id == id; });
 
     if (mDisciplines.end() == fileIter)
         return QString();

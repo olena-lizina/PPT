@@ -23,9 +23,6 @@
 #include <QFile>
 #include <QDir>
 
-/*static*/ QQmlApplicationEngine *StudentManager::m_qmlEngine = nullptr;
-/*static*/ SaveManager::Ptr StudentManager::mSaveManager;
-
 StudentManager::StudentManager(QObject *parent)
     : ManagerInterface(parent)
     , mSelectedGroupIdx(0)
@@ -41,71 +38,108 @@ StudentManager::StudentManager(QObject *parent)
     return manager;
 }
 
-bool StudentManager::existsStudent(const QString&, const QString&)
+bool StudentManager::existsStudent(const QString& name, const QString& group)
 {
-    return false;
+    const int defaultGroup = -1;
+    const int groupId = mGroupMap.key(group, defaultGroup);
+
+    if (defaultGroup == groupId)
+    {
+        qWarning() << "existsStudent: No such group";
+        return false;
+    }
+
+    if (mStudentList.end() == std::find_if(mStudentList.begin(), mStudentList.end(),
+                              [&name, &groupId](Student st){ return st.name.compare(name) && st.groupId == groupId; }))
+        return false;
+
+    return true;
 }
 
 void StudentManager::updateStudent(int id, QString name, QString phone, QString group, QString email, QString photo)
 {
+    if (!mSaveManager)
+    {
+        qWarning() << "updateStudent: Save manager is dead!";
+        return;
+    }
+
     checkGroup(group);
 
-    Student edit;
-    edit.id = id;
-    edit.name = name;
-    edit.email = email;
-    edit.phone = phone;
-    edit.photoPath = photo;
-    edit.groupId = mGroupMap.key(group);
+    BaseItem * edit = new Student(id, name, phone, email, photo, mGroupMap.key(group));
+
+    if (!edit)
+    {
+        qWarning() << "updateStudent: Cannot create instance of Student";
+        return;
+    }
 
     auto studIter = std::find_if(mStudentList.begin(), mStudentList.end(),
                                  [&id](Student& stud){ return stud.id == id; });
     if (mStudentList.end() == studIter)
     {
-        qWarning() << "Cannot update student: " << name;
+        qWarning() << "updateStudent: Student does not exist: " << name;
         return;
     }
 
-    mSaveManager->updStudent(edit);
-    *studIter = edit;
+    mSaveManager->editItem(edit, SaveManager::TYPE_STUDENT);
+
+    if (edit)
+        delete edit;
+
+    mStudentList.clear();
+    mStudentList = mSaveManager->loadStudent();
 }
 
 void StudentManager::checkGroup(const QString& name)
 {
-    const int defaultGroup = -1;
-    if (defaultGroup == mGroupMap.key(name, defaultGroup))
+    if (!mSaveManager)
     {
-        // no such group
-        BaseItem * add = new Group(0, name);
-
-        if (!add)
-        {
-            qDebug() << "Cannot create instance of Group";
-            return;
-        }
-
-        mSaveManager->appendItem(add, SaveManager::TYPE_GROUP);
-
-        if (add)
-            delete add;
-
-        mGroupMap.clear();
-        auto groups = mSaveManager->loadGroup();
-
-        for (auto it : groups)
-            mGroupMap.insert(it.id, it.name);
+        qWarning() << "checkGroup: Save manager is dead!";
+        return;
     }
+
+    const int defaultGroup = -1;
+
+    if (defaultGroup != mGroupMap.key(name, defaultGroup))
+        return;
+
+    // no such group
+    BaseItem * add = new Group(0, name);
+
+    if (!add)
+    {
+        qWarning() << "checkGroup: Cannot create instance of Group";
+        return;
+    }
+
+    mSaveManager->appendItem(add, SaveManager::TYPE_GROUP);
+
+    if (add)
+        delete add;
+
+    mGroupMap.clear();
+    auto groups = mSaveManager->loadGroup();
+
+    for (auto it : groups)
+        mGroupMap.insert(it.id, it.name);
 }
 
 void StudentManager::addStudent(QString name, QString phone, QString group, QString email, QString photo)
 {
+    if (!mSaveManager)
+    {
+        qWarning() << "addStudent: Save manager is dead!";
+        return;
+    }
+
     checkGroup(group);
 
     BaseItem * add = new Student(0, name, email, phone, photo, mGroupMap.key(group));
 
     if (!add)
     {
-        qDebug() << "Cannot create instance of Student";
+        qDebug() << "addStudent: Cannot create instance of Student";
         return;
     }
 
@@ -120,11 +154,17 @@ void StudentManager::addStudent(QString name, QString phone, QString group, QStr
 
 void StudentManager::deleteStudent(int id)
 {
+    if (!mSaveManager)
+    {
+        qWarning() << "addStudent: Save manager is dead!";
+        return;
+    }
+
     auto studIter = std::find_if(mStudentList.begin(), mStudentList.end(),
                                  [&id](Student& stud){ return stud.id == id; });
     if (mStudentList.end() == studIter)
     {
-        qWarning() << "Cannot delete student with id: " << id;
+        qWarning() << "deleteStudent: Student does not exist: " << id;
         return;
     }
 
@@ -157,7 +197,7 @@ int StudentManager::getGroupIdx(QString name)
     if (!name.compare("All groups"))
         return 0;
 
-    return mGroupMap.key(name);
+    return mGroupMap.key(name, 0);
 }
 
 QList<QObject*> StudentManager::getAllStudents()
@@ -172,8 +212,16 @@ QList<QObject*> StudentManager::getAllStudents()
 
 QList<QObject*> StudentManager::getStudentsByGroup(const QString& group)
 {
+    const int defaultGroup = -1;
+
+    if (defaultGroup == mGroupMap.key(group, defaultGroup))
+    {
+        qWarning() << "getStudentsByGroup: no such group:" << group;
+        return QList<QObject*>();
+    }
+
     QList<QObject*> result;
-    int groupId = mGroupMap.key(group);
+    int groupId = mGroupMap.key(group, 0);
 
     for (auto& stud : mStudentList)
         if (stud.groupId == groupId)
@@ -205,10 +253,20 @@ void StudentManager::loadStudentsFromDB()
         for (auto it : groups)
             mGroupMap.insert(it.id, it.name);
     }
+    else
+        qWarning() << "Save manager is dead!";
 }
+
 QString StudentManager::copyExternalPhoto(QString path)
 {
+    if (!QFile::exists(path))
+    {
+        qWarning() << "copyExternalPhoto: path not exist: " << path;
+        return QString();
+    }
+
     QDir dir("photos");
+
     if (!dir.exists())
         dir.mkpath("photos");
 
@@ -216,9 +274,10 @@ QString StudentManager::copyExternalPhoto(QString path)
     path.remove(0, prefix.size());
     QString fileName(path.right(path.size() - path.lastIndexOf('/') - 1));
     QString newPath(QDir::currentPath() + '/' + "photos" + '/' + fileName);
-    QFile::copy(path, newPath);
 
-    qDebug() << "file: " << fileName;
+    if (!QFile::copy(path, newPath))
+        qWarning() << "copyExternalPhoto: cannot copy file: " << path;
+
     return fileName;
 }
 
@@ -230,4 +289,13 @@ void StudentManager::setSelectGroupId(int group)
 int StudentManager::selectGroupId() const
 {
     return mSelectedGroupIdx;
+}
+
+void StudentManager::selectedStudent(const int&)
+{
+}
+
+QObject* StudentManager::selectedStudent() const
+{
+    return new QObject();
 }

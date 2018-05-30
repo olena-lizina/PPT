@@ -11,7 +11,6 @@ public:
     ManagerInterface(QObject* parent = nullptr);
     virtual ~ManagerInterface() {}
 
-    static QObject* managerProvider(QQmlEngine *engine, QJSEngine *scriptEngine) = 0;
     static void setQmlEngine(QQmlApplicationEngine *engine);
     static void setSaveManager(std::shared_ptr<SaveManager> saveMgr);
     Q_INVOKABLE void clearComponentCache();
