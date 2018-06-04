@@ -19,6 +19,7 @@
 #include "SaveManager.h"
 #include <QVariant>
 #include <QDebug>
+#include <QFile>
 
 const QString getLastIdTemp = "SELECT MAX(Id) from '%1'";
 

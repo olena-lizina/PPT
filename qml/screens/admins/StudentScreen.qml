@@ -132,7 +132,7 @@ BlankScreen {
                     phone: modelData.phone,
                     group: modelData.group,
                     email: modelData.email,
-                    imagePath: ("file:///" + applicationDirPath + "/" + modelData.photo),
+                    imagePath: modelData.photo === "" ? "/resources/images/dummy.png" : ("file:///" + applicationDirPath + "/photos/" + modelData.photo),
                     studentId: modelData.id,
                     readOnly: true
                 }
@@ -149,7 +149,7 @@ BlankScreen {
                     phone: modelData.phone,
                     group: modelData.group,
                     email: modelData.email,
-                    imagePath: modelData.photo,
+                    imagePath: modelData.photo === "" ? "/resources/images/dummy.png" : ("file:///" + applicationDirPath + "/photos/" + modelData.photo),
                     studentId: modelData.id
                 }
 

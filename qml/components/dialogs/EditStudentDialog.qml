@@ -36,7 +36,7 @@ BaseDialog {
 
     property bool readOnly: false
     property string imagePath
-    property string oldPhoto
+    property string oldPhoto: ""
     property int studentId
     property bool addNew: false
 
@@ -100,7 +100,7 @@ BaseDialog {
             width: popupWidth * 0.3
             height: popupHeight * 0.6
 
-            source: imagePath === "" ? "/resources/images/dummy.png" : imagePath
+            source: imagePath
 
             anchors {
                 left: parent.left
@@ -307,15 +307,18 @@ BaseDialog {
 
                 if (name.length > 0 && phone.length > 0 && email.length > 0 && group.length > 0)
                 {
+                    var photo = ""
                     if(addNew)
-                    {
-                        var photo = StudentManager.addExternalPhoto(imagePath)
+                    {                        
+                        if (studentDialog.imagePath !== "/resources/images/dummy.png")
+                            photo = StudentManager.addExternalPhoto(imagePath)
                         StudentManager.addStudent(name, phone, group, email, photo)
                     }
                     else
                     {
-                        var editPhoto = StudentManager.replaceStudentPhoto(oldPhoto, imagePath)
-                        StudentManager.updateStudent(studentId, name, phone, group, email, editPhoto)
+                        if (studentDialog.imagePath !== "/resources/images/dummy.png")
+                            photo = StudentManager.replaceStudentPhoto(oldPhoto, imagePath)
+                        StudentManager.updateStudent(studentId, name, phone, group, email, photo)
                     }
                     studentDialog.process(name)
                 }
@@ -335,11 +338,10 @@ BaseDialog {
                img.opacity = 1
                getFileDialog.source = ""
 
-               if (studentDialog.imagePath !== "")
+               if (studentDialog.imagePath !== "/resources/images/dummy.png")
                    oldPhoto = studentDialog.imagePath
 
                studentDialog.imagePath = value
-               img.source = value
            }
 
            onClose: {
