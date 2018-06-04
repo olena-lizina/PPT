@@ -33,7 +33,7 @@ FileDialog {
 
     onAccepted: {
         console.log("onAccepted")
-        selectFile.process(selectFile.fileUrls)
+        selectFile.process(fileUrl)
     }
 
     Component.onCompleted: visible = true

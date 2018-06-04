@@ -25,6 +25,9 @@ const QString getLastIdTemp = "SELECT MAX(Id) from '%1'";
 SaveManager::SaveManager(): mSqlManager("ppt.db")
 {
     initTypeNames();
+    initInsertStrs();
+    initDeleteStrs();
+    initEditStrs();
     initTables();
 }
 
@@ -250,7 +253,9 @@ void SaveManager::saveItem(BaseItem* item, ItemType type, int index)
             return;
         }
 
-        if (!mSqlManager.execute(QString(mInsertStr[TYPE_STUDENT]).arg(index).arg(info->name).arg(info->phone).arg(info->email).arg(info->photoPath).arg(info->groupId)).first)
+        qDebug() << "Student: " << info->name << ", " << info->email << ", " << info->phone << ", " << info->photoPath << ", " << info->groupId;
+
+        if (!mSqlManager.execute(mInsertStr[TYPE_STUDENT].arg(index).arg(info->name).arg(info->phone).arg(info->email).arg(info->photoPath).arg(info->groupId)).first)
             qDebug() << "Cannot save student";
     }
         break;

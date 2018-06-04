@@ -38,6 +38,8 @@ SQLiteManager::~SQLiteManager()
 
 QPair<bool, QList<QList<QVariant> > > SQLiteManager::execute(QString query, QList<QString> values)
 {
+    qDebug() << query;
+
     static std::recursive_mutex mutex;
     std::lock_guard<std::recursive_mutex > locker(mutex);
     mResult.clear();

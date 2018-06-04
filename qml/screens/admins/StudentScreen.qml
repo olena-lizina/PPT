@@ -132,7 +132,7 @@ BlankScreen {
                     phone: modelData.phone,
                     group: modelData.group,
                     email: modelData.email,
-                    imagePath: modelData.photo,
+                    imagePath: ("file:///" + applicationDirPath + "/" + modelData.photo),
                     studentId: modelData.id,
                     readOnly: true
                 }

@@ -36,6 +36,7 @@ BaseDialog {
 
     property bool readOnly: false
     property string imagePath
+    property string oldPhoto
     property int studentId
     property bool addNew: false
 
@@ -99,7 +100,7 @@ BaseDialog {
             width: popupWidth * 0.3
             height: popupHeight * 0.6
 
-            source: imagePath === "" ? "/resources/images/dummy.png" : ("file:///" + applicationDirPath + "/" + imagePath)
+            source: imagePath === "" ? "/resources/images/dummy.png" : imagePath
 
             anchors {
                 left: parent.left
@@ -307,9 +308,15 @@ BaseDialog {
                 if (name.length > 0 && phone.length > 0 && email.length > 0 && group.length > 0)
                 {
                     if(addNew)
-                        StudentManager.addStudent(name, phone, group, email, imagePath)
+                    {
+                        var photo = StudentManager.addExternalPhoto(imagePath)
+                        StudentManager.addStudent(name, phone, group, email, photo)
+                    }
                     else
-                        StudentManager.updateStudent(studentId, name, phone, group, email, imagePath)
+                    {
+                        var editPhoto = StudentManager.replaceStudentPhoto(oldPhoto, imagePath)
+                        StudentManager.updateStudent(studentId, name, phone, group, email, editPhoto)
+                    }
                     studentDialog.process(name)
                 }
             }
@@ -323,12 +330,18 @@ BaseDialog {
 
     Connections {
            target: getFileDialog.item
+
            onProcess: {
                img.opacity = 1
                getFileDialog.source = ""
-               studentDialog.imagePath = "/photos/" + StudentManager.copyExternalPhoto(value)
-               img.source = ("file:///" + applicationDirPath + studentDialog.imagePath)
+
+               if (studentDialog.imagePath !== "")
+                   oldPhoto = studentDialog.imagePath
+
+               studentDialog.imagePath = value
+               img.source = value
            }
+
            onClose: {
                img.opacity = 1
                getFileDialog.source = ""

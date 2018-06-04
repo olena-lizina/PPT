@@ -69,6 +69,8 @@ void StudentManager::updateStudent(int id, QString name, QString phone, QString 
 
     BaseItem * edit = new Student(id, name, phone, email, photo, mGroupMap.key(group));
 
+    qDebug() << "Student: " << name << ", " << email << ", " << phone << ", " << photo << ", " << mGroupMap.key(group);
+
     if (!edit)
     {
         qWarning() << "updateStudent: Cannot create instance of Student";
@@ -140,9 +142,11 @@ void StudentManager::addStudent(QString name, QString phone, QString group, QStr
 
     if (!add)
     {
-        qDebug() << "addStudent: Cannot create instance of Student";
+        qWarning() << "addStudent: Cannot create instance of Student";
         return;
     }
+
+    qDebug() << "Student: " << name << ", " << email << ", " << phone << ", " << photo << ", " << mGroupMap.key(group);
 
     mSaveManager->appendItem(add, SaveManager::TYPE_STUDENT);
 
@@ -258,11 +262,11 @@ void StudentManager::loadStudentsFromDB()
         qWarning() << "Save manager is dead!";
 }
 
-QString StudentManager::copyExternalPhoto(QString path)
+QString StudentManager::addExternalPhoto(QString path)
 {
     if (!QFile::exists(path))
     {
-        qWarning() << "copyExternalPhoto: path not exist: " << path;
+        qWarning() << "addExternalPhoto: path not exist: " << path;
         return QString();
     }
 
@@ -277,7 +281,44 @@ QString StudentManager::copyExternalPhoto(QString path)
     QString newPath(QDir::currentPath() + '/' + "photos" + '/' + fileName);
 
     if (!QFile::copy(path, newPath))
-        qWarning() << "copyExternalPhoto: cannot copy file: " << path;
+        qWarning() << "addExternalPhoto: cannot copy file: " << path;
+
+    qDebug() << "Photo: " << fileName;
+
+    return fileName;
+}
+
+QString StudentManager::replaceStudentPhoto(QString oldPath, QString newPath)
+{
+    if (!QFile::exists(oldPath))
+        qWarning() << "replaceStudentPhoto: path not exist: " << oldPath;
+
+    QDir dir("photos");
+
+    if (!dir.exists())
+        dir.mkpath("photos");
+
+    QFile toRemove(oldPath);
+
+    if (!toRemove.remove())
+        qWarning() << "replaceStudentPhoto: cannot remove old student photo: " << oldPath;
+
+    QString prefix("file:///");
+    newPath.remove(0, prefix.size());
+
+    if (!QFile::exists(newPath))
+    {
+        qWarning() << "replaceStudentPhoto: path not exist: " << newPath;
+        return QString();
+    }
+
+    QString fileName(newPath.right(newPath.size() - newPath.lastIndexOf('/') - 1));
+    QString copyTo(QDir::currentPath() + '/' + "photos" + '/' + fileName);
+
+    if (!QFile::copy(newPath, copyTo))
+        qWarning() << "addExternalPhoto: cannot copy file: " << newPath;
+
+    qDebug() << "Photo: " << fileName;
 
     return fileName;
 }

@@ -46,7 +46,8 @@ public:
     Q_INVOKABLE QList<QObject*> getStudentsByGroup(const QString& groupName);
     Q_INVOKABLE QList<QObject*> getStudentsByName(const QString& partOfName);    
 
-    Q_INVOKABLE QString copyExternalPhoto(QString path);
+    Q_INVOKABLE QString addExternalPhoto(QString path);
+    Q_INVOKABLE QString replaceStudentPhoto(QString oldPath, QString newPath);
 
 private:
     void checkGroup(const QString& name);
