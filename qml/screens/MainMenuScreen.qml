@@ -31,7 +31,7 @@ BlankScreen {
         CLabel {
             anchors.fill: parent
             anchors.leftMargin: 5 * settings.pixelDensity
-            text: qsTr("PPT")
+            text: qsTr("ZPNP")
             font.pixelSize: 10 * settings.pixelDensity
         }
     }

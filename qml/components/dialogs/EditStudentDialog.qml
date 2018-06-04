@@ -99,7 +99,7 @@ BaseDialog {
             width: popupWidth * 0.3
             height: popupHeight * 0.6
 
-            source: imagePath === "" ? "/resources/images/dummy.jpg" : ("file:///" + applicationDirPath + "/" + imagePath)
+            source: imagePath === "" ? "/resources/images/dummy.png" : ("file:///" + applicationDirPath + "/" + imagePath)
 
             anchors {
                 left: parent.left

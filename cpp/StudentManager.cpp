@@ -27,6 +27,7 @@ StudentManager::StudentManager(QObject *parent)
     : ManagerInterface(parent)
     , mSelectedGroupIdx(0)
 {
+    loadStudentsFromDB();
 }
 
 /*static*/ QObject* StudentManager::managerProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
@@ -279,23 +280,4 @@ QString StudentManager::copyExternalPhoto(QString path)
         qWarning() << "copyExternalPhoto: cannot copy file: " << path;
 
     return fileName;
-}
-
-void StudentManager::setSelectGroupId(int group)
-{
-    mSelectedGroupIdx = group;
-}
-
-int StudentManager::selectGroupId() const
-{
-    return mSelectedGroupIdx;
-}
-
-void StudentManager::selectedStudent(const int&)
-{
-}
-
-QObject* StudentManager::selectedStudent() const
-{
-    return new QObject();
 }

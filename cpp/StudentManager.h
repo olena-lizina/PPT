@@ -26,7 +26,6 @@
 class StudentManager: public ManagerInterface
 {
     Q_OBJECT
-    Q_PROPERTY(int selectGroupId READ selectGroupId WRITE setSelectGroupId NOTIFY selectGroupIdChanged)
 
 public:
 
@@ -37,32 +36,21 @@ public:
     static QObject* managerProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
 
     Q_INVOKABLE bool existsStudent(const QString& name, const QString& group);
-
     Q_INVOKABLE void updateStudent(int id, QString name, QString phone, QString group, QString email, QString photo);
     Q_INVOKABLE void addStudent(QString name, QString phone, QString group, QString email, QString photo);
     Q_INVOKABLE void deleteStudent(int id);
 
     Q_INVOKABLE QStringList getGroups();
+    Q_INVOKABLE int getGroupIdx(QString name);
     Q_INVOKABLE QList<QObject*> getAllStudents();
     Q_INVOKABLE QList<QObject*> getStudentsByGroup(const QString& groupName);
-    Q_INVOKABLE QList<QObject*> getStudentsByName(const QString& partOfName);
-
-    Q_INVOKABLE void selectedStudent(const int& id);
-    Q_INVOKABLE QObject* selectedStudent() const;
-
-    Q_INVOKABLE void loadStudentsFromDB();
-    Q_INVOKABLE int getGroupIdx(QString name);
+    Q_INVOKABLE QList<QObject*> getStudentsByName(const QString& partOfName);    
 
     Q_INVOKABLE QString copyExternalPhoto(QString path);
 
-    void setSelectGroupId(int);
-    int selectGroupId() const;
-
-signals:
-    void selectGroupIdChanged();
-
 private:
     void checkGroup(const QString& name);
+    void loadStudentsFromDB();
 
 protected:
     QList<Student> mStudentList;

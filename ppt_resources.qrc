@@ -90,5 +90,6 @@
         <file>qml/screens/education/labs/LabInfoScreen.qml</file>
         <file>qml/components/CLabChildTreeList.qml</file>
         <file>qml/screens/education/labs/EditLabScreen.qml</file>
+        <file>resources/images/dummy.png</file>
     </qresource>
 </RCC>

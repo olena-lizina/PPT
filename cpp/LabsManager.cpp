@@ -48,7 +48,7 @@ QList<QObject*> LabsManager::labsTree()
 {
     if (m_labsTree.size() <= 0)
     {
-        TreeItem * d_item =  new TreeItem(tr("Спочатку створіть дисципліну"), -1, 0);
+        TreeItem * d_item =  new TreeItem(tr("Create discipline first"), -1, 0);
         m_labsTree << d_item;
     }
 

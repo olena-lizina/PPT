@@ -46,7 +46,6 @@ ApplicationWindow {
 
     onLoaded: {
         settings.pixelDensity = settings.debugMode ? 6.0 : Screen.logicalPixelDensity
-        StudentManager.loadStudentsFromDB()
     }
 
     // Settings

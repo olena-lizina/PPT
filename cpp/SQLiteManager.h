@@ -38,5 +38,4 @@ private:
     QEventLoop mLoop;
 };
 
-
 #endif // DBMANAGER_H

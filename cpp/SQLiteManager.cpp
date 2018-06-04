@@ -1,5 +1,6 @@
 #include "SQLiteManager.h"
 #include <mutex>
+#include <QDebug>
 
 SQLiteManager::SQLiteManager(const QString& dbName)
 {
@@ -82,6 +83,7 @@ void SQLiteManager::onExec()
     if (!mQuery->prepare(prepareStr))
     {
         emit finished();
+        qWarning() << "Cannot prepare query: " << prepareStr << mQuery->lastError();
         return;
     }
 

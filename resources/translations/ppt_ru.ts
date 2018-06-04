@@ -63,6 +63,25 @@
     </message>
 </context>
 <context>
+    <name>AddLabScreen</name>
+    <message>
+        <source>Create laboratory work</source>
+        <translation>Создать лабораторную работу</translation>
+    </message>
+    <message>
+        <source>Enter the name</source>
+        <translation>Введите название</translation>
+    </message>
+    <message>
+        <source>Enter finish date</source>
+        <translation>Введите конечную дату сдачи работы</translation>
+    </message>
+    <message>
+        <source>Import laboratory work</source>
+        <translation>Импортировать лабораторную работу</translation>
+    </message>
+</context>
+<context>
     <name>AdministrationScreen</name>
     <message>
         <source>Administration</source>
@@ -73,8 +92,8 @@
         <translation>Студенты</translation>
     </message>
     <message>
-        <source>Course settings</source>
-        <translation>Настройки курсов</translation>
+        <source>Manage courses</source>
+        <translation>Управление курсами</translation>
     </message>
 </context>
 <context>
@@ -100,6 +119,37 @@
     <message>
         <source>Home</source>
         <translation>Домашняя страница</translation>
+    </message>
+</context>
+<context>
+    <name>CLabTreeItem</name>
+    <message>
+        <source>Edit</source>
+        <translation>Редактировать</translation>
+    </message>
+    <message>
+        <source>Remove</source>
+        <translation>Удалить</translation>
+    </message>
+    <message>
+        <source>Edit laboratory work</source>
+        <translation>Редактировать лабораторную работу</translation>
+    </message>
+    <message>
+        <source>Enter the name</source>
+        <translation>Введите название</translation>
+    </message>
+    <message>
+        <source>Enter finish date</source>
+        <translation>Введите конечный срок сдачи работы</translation>
+    </message>
+    <message>
+        <source>Remove laboratory work</source>
+        <translation>Удалить лабораторную работу</translation>
+    </message>
+    <message>
+        <source>Press OK to delete laboratory work with name: &quot;%1&quot;</source>
+        <translation>Нажмите ОК для удаления работы с названием: &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -280,6 +330,44 @@
     </message>
 </context>
 <context>
+    <name>CreateLabDialog</name>
+    <message>
+        <source>Cancel</source>
+        <translation>Отменить</translation>
+    </message>
+    <message>
+        <source>OK</source>
+        <translation>ОК</translation>
+    </message>
+    <message>
+        <source>Input field cannot be left blank</source>
+        <translation>Поле для ввода не может быть пустым</translation>
+    </message>
+</context>
+<context>
+    <name>EditLabScreen</name>
+    <message>
+        <source>Select all</source>
+        <translation>Выбрать все</translation>
+    </message>
+    <message>
+        <source>Copy</source>
+        <translation>Копировать</translation>
+    </message>
+    <message>
+        <source>Cut</source>
+        <translation>Вырезать</translation>
+    </message>
+    <message>
+        <source>Edit</source>
+        <translation>Редактировать</translation>
+    </message>
+    <message>
+        <source>Save lecture</source>
+        <translation>Сохранить лекцию</translation>
+    </message>
+</context>
+<context>
     <name>EditLectureDialog</name>
     <message>
         <source>Cancel</source>
@@ -377,44 +465,6 @@
     </message>
 </context>
 <context>
-    <name>ExamplesScreen</name>
-    <message>
-        <source>Examples</source>
-        <translation>Примеры</translation>
-    </message>
-    <message>
-        <source>Restore the examples</source>
-        <translation>Восстановить примеры</translation>
-    </message>
-    <message>
-        <source>Press OK to delete all the edits you have made in the Examples section.</source>
-        <translation>Нажмите ОК, чтобы удалить все ваши изменения, сделанные в разделе примеров.</translation>
-    </message>
-    <message>
-        <source>Delete the example</source>
-        <translation>Удалить пример</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete &quot;%1&quot;?</source>
-        <translation>Вы уверенны, что хотите удалить &quot;%1&quot;?</translation>
-    </message>
-</context>
-<context>
-    <name>FilesScreen</name>
-    <message>
-        <source>New file</source>
-        <translation>Новый файл</translation>
-    </message>
-    <message>
-        <source>Delete the file</source>
-        <translation>Удалить файл</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete &quot;%1&quot;?</source>
-        <translation>Вы уверенны, что хотите удалить &quot;%1&quot;?</translation>
-    </message>
-</context>
-<context>
     <name>FontSizeDialog</name>
     <message>
         <source>Cancel</source>
@@ -437,17 +487,39 @@
     </message>
 </context>
 <context>
-    <name>LecturesManager</name>
+    <name>LabInfoScreen</name>
     <message>
-        <source>Add discipline</source>
-        <translation>Добавить дисциплину</translation>
+        <source>Open laboratory work</source>
+        <translation>Открыть лабораторную работу</translation>
+    </message>
+    <message>
+        <source>Should be done due: &quot;%1&quot;</source>
+        <translation>Должно быть выполнено до: &quot;%1&quot;</translation>
+    </message>
+</context>
+<context>
+    <name>LabsManager</name>
+    <message>
+        <source>Спочатку створіть дисципліну</source>
+        <translation type="obsolete">Сначала создайте дисциплину</translation>
+    </message>
+    <message>
+        <source>Create discipline first</source>
+        <translation>Сначала создайте дисциплину</translation>
+    </message>
+</context>
+<context>
+    <name>LabsScreen</name>
+    <message>
+        <source>Laboratory works</source>
+        <translation>Лабораторные работы</translation>
     </message>
 </context>
 <context>
     <name>MainMenuScreen</name>
     <message>
         <source>PPT</source>
-        <translation>ППС</translation>
+        <translation type="vanished">ППС</translation>
     </message>
     <message>
         <source>Administration</source>
@@ -462,12 +534,12 @@
         <translation>Журнал успеваемости</translation>
     </message>
     <message>
-        <source>Manual</source>
-        <translation>Руководство пользователя</translation>
-    </message>
-    <message>
         <source>About</source>
         <translation>О программе</translation>
+    </message>
+    <message>
+        <source>ZPNP</source>
+        <translation>ЗПНП</translation>
     </message>
 </context>
 <context>
@@ -475,25 +547,6 @@
     <message>
         <source>OK</source>
         <translation>ОК</translation>
-    </message>
-</context>
-<context>
-    <name>ModulesScreen</name>
-    <message>
-        <source>Modules</source>
-        <translation>Модули</translation>
-    </message>
-    <message>
-        <source>Available</source>
-        <translation>Доступно</translation>
-    </message>
-    <message>
-        <source>Not available</source>
-        <translation>Не доступно</translation>
-    </message>
-    <message>
-        <source>Undefined</source>
-        <translation>Неизвестно</translation>
     </message>
 </context>
 <context>
@@ -543,56 +596,14 @@
     </message>
 </context>
 <context>
-    <name>PlaygroundScreen</name>
-    <message>
-        <source>Disable debugging</source>
-        <translation>Отключить отладку</translation>
-    </message>
-    <message>
-        <source>Enable debugging</source>
-        <translation>Включить отладку</translation>
-    </message>
-</context>
-<context>
     <name>ProgressScreen</name>
     <message>
         <source>Learning progress</source>
         <translation>Учебный прогресс</translation>
     </message>
     <message>
-        <source>Work done</source>
-        <translation>Выполненые работы</translation>
-    </message>
-    <message>
-        <source>Work on execution</source>
-        <translation>Работы на исполнении</translation>
-    </message>
-    <message>
-        <source>Gradebook</source>
-        <translation>Журнал успеваемости</translation>
-    </message>
-    <message>
-        <source>Reports</source>
-        <translation>Отчеты</translation>
-    </message>
-</context>
-<context>
-    <name>ProjectsScreen</name>
-    <message>
-        <source>Projects</source>
-        <translation>Проекты</translation>
-    </message>
-    <message>
-        <source>New project</source>
-        <translation>Новый проект</translation>
-    </message>
-    <message>
-        <source>Delete the project</source>
-        <translation>Удалить проект</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete &quot;%1&quot;?</source>
-        <translation>Вы уверенны, что хотите удалить проект &quot;%1&quot;?</translation>
+        <source>Laboratory works</source>
+        <translation>Лабораторные работы</translation>
     </message>
 </context>
 <context>
@@ -600,45 +611,6 @@
     <message>
         <source>Choose a file to open</source>
         <translation>Выберите файл, чтобы открыть</translation>
-    </message>
-</context>
-<context>
-    <name>SettingsScreen</name>
-    <message>
-        <source>Settings</source>
-        <translation>Настройки</translation>
-    </message>
-    <message>
-        <source>Font family</source>
-        <translation>Семейство шрифтов</translation>
-    </message>
-    <message>
-        <source>Editor font</source>
-        <translation>Шрифт редактора</translation>
-    </message>
-    <message>
-        <source>Font size</source>
-        <translation>Размер шрифта</translation>
-    </message>
-    <message>
-        <source>Indent size</source>
-        <translation>Размер отступа</translation>
-    </message>
-    <message>
-        <source>Debugging</source>
-        <translation>Отладка</translation>
-    </message>
-    <message>
-        <source>Enabled</source>
-        <translation>Включено</translation>
-    </message>
-    <message>
-        <source>Disabled</source>
-        <translation>Отключено</translation>
-    </message>
-    <message>
-        <source>Palette</source>
-        <translation>Палитра</translation>
     </message>
 </context>
 <context>
@@ -685,64 +657,6 @@
     <message>
         <source>Are you sure you want to delete &quot;%1&quot;?</source>
         <translation>Вы уверенны, что хотите удалить студента &quot;%1&quot;?</translation>
-    </message>
-</context>
-<context>
-    <name>SubThemesScreen</name>
-    <message>
-        <source>New sub theme</source>
-        <translation>Новая подтема</translation>
-    </message>
-    <message>
-        <source>Enter sub theme name :</source>
-        <translation>Введите название подтемы:</translation>
-    </message>
-    <message>
-        <source>Edit sub theme</source>
-        <translation>Редактировать подтему</translation>
-    </message>
-    <message>
-        <source>Sub theme name :</source>
-        <translation>Название подтемы:</translation>
-    </message>
-    <message>
-        <source>Delete the sub theme</source>
-        <translation>Удалить подтему</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete &quot;%1&quot;?</source>
-        <translation>Вы уверенны, что хотите удалить подтему &quot;%1&quot;?</translation>
-    </message>
-</context>
-<context>
-    <name>ThemesScreen</name>
-    <message>
-        <source>New theme</source>
-        <translation>Новая тема</translation>
-    </message>
-    <message>
-        <source>Enter theme name :</source>
-        <translation>Введите название темы:</translation>
-    </message>
-    <message>
-        <source>Would you like to create subtheme or lecture?</source>
-        <translation>Вы желаете создать подтему или лекцию?</translation>
-    </message>
-    <message>
-        <source>Edit theme</source>
-        <translation>Редактировать тему</translation>
-    </message>
-    <message>
-        <source>Theme name :</source>
-        <translation>Название темы:</translation>
-    </message>
-    <message>
-        <source>Delete the theme</source>
-        <translation>Удалить тему</translation>
-    </message>
-    <message>
-        <source>Are you sure you want to delete &quot;%1&quot;?</source>
-        <translation>Вы уверенны, что хотите удалить тему &quot;%1&quot;?</translation>
     </message>
 </context>
 </TS>

@@ -43,7 +43,7 @@ void SaveManager::initTypeNames()
     mTypeNames[TYPE_SUBTHEME_LECTURE] = "Subtheme_Lecture_File";
     mTypeNames[TYPE_REPORT] = "Report";
     mTypeNames[TYPE_REPORT_FILE] = "Report_File";
-    mTypeNames[TYPE_GROUP] = "'Group'";
+    mTypeNames[TYPE_GROUP] = "Groups";
     mTypeNames[TYPE_STUDENT] = "Student";
     mTypeNames[TYPE_STUDENTS_COURSES] = "StudentsCourses";
 }
@@ -59,7 +59,7 @@ void SaveManager::initInsertStrs()
     mInsertStr[TYPE_SUBTHEME_LECTURE] = "INSERT INTO Subtheme_Lecture_File (Id,Subtheme_Id,Path) VALUES ('%1','%2',\"%3\")";
     mInsertStr[TYPE_REPORT] = "INSERT INTO Report (Id,Lab_Id,Delivery_Date,Mark,Evaluation_Date) VALUES ('%1','%2',\"%3\",\"%4\",\"%5\")";
     mInsertStr[TYPE_REPORT_FILE] = "INSERT INTO Report_File (Id,Report_Id,Path) VALUES ('%1','%2',\"%3\")";
-    mInsertStr[TYPE_GROUP] = "INSERT INTO 'Group' (Id,Name) VALUES ('%1',\"%2\")";
+    mInsertStr[TYPE_GROUP] = "INSERT INTO Groups (Id,Name) VALUES ('%1',\"%2\")";
     mInsertStr[TYPE_STUDENT] = "INSERT INTO Student (Id,Name,Phone,Email,Photo_Path,Group_Id) VALUES ('%1',\"%2\",\"%3\",\"%4\",\"%5\",'%6')";
     mInsertStr[TYPE_STUDENTS_COURSES] = "INSERT INTO StudentsCourses (Id,StudId,CourseId) VALUES ";
 }
@@ -75,7 +75,7 @@ void SaveManager::initDeleteStrs()
     mDeleteStr[TYPE_SUBTHEME_LECTURE] = "DELETE FROM Subtheme_Lecture_File WHERE Id='%1'";
     mDeleteStr[TYPE_REPORT] = "DELETE FROM Report WHERE Id='%1'";
     mDeleteStr[TYPE_REPORT_FILE] = "DELETE FROM Report_File WHERE Id='%1'";
-    mDeleteStr[TYPE_GROUP] = "DELETE FROM 'Group' WHERE Id='%1'";
+    mDeleteStr[TYPE_GROUP] = "DELETE FROM Groups WHERE Id='%1'";
     mDeleteStr[TYPE_STUDENT] = "DELETE FROM Student WHERE Id='%1'";
     mDeleteStr[TYPE_STUDENTS_COURSES] = "DELETE FROM StudentsCourses WHERE Id='%1'";
 }
@@ -91,7 +91,7 @@ void SaveManager::initEditStrs()
     mEditStr[TYPE_SUBTHEME_LECTURE] = "UPDATE Subtheme_Lecture_File SET Subtheme_Id='%1',Path=\"%2\" WHERE Id='%3'";
     mEditStr[TYPE_REPORT] = "UPDATE Report SET Lab_Id='%1',Delivery_Date=\"%2\",Mark=\"%3\",Evaluation_Date=\"%4\",Stud_Id='%5' WHERE Id='%6'";
     mEditStr[TYPE_REPORT_FILE] = "UPDATE Report_File SET Report_Id='%1',Path=\"%2\" WHERE Id='%3'";
-    mEditStr[TYPE_GROUP] = "UPDATE 'Group' SET Name=\"%1\" WHERE Id='%2'";
+    mEditStr[TYPE_GROUP] = "UPDATE Groups SET Name=\"%1\" WHERE Id='%2'";
     mEditStr[TYPE_STUDENT] = "UPDATE Student SET Name=\"%1\",Phone=\"%2\",Email=\"%3\",Photo_Path=\"%4\",Group_Id='%5' WHERE Id='%6'";
     mEditStr[TYPE_STUDENTS_COURSES] = "StudentsCourses";
 }
@@ -250,7 +250,7 @@ void SaveManager::saveItem(BaseItem* item, ItemType type, int index)
             return;
         }
 
-        if (!mSqlManager.execute(mInsertStr[TYPE_STUDENT].arg(index).arg(info->name).arg(info->phone).arg(info->email).arg(info->photoPath).arg(info->groupId)).first)
+        if (!mSqlManager.execute(QString(mInsertStr[TYPE_STUDENT]).arg(index).arg(info->name).arg(info->phone).arg(info->email).arg(info->photoPath).arg(info->groupId)).first)
             qDebug() << "Cannot save student";
     }
         break;
@@ -597,7 +597,7 @@ QList<Discipline> SaveManager::loadDiscipline()
 
 QList<Group> SaveManager::loadGroup()
 {
-    const QString tempLoadStr("SELECT * FROM 'Group'");
+    const QString tempLoadStr("SELECT * FROM Groups");
     auto res = mSqlManager.execute(tempLoadStr);
 
     if (!res.first)
@@ -875,8 +875,8 @@ void SaveManager::initTables()
         "CREATE TABLE IF NOT EXISTS Subtheme (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Theme_Id INTEGER, FOREIGN KEY (Theme_Id) REFERENCES Theme(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS Theme (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Chapter_Id INTEGER, FOREIGN KEY (Chapter_Id) REFERENCES Chapter(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS Discipline (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Liter_Path TEXT, Educ_Plan_Path TEXT, Educ_Progr_Path TEXT)",
-        "CREATE TABLE IF NOT EXISTS 'Group' (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT)",
-        "CREATE TABLE IF NOT EXISTS Student (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Phone TEXT, Email TEXT, Photo_Path TEXT, Group_Id INTEGER, FOREIGN KEY (Group_Id) REFERENCES 'Group'(Id) ON DELETE CASCADE)",
+        "CREATE TABLE IF NOT EXISTS Groups (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT)",
+        "CREATE TABLE IF NOT EXISTS Student (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, Name TEXT, Phone TEXT, Email TEXT, Photo_Path TEXT, Group_Id INTEGER, FOREIGN KEY (Group_Id) REFERENCES Groups(Id) ON DELETE CASCADE)",
         "CREATE TABLE IF NOT EXISTS StudentsCourses (Id INTEGER NOT NULL PRIMARY KEY UNIQUE, StudId INTEGER, CourseId INTEGER, FOREIGN KEY (StudId) REFERENCES Student(Id) ON DELETE CASCADE, FOREIGN KEY (CourseId) REFERENCES Discipline(Id) ON DELETE CASCADE)"
     };
 
