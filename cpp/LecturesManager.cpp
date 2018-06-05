@@ -17,7 +17,6 @@
 ****************************************************************************/
 #include "LecturesManager.h"
 #include <QDebug>
-#include <QApplication>
 #include "TreeItem.h"
 #include <QFile>
 #include <QDir>

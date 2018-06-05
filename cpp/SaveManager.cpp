@@ -17,6 +17,7 @@
 ****************************************************************************/
 
 #include "SaveManager.h"
+#include <QGuiApplication>
 #include <QVariant>
 #include <QDebug>
 #include <QFile>
@@ -776,6 +777,13 @@ QList<Student> SaveManager::loadStudent()
         tmp.phone = student.at(2).toString();
         tmp.email = student.at(3).toString();
         tmp.photoPath = student.at(4).toString();
+
+        if (!tmp.photoPath.isEmpty() && !QFile::exists(QGuiApplication::applicationDirPath() + "/photos/" + tmp.photoPath))
+        {
+            qWarning() << "loadStudent: file not exists. Set default.";
+            tmp.photoPath = "";
+        }
+
         tmp.groupId = student.at(5).toInt();
         students << tmp;
     }

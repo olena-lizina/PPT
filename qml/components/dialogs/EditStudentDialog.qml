@@ -39,6 +39,8 @@ BaseDialog {
     property string oldPhoto: ""
     property int studentId
     property bool addNew: false
+    property bool updatePhoto: false
+    property bool justInfo: false
 
     function initialize(parameters) {
         for (var attr in parameters) {
@@ -277,16 +279,18 @@ BaseDialog {
             anchors.bottom: parent.bottom
             text: qsTr("Cancel")
             onClicked: studentDialog.close()
+            visible: !readOnly
         }
 
         CVerticalSeparator {
             id: footer
             anchors.horizontalCenter: parent.horizontalCenter
             anchors.bottom: parent.bottom
+            visible: !readOnly
         }
 
         CDialogButton {
-            anchors.left: footer.right
+            anchors.left: readOnly ? parent.left : footer.right
             anchors.right: parent.right
             anchors.bottom: parent.bottom
             text: qsTr("OK")
@@ -310,13 +314,15 @@ BaseDialog {
                     var photo = ""
                     if(addNew)
                     {                        
-                        if (studentDialog.imagePath !== "/resources/images/dummy.png")
+                        if (updatePhoto && studentDialog.imagePath !== "/resources/images/dummy.png")
                             photo = StudentManager.addExternalPhoto(imagePath)
                         StudentManager.addStudent(name, phone, group, email, photo)
                     }
+                    else if (justInfo)
+                        studentDialog.close()
                     else
                     {
-                        if (studentDialog.imagePath !== "/resources/images/dummy.png")
+                        if (updatePhoto && studentDialog.imagePath !== "/resources/images/dummy.png")
                             photo = StudentManager.replaceStudentPhoto(oldPhoto, imagePath)
                         StudentManager.updateStudent(studentId, name, phone, group, email, photo)
                     }
@@ -342,6 +348,7 @@ BaseDialog {
                    oldPhoto = studentDialog.imagePath
 
                studentDialog.imagePath = value
+               updatePhoto = true
            }
 
            onClose: {

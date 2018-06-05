@@ -134,7 +134,8 @@ BlankScreen {
                     email: modelData.email,
                     imagePath: modelData.photo === "" ? "/resources/images/dummy.png" : ("file:///" + applicationDirPath + "/photos/" + modelData.photo),
                     studentId: modelData.id,
-                    readOnly: true
+                    readOnly: true,
+                    justInfo: true
                 }
 
                 var callback = function() {}

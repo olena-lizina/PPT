@@ -19,6 +19,7 @@
 #include "StudentManager.h"
 #include "StudentModel.h"
 
+#include <QGuiApplication>
 #include <QDebug>
 #include <QFile>
 #include <QDir>
@@ -260,40 +261,73 @@ void StudentManager::loadStudentsFromDB()
 
 QString StudentManager::addExternalPhoto(QString path)
 {
-    if (!QFile::exists(path))
+    if (path.isEmpty() || !QFile::exists(path))
     {
-        qWarning() << "addExternalPhoto: path not exist: " << path;
+        qWarning() << "addExternalPhoto: cannot copy file: " << path;
         return QString();
     }
 
-    QDir dir("photos");
+    QDir dir(QGuiApplication::applicationDirPath() + "/photos");
 
     if (!dir.exists())
-        dir.mkpath("photos");
+        dir.mkpath(QGuiApplication::applicationDirPath() + "/photos");
 
     QString prefix("file:///");
     path.remove(0, prefix.size());
+
     QString fileName(path.right(path.size() - path.lastIndexOf('/') - 1));
-    QString newPath(QDir::currentPath() + "/photos/" + fileName);
+    QString newPath(QGuiApplication::applicationDirPath() + "/photos/" + fileName);
 
-    if (!QFile::copy(path, newPath))
-        qWarning() << "addExternalPhoto: cannot copy file: " << path;
+    if (QFile::exists(newPath) || QFile::copy(path, newPath))
+        return fileName;
 
-    return ("/photos/" + fileName);
+    qWarning() << "addExternalPhoto: cannot copy file: " << path;
+    return QString();
 }
 
 QString StudentManager::replaceStudentPhoto(QString oldPath, QString newPath)
 {
     if (newPath.isEmpty())
+    {
+        qWarning() << "Cannot copy file: " << newPath;
         return QString();
+    }
 
-    QDir dir("photos");
+    QDir dir(QGuiApplication::applicationDirPath() + "/photos");
 
     if (!dir.exists())
-        dir.mkpath("photos");
+        dir.mkpath(QGuiApplication::applicationDirPath() + "/photos");
 
     QString prefix("file:///");
+
     newPath.remove(0, prefix.size());
+
+    if (!QFile::exists(newPath))
+    {
+        qWarning() << "replaceStudentPhoto: file not exist: " << newPath;
+        return QString();
+    }
+
+    QString fileName(newPath.right(newPath.size() - newPath.lastIndexOf('/') - 1));
+    QString copyTo(QGuiApplication::applicationDirPath() + "/photos/" + fileName);
+
+    if (QFile::exists(copyTo))
+    {
+        qWarning() << "replaceStudentPhoto: file already exist";
+        return fileName;
+    }
+
+    if (!oldPath.compare(newPath))
+    {
+        qWarning() << "Files are similar";
+        return fileName;
+    }
+
+    QFile copyFrom(newPath);
+    if (copyFrom.copy(copyTo))
+        return fileName;
+
+    qWarning() << "replaceStudentPhoto: cannot copy file: " << newPath << " to " << copyTo << " due to an error " << copyFrom.error();
 
     if (!oldPath.isEmpty())
     {
@@ -301,20 +335,12 @@ QString StudentManager::replaceStudentPhoto(QString oldPath, QString newPath)
         QFile toRemove(oldPath);
 
         if (!toRemove.exists() || !toRemove.remove())
-            qWarning() << "replaceStudentPhoto: cannot remove old student photo: " << oldPath;
+            qWarning() << "replaceStudentPhoto: cannot remove file: " << oldPath;
+
+        QString oldName(oldPath.right(oldPath.size() - oldPath.lastIndexOf('/') - 1));
+        return oldName;
     }
 
-    if (!QFile::exists(newPath))
-    {
-        qWarning() << "replaceStudentPhoto: path not exist: " << newPath;
-        return QString();
-    }
-
-    QString fileName(newPath.right(newPath.size() - newPath.lastIndexOf('/') - 1));
-    QString copyTo(QDir::currentPath() + "/photos/" + fileName);
-
-    if (!QFile::copy(newPath, copyTo))
-        qWarning() << "replaceStudentPhoto: cannot copy file: " << newPath;
-
-    return ("/photos/" + fileName);
+    qWarning() << "replaceStudentPhoto: cannot copy file, old path is empty";
+    return QString();
 }

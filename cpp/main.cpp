@@ -54,13 +54,7 @@ int main(int argc, char *argv[])
     LabsManager::setSaveManager(saveManager);
 
     QQmlApplicationEngine engine;
-
-    QDir path(QGuiApplication::applicationDirPath());
-    if (QGuiApplication::applicationDirPath().contains("/debug") || QGuiApplication::applicationDirPath().contains("/release"))
-        if (!path.cdUp())
-            qDebug() << "Cannot change directory";
-
-    engine.rootContext()->setContextProperty("applicationDirPath", path.path());
+    engine.rootContext()->setContextProperty("applicationDirPath", QGuiApplication::applicationDirPath());
     engine.load(QUrl("qrc:/qml/main.qml"));
 
     StudentManager::setQmlEngine(&engine);

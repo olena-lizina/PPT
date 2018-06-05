@@ -1,5 +1,4 @@
 #include "MailServiceManager.h"
-#include <QMessageBox>
 #include <QDebug>
 #include <QFile>
 #include <QDir>

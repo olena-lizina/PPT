@@ -1,10 +1,5 @@
 QT += \
-    core gui qml quick \
-    multimedia sql \
-    network websockets \
-    xml svg \
-    sensors bluetooth nfc \
-    positioning location
+    core gui qml quick sql widgets
 
 TARGET = ppt
 TEMPLATE = app

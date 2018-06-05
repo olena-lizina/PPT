@@ -17,7 +17,6 @@
 ****************************************************************************/
 #include "LabsManager.h"
 
-#include <QApplication>
 #include <QTextStream>
 #include <QDebug>
 #include <QFile>
