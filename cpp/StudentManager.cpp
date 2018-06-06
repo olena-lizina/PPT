@@ -261,7 +261,16 @@ void StudentManager::loadStudentsFromDB()
 
 QString StudentManager::addExternalPhoto(QString path)
 {
-    if (path.isEmpty() || !QFile::exists(path))
+    if (path.isEmpty())
+    {
+        qWarning() << "addExternalPhoto: cannot copy file due to empty path";
+        return QString();
+    }
+
+    QString prefix("file:///");
+    path.remove(0, prefix.size());
+
+    if (!QFile::exists(path))
     {
         qWarning() << "addExternalPhoto: cannot copy file: " << path;
         return QString();
@@ -271,9 +280,6 @@ QString StudentManager::addExternalPhoto(QString path)
 
     if (!dir.exists())
         dir.mkpath(QGuiApplication::applicationDirPath() + "/photos");
-
-    QString prefix("file:///");
-    path.remove(0, prefix.size());
 
     QString fileName(path.right(path.size() - path.lastIndexOf('/') - 1));
     QString newPath(QGuiApplication::applicationDirPath() + "/photos/" + fileName);

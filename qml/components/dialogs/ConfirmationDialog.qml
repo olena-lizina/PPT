@@ -88,6 +88,7 @@ BaseDialog {
             clip: true
 
             contentHeight: message.contentHeight
+            contentWidth: message.contentWidth
             boundsBehavior: Flickable.StopAtBounds
 
             TextEdit {
