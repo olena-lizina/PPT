@@ -44,7 +44,7 @@ Row {
                 anchors.fill: parent
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
                 onClicked: {
-                    ScreenContextBuffer.screenType = LecturesManager.LectureFile;
+                    //ScreenContextBuffer.screenType = LecturesManager.LectureFile;
 
                     if (mouse.button == Qt.LeftButton)
                     {
@@ -58,7 +58,7 @@ Row {
                             var insertCallback = function(value)
                             {
                                 console.log("Callback: " + value + ", idx: " + modelData.idx)
-                                LecturesManager.insertDiscipline(value, modelData.idx)
+                                LecturesManager.insertItem(value, modelData.idx, LecturesManager.DISCIPLINE_ITEM)
                             }
                             dialog.open(dialog.types.lecture, insertParameters, insertCallback)
                         }
@@ -68,7 +68,6 @@ Row {
                             {
                                 ScreenContextBuffer.courseId = modelData.idx
                                 ScreenContextBuffer.courseName = modelData.text
-                                ScreenContextBuffer.screenType = LecturesManager.LectureFile
                                 ScreenContextBuffer.loaderSource = ""
                             }
                             ScreenContextBuffer.edit = false;
@@ -233,24 +232,24 @@ Row {
                     {
                     case 0:
                         if (value === 0)
-                            LecturesManager.insertDiscipline(val, modelData.idx)
+                            LecturesManager.insertItem(val, modelData.idx, LecturesManager.DISCIPLINE_ITEM)
                         else
-                            LecturesManager.appendChapter(val, modelData.idx)
+                            LecturesManager.appendItem(val, modelData.idx, LecturesManager.CHAPTER_ITEM)
                         break;
                     case 1:
                         if (value === 0)
-                            LecturesManager.insertChapter(val, modelData.idx)
+                            LecturesManager.insertItem(val, modelData.idx, LecturesManager.CHAPTER_ITEM)
                         else
-                            LecturesManager.appendTheme(val, modelData.idx)
+                            LecturesManager.appendItem(val, modelData.idx, LecturesManager.THEME_ITEM)
                         break;
                     case 2:
                         if (value === 0)
-                            LecturesManager.insertTheme(val, modelData.idx)
+                            LecturesManager.insertItem(val, modelData.idx, LecturesManager.THEME_ITEM)
                         else
-                            LecturesManager.appendSubtheme(val, modelData.idx)
+                            LecturesManager.appendItem(val, modelData.idx, LecturesManager.SUBTHEME_ITEM)
                         break;
                     case 3:
-                        LecturesManager.insertSubtheme(val, modelData.idx)
+                        LecturesManager.insertItem(val, modelData.idx, LecturesManager.SUBTHEME_ITEM)
                         break;
                     }
                 }
@@ -298,16 +297,16 @@ Row {
                 switch(modelData.nesting)
                 {
                 case 0:
-                    LecturesManager.updateDiscipline(value, modelData.idx)
+                    LecturesManager.updateItem(value, modelData.idx, LecturesManager.DISCIPLINE_ITEM)
                     break;
                 case 1:
-                    LecturesManager.updateChapter(value, modelData.idx)
+                    LecturesManager.updateItem(value, modelData.idx, LecturesManager.CHAPTER_ITEM)
                     break;
                 case 2:
-                    LecturesManager.updateTheme(value, modelData.idx)
+                    LecturesManager.updateItem(value, modelData.idx, LecturesManager.THEME_ITEM)
                     break;
                 case 3:
-                    LecturesManager.updateSubtheme(value, modelData.idx)
+                    LecturesManager.updateItem(value, modelData.idx, LecturesManager.SUBTHEME_ITEM)
                     break;
                 }
             }
@@ -352,16 +351,16 @@ Row {
                 switch(modelData.nesting)
                 {
                 case 0:
-                    LecturesManager.removeDiscipline(modelData.idx)
+                    LecturesManager.removeItem(modelData.idx, LecturesManager.DISCIPLINE_ITEM)
                     break;
                 case 1:
-                    LecturesManager.removeChapter(modelData.idx)
+                    LecturesManager.removeItem(modelData.idx, LecturesManager.CHAPTER_ITEM)
                     break;
                 case 2:
-                    LecturesManager.removeTheme(modelData.idx)
+                    LecturesManager.removeItem(modelData.idx, LecturesManager.THEME_ITEM)
                     break;
                 case 3:
-                    LecturesManager.removeSubtheme(modelData.idx)
+                    LecturesManager.removeItem(modelData.idx, LecturesManager.SUBTHEME_ITEM)
                     break;
                 }
             }

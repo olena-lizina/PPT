@@ -30,16 +30,8 @@ Loader {
     QtObject {
         id: dialogTypes
 
-        property string message: "MessageDialog.qml"
         property string confirmation: "ConfirmationDialog.qml"
-        property string list: "ListDialog.qml"
-        property string fontFamily: "FontFamilyDialog.qml"
-        property string fontSize: "FontSizeDialog.qml"
-        property string indentSize: "IndentSizeDialog.qml"
-        property string newFile: "NewFileDialog.qml"
-        property string newProject: "NewProjectDialog.qml"
         property string lecture: "NewLectureDialog.qml"
-        property string editLecture: "EditLectureDialog.qml"
         property string studentInfoDialog: "StudentInfoDialog.qml"
         property string editStudentDialog: "EditStudentDialog.qml"
         property string insert: "ThemeClickedDialog.qml"

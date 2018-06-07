@@ -74,7 +74,7 @@ Item {
 
             Layout.fillHeight: true
             Layout.minimumWidth: height
-            visible: LecturesManager.hasSubThemes(text, LecturesManager.Theme) ? false : true
+            //visible: LecturesManager.hasSubThemes(text, LecturesManager.Theme) ? false : true
 
             Rectangle {
                 anchors.fill: parent

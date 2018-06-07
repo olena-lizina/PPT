@@ -60,9 +60,9 @@ Rectangle {
                         anchors.fill: parent
 
                         onClicked: {
-                            ScreenContextBuffer.screenType = LecturesManager.LiteratureListFile;
+                            ScreenContextBuffer.screenType = LecturesManager.LiteratureListFileType;
 
-                            if (LecturesManager.fileExist(LecturesManager.LiteratureListFile, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting))
+                            if (LecturesManager.fileExist(LecturesManager.LiteratureListFileType, ScreenContextBuffer.selectedIdx))
                             {
                                 ScreenContextBuffer.edit = false
                                 ScreenContextBuffer.loaderSource = ""
@@ -105,9 +105,9 @@ Rectangle {
                         anchors.fill: parent
 
                         onClicked: {
-                            ScreenContextBuffer.screenType = LecturesManager.EducationProgramFile
+                            ScreenContextBuffer.screenType = LecturesManager.EducationProgramFileType
 
-                            if (LecturesManager.fileExist(LecturesManager.EducationProgramFile, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting))
+                            if (LecturesManager.fileExist(LecturesManager.EducationProgramFileType, ScreenContextBuffer.selectedIdx))
                             {
                                 ScreenContextBuffer.edit = false
                                 ScreenContextBuffer.loaderSource = ""
@@ -150,9 +150,9 @@ Rectangle {
                         anchors.fill: parent
 
                         onClicked: {
-                            ScreenContextBuffer.screenType = LecturesManager.EducationPlanFile
+                            ScreenContextBuffer.screenType = LecturesManager.EducationPlanFileType
 
-                            if (LecturesManager.fileExist(LecturesManager.EducationPlanFile, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting))
+                            if (LecturesManager.fileExist(LecturesManager.EducationPlanFileType, ScreenContextBuffer.selectedIdx))
                             {
                                 ScreenContextBuffer.edit = false
                                 ScreenContextBuffer.loaderSource = ""
@@ -190,15 +190,8 @@ Rectangle {
         target: getFileDialog.item
         onProcess: {
             getFileDialog.source = ""
-            ScreenContextBuffer.edit = false
-
-            if (ScreenContextBuffer.screenType === LecturesManager.LiteratureListFile)
-                LecturesManager.copyLiterListFile(value, ScreenContextBuffer.selectedIdx)
-            else if (ScreenContextBuffer.screenType === LecturesManager.EducationProgramFile)
-                LecturesManager.copyEducProgFile(value, ScreenContextBuffer.selectedIdx)
-            else if (ScreenContextBuffer.screenType === LecturesManager.EducationPlanFile)
-                LecturesManager.copyEducPlanFile(value, ScreenContextBuffer.selectedIdx);
-
+            ScreenContextBuffer.edit = false            
+            LecturesManager.copyFile(value, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.screenType)
             ScreenContextBuffer.loaderSource = ""
         }
 
