@@ -74,7 +74,7 @@ BlankScreen {
             anchors.left: parent.left
             anchors.right: parent.right
             text: qsTr("Save email")
-            onClicked: if (email.text !== "") LecturesManager.saveTeacherEmail(email.text.toString())
+            onClicked: if (email.text !== "") LecturesManager.teacherEmail = email.text.toString()
 
             CHorizontalSeparator {
                 anchors.left: parent.left

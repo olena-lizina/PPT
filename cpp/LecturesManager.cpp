@@ -16,13 +16,40 @@
 **
 ****************************************************************************/
 #include "LecturesManager.h"
-#include <QDebug>
 #include "TreeItem.h"
+
+#include <QDebug>
 #include <QFile>
 #include <QDir>
 
-/*static*/ QQmlApplicationEngine *LecturesManager::m_qmlEngine = nullptr;
-/*static*/ SaveManager::Ptr LecturesManager::mSaveManager;
+namespace {
+    const QString fileExtension {"qppt"};
+
+    SaveManager::ItemType cast(LecturesManager::ItemType type)
+    {
+        switch (type)
+        {
+        case LecturesManager::DISCIPLINE_ITEM: return SaveManager::TYPE_DISCIPLINE;
+        case LecturesManager::CHAPTER_ITEM: return SaveManager::TYPE_CHAPTER;
+        case LecturesManager::THEME_ITEM: return SaveManager::TYPE_THEME;
+        case LecturesManager::SUBTHEME_ITEM: return SaveManager::TYPE_SUBTHEME;
+        default: return SaveManager::TYPE_UNKNOWN;
+        }
+    }
+
+    SaveManager::ItemType cast(LecturesManager::FileType type)
+    {
+        switch (type)
+        {
+        case LecturesManager::ThemeLectureFileType: return SaveManager::TYPE_THEME_LECTURE;
+        case LecturesManager::SubthemeLectureFileType: return SaveManager::TYPE_SUBTHEME_LECTURE;
+        case LecturesManager::LiteratureListFileType: return SaveManager::TYPE_DISCIPLINE;
+        case LecturesManager::EducationPlanFileType: return SaveManager::TYPE_DISCIPLINE;
+        case LecturesManager::EducationProgramFileType: return SaveManager::TYPE_DISCIPLINE;
+        default: return SaveManager::TYPE_UNKNOWN;
+        }
+    }
+} // anonymous
 
 LecturesManager::LecturesManager(QObject* parent)
     : ManagerInterface(parent)
@@ -37,7 +64,7 @@ LecturesManager::LecturesManager(QObject* parent)
 
     mTeacherEmail = mSaveManager->loadTeacherMail();
 
-    initLabsTree();
+    initLecturesTree();
 }
 
 /*static*/ QObject* LecturesManager::managerProvider(QQmlEngine *engine, QJSEngine *scriptEngine)
@@ -48,524 +75,398 @@ LecturesManager::LecturesManager(QObject* parent)
     return manager;
 }
 
-QList<QObject*> LecturesManager::labsTree()
+void LecturesManager::insertItem(const QString& name, const int& idx, ItemType type)
 {
-    if (m_labsTree.size() <= 0)
+    qDebug() << "insertItem: id:" << idx << ", name: " << name;
+
+    if (!mSaveManager)
     {
-        TreeItem * d_item =  new TreeItem("Додати дисципліну", -1, 0);
-        m_labsTree << d_item;
+        qWarning() << "Cannot insert item due to invalid save manager";
+        return;
     }
 
-    return m_labsTree;
-}
+    BaseItem * add = nullptr;
 
-void LecturesManager::initLabsTree()
-{
-    m_labsTree.clear();
-
-    for (auto disc : mDisciplines)
+    switch (type)
     {
-        TreeItem * d_item = new TreeItem(disc.name, disc.id, 0);
-
-        for (auto chapt : mChapters)
+    case DISCIPLINE_ITEM:
+    {
+        if (-1 != idx)
         {
-            if (chapt.disciplineId != disc.id)
-                continue;
+            auto it = mDisciplines.end();
+            --it;
 
-            TreeItem * c_item = new TreeItem(chapt.name, chapt.id, 1);
-
-            for (auto them : mThemes)
+            while (mDisciplines.begin() != it)
             {
-                if (them.chapterId != chapt.id)
-                    continue;
+                if (it->id <= idx)
+                    break;
 
-                TreeItem * t_item = new TreeItem(them.name, them.id, 2);
-
-                for (auto sub : mSubtheme)
-                {
-                    if (sub.themeId != them.id)
-                        continue;
-
-                    TreeItem * s_item = new TreeItem(sub.name, sub.id, 3);
-                    t_item->addChild(s_item);
-
-                }
-                c_item->addChild(t_item);
+                int old = it->id;
+                mSaveManager->updDisciplineIdx(old, (it->id = it->id + 1));
+                --it;
             }
-            d_item->addChild(c_item);
         }
 
-        m_labsTree << d_item;
+        add = new Discipline(-1 == idx ? 1 : idx + 1, name, "", "", "");
+
+        if (!add)
+        {
+            qDebug() << "Cannot create instance of Discipline";
+            return;
+        }
+
+        mSaveManager->insertItem(add, cast(type));
+        mDisciplines.clear();
+        mDisciplines = mSaveManager->loadDiscipline();
+    }
+        break;
+    case CHAPTER_ITEM:
+    {
+        auto it = mChapters.end();
+        --it;
+
+        int discIdx = -1;
+
+        while (mChapters.begin() != it)
+        {
+            if (it->id == idx)
+                discIdx = it->disciplineId;
+
+            if (it->id <= idx)
+                break;
+
+            int old = it->id;
+            mSaveManager->updChapterIdx(old, (it->id = it->id + 1));
+            --it;
+        }
+
+        add = new Chapter(idx + 1, name, idx);
+
+        if (!add)
+        {
+            qDebug() << "Cannot create instance of Chapter";
+            return;
+        }
+
+        mSaveManager->insertItem(add, cast(type));
+        mChapters.clear();
+        mChapters = mSaveManager->loadChapters();
+    }
+        break;
+    case THEME_ITEM:
+    {
+        auto it = mThemes.end();
+        --it;
+
+        int chaptIdx = -1;
+
+        while (mThemes.begin() != it)
+        {
+            if (it->id == idx)
+                chaptIdx = it->chapterId;
+
+            if (it->id <= idx)
+                break;
+
+            int old = it->id;
+            mSaveManager->updThemeIdx(old, (it->id = it->id + 1));
+            --it;
+        }
+
+        add = new Theme(idx + 1, name, chaptIdx);
+
+        if (!add)
+        {
+            qDebug() << "Cannot create instance of Theme";
+            return;
+        }
+
+        mSaveManager->insertItem(add, cast(type));
+        mThemes.clear();
+        mThemes = mSaveManager->loadTheme();
+    }
+        break;
+    case SUBTHEME_ITEM:
+    {
+        auto it = mSubtheme.end();
+        --it;
+
+        int themeIdx = -1;
+
+        while (mSubtheme.begin() != it)
+        {
+            if (it->id == idx)
+                themeIdx = it->themeId;
+
+            if (it->id <= idx)
+                break;
+
+            int old = it->id;
+            mSaveManager->updSubthemeIdx(old, (it->id = it->id + 1));
+            --it;
+        }
+
+        add = new Subtheme(idx + 1, name, themeIdx);
+
+        if (!add)
+        {
+            qDebug() << "Cannot create instance of Subtheme";
+            return;
+        }
+
+        mSaveManager->insertItem(add, cast(type));
+        mSubtheme.clear();
+        mSubtheme = mSaveManager->loadSubtheme();
+    }
+        break;
     }
 
-    emit labsTreeChanged();
+    if (add)
+        delete add;
+
+    initLecturesTree();
 }
 
-void LecturesManager::updateDiscipline(const QString& name, const int& idx)
+void LecturesManager::appendItem(const QString& name, const int& idx, ItemType type)
 {
-    qDebug() << "updateDiscipline: " << idx << " " << name;
+    qDebug() << "appendItem: id: " << idx << ", name: " << name;
 
-    auto discIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
-                                 [&idx](Discipline& disc){ return disc.id == idx; });
-    if (mDisciplines.end() == discIter)
+    if (!mSaveManager)
     {
-        qWarning() << "Cannot update discipline: " << name;
+        qWarning() << "Cannot append item due to invalid save manager";
         return;
     }
 
-    discIter->name = name;
+    BaseItem * add = nullptr;
 
-    BaseItem * edit = new Discipline(discIter->id, discIter->name, discIter->literPath, discIter->educPlanPath, discIter->educProgPath);
-
-    if (!edit)
+    switch (type)
     {
-        qDebug() << "Cannot create instance of Discipline";
+    case CHAPTER_ITEM:
+    {
+        add = new Chapter(0, name, idx);
+
+        if (!add)
+        {
+            qDebug() << "Cannot create instance of Chapter";
+            return;
+        }
+
+        mSaveManager->appendItem(add, cast(type));
+        mChapters.clear();
+        mChapters = mSaveManager->loadChapters();
+    }
+        break;
+    case THEME_ITEM:
+    {
+        add = new Theme(0, name, idx);
+
+        if (!add)
+        {
+            qDebug() << "Cannot create instance of Theme";
+            return;
+        }
+
+        mSaveManager->appendItem(add, cast(type));
+        mThemes.clear();
+        mThemes = mSaveManager->loadTheme();
+    }
+        break;
+    case SUBTHEME_ITEM:
+    {
+        add = new Subtheme(0, name, idx);
+
+        if (!add)
+        {
+            qDebug() << "Cannot create instance of Subtheme";
+            return;
+        }
+
+        mSaveManager->appendItem(add, cast(type));
+        mSubtheme.clear();
+        mSubtheme = mSaveManager->loadSubtheme();
+    }
+        break;
+    }
+
+    if (add)
+        delete add;
+
+    initLecturesTree();
+}
+
+void LecturesManager::updateItem(const QString& name, const int& idx, ItemType type)
+{
+    qDebug() << "updateItem: id: " << idx << ", name: " << name;
+
+    if (!mSaveManager)
+    {
+        qWarning() << "Cannot remove item due to invalid save manager";
         return;
     }
 
-    mSaveManager->editItem(edit, SaveManager::TYPE_DISCIPLINE);
+    BaseItem * edit = nullptr;
+
+    switch (type)
+    {
+    case DISCIPLINE_ITEM:
+    {
+        auto discIter = std::find_if(mDisciplines.begin(), mDisciplines.end(), [&idx](Discipline& disc){ return disc.id == idx; });
+
+        if (mDisciplines.end() == discIter)
+        {
+            qWarning() << "Cannot update discipline: " << name;
+            return;
+        }
+
+        edit = new Discipline(discIter->id, name, discIter->literPath, discIter->educPlanPath, discIter->educProgPath);
+
+        if (!edit)
+        {
+            qDebug() << "Cannot create instance of Discipline";
+            return;
+        }
+
+        discIter->name = name;
+    }
+        break;
+    case CHAPTER_ITEM:
+    {
+        auto chapIter = std::find_if(mChapters.begin(), mChapters.end(), [&idx](Chapter& ch){ return ch.id == idx; });
+
+        if (mChapters.end() == chapIter)
+        {
+            qWarning() << "Cannot update chapter: " << name;
+            return;
+        }
+
+        edit = new Chapter(chapIter->id, chapIter->name, chapIter->disciplineId);
+
+        if (!edit)
+        {
+            qDebug() << "Cannot create instance of Chapter";
+            return;
+        }
+
+        chapIter->name = name;
+    }
+        break;
+    case THEME_ITEM:
+    {
+        auto themIter = std::find_if(mThemes.begin(), mThemes.end(), [&idx](Theme& th){ return th.id == idx; });
+
+        if (mThemes.end() == themIter)
+        {
+            qWarning() << "Cannot update theme: " << name;
+            return;
+        }
+
+        edit = new Theme(themIter->id, themIter->name, themIter->chapterId);
+
+        if (!edit)
+        {
+            qDebug() << "Cannot create instance of Theme";
+            return;
+        }
+
+        themIter->name = name;
+    }
+        break;
+    case SUBTHEME_ITEM:
+    {
+        auto subIter = std::find_if(mSubtheme.begin(), mSubtheme.end(),
+                                    [&idx](Subtheme& sub){ return sub.id == idx; });
+        if (mSubtheme.end() == subIter)
+        {
+            qWarning() << "Cannot update subtheme: " << name;
+            return;
+        }
+
+        edit = new Subtheme(subIter->id, subIter->name, subIter->themeId);
+
+        if (!edit)
+        {
+            qDebug() << "Cannot create instance of Subtheme";
+            return;
+        }
+
+        subIter->name = name;
+    }
+        break;
+    }
+
+    mSaveManager->editItem(edit, cast(type));
 
     if (edit)
         delete edit;
 
-    initLabsTree();
-    emit labsTreeChanged();
+    initLecturesTree();
 }
 
-void LecturesManager::updateChapter(const QString& name, const int& idx)
+void LecturesManager::removeItem(const int& idx, ItemType type)
 {
-    qDebug() << "updateChapter: " << idx << " " << name;
+    qDebug() << "removeItem: id: " << idx;
 
-    auto chapIter = std::find_if(mChapters.begin(), mChapters.end(),
-                                 [&idx](Chapter& ch){ return ch.id == idx; });
-    if (mChapters.end() == chapIter)
+    if (!mSaveManager)
     {
-        qWarning() << "Cannot update chapter: " << name;
+        qWarning() << "Cannot remove item due to invalid save manager";
         return;
     }
 
-    chapIter->name = name;
+    mSaveManager->deleteItem(idx, cast(type));
 
-
-    BaseItem * edit = new Chapter(chapIter->id, chapIter->name, chapIter->disciplineId);
-
-    if (!edit)
+    switch (type)
     {
-        qDebug() << "Cannot create instance of Chapter";
-        return;
+    case DISCIPLINE_ITEM:
+        mDisciplines.clear();
+        mDisciplines = mSaveManager->loadDiscipline();
+        break;
+    case CHAPTER_ITEM:
+        mChapters.clear();
+        mChapters = mSaveManager->loadChapters();
+        break;
+    case THEME_ITEM:
+        mThemes.clear();
+        mThemes = mSaveManager->loadTheme();
+        break;
+    case SUBTHEME_ITEM:
+        mSubtheme.clear();
+        mSubtheme = mSaveManager->loadSubtheme();
+        break;
     }
-
-    mSaveManager->editItem(edit, SaveManager::TYPE_CHAPTER);
-
-    if (edit)
-        delete edit;
-
-    initLabsTree();
-    emit labsTreeChanged();
+    initLecturesTree();
 }
 
-void LecturesManager::updateTheme(const QString& name, const int& idx)
-{
-    qDebug() << "updateTheme: " << idx << " " << name;
-
-    auto themIter = std::find_if(mThemes.begin(), mThemes.end(),
-                                 [&idx](Theme& th){ return th.id == idx; });
-    if (mThemes.end() == themIter)
-    {
-        qWarning() << "Cannot update theme: " << name;
-        return;
-    }
-
-    themIter->name = name;
-
-    BaseItem * edit = new Theme(themIter->id, themIter->name, themIter->chapterId);
-
-    if (!edit)
-    {
-        qDebug() << "Cannot create instance of Theme";
-        return;
-    }
-
-    mSaveManager->editItem(edit, SaveManager::TYPE_THEME);
-
-    if (edit)
-        delete edit;
-
-    initLabsTree();
-    emit labsTreeChanged();
-}
-
-void LecturesManager::updateSubtheme(const QString& name, const int& idx)
-{
-    qDebug() << "updateSubtheme: " << idx << " " << name;
-
-    auto subIter = std::find_if(mSubtheme.begin(), mSubtheme.end(),
-                                [&idx](Subtheme& sub){ return sub.id == idx; });
-    if (mSubtheme.end() == subIter)
-    {
-        qWarning() << "Cannot update subtheme: " << name;
-        return;
-    }
-
-    subIter->name = name;
-
-    BaseItem * edit = new Subtheme(subIter->id, subIter->name, subIter->themeId);
-
-    if (!edit)
-    {
-        qDebug() << "Cannot create instance of Subtheme";
-        return;
-    }
-
-    mSaveManager->editItem(edit, SaveManager::TYPE_SUBTHEME);
-
-    if (edit)
-        delete edit;
-
-    initLabsTree();
-    emit labsTreeChanged();
-}
-
-void LecturesManager::removeDiscipline(const int& idx)
-{
-    qDebug() << "removeDiscipline: " << idx;
-
-    mSaveManager->deleteItem(idx, SaveManager::TYPE_DISCIPLINE);
-    mDisciplines.clear();
-    mDisciplines = mSaveManager->loadDiscipline();
-    initLabsTree();
-    emit labsTreeChanged();
-}
-
-void LecturesManager::removeChapter(const int& idx)
-{
-    qDebug() << "removeChapter: " << idx;
-
-    mSaveManager->deleteItem(idx, SaveManager::TYPE_CHAPTER);
-    mChapters.clear();
-    mChapters = mSaveManager->loadChapters();
-    initLabsTree();
-    emit labsTreeChanged();
-}
-
-void LecturesManager::removeTheme(const int& idx)
-{
-    qDebug() << "removeTheme: " << idx;
-
-    mSaveManager->deleteItem(idx, SaveManager::TYPE_THEME);
-    mThemes.clear();
-    mThemes = mSaveManager->loadTheme();
-    initLabsTree();
-    emit labsTreeChanged();
-}
-
-void LecturesManager::removeSubtheme(const int& idx)
-{
-    qDebug() << "removeSubtheme: " << idx;
-
-    mSaveManager->deleteItem(idx, SaveManager::TYPE_SUBTHEME);
-    mSubtheme.clear();
-    mSubtheme = mSaveManager->loadSubtheme();
-    initLabsTree();
-    emit labsTreeChanged();
-}
-
-void LecturesManager::removeFile(const LecturesManager::FileType& type, const int& idx, const int& nesting)
+void LecturesManager::removeFile(const LecturesManager::FileType& type, const int& idx)
 {
     qDebug() << "removeFile: " << idx;
-    switch(type)
+
+    if (!mSaveManager)
     {
-    case LectureFile: return removeLectureFile(nesting, idx);
-    case LiteratureListFile: return removeDisciplineFiles(idx, LiteratureListFile);
-    case EducationPlanFile: return removeDisciplineFiles(idx, EducationPlanFile);
-    case EducationProgramFile: return removeDisciplineFiles(idx, EducationProgramFile);
-    default: break;
-    }
-}
-
-void LecturesManager::insertDiscipline(const QString& name, const int& idx)
-{
-    qDebug() << "insertDiscipline: " << idx << " " << name;
-
-    auto it = mDisciplines.end();
-    --it;
-
-    while (mDisciplines.begin() != it)
-    {
-        if (it->id <= idx)
-            break;
-
-        int old = it->id;
-        mSaveManager->updDisciplineIdx(old, (it->id = it->id + 1));
-        --it;
-    }
-
-    int id = 0;
-
-    if (-1 == idx)
-        id = 1;
-    else
-        id = idx + 1;
-
-    BaseItem * add = new Discipline(id, name, "", "", "");
-
-    if (!add)
-    {
-        qDebug() << "Cannot create instance of Discipline";
+        qWarning() << "Cannot insert item due to invalid save manager";
         return;
     }
-
-    mSaveManager->insertItem(add, SaveManager::TYPE_DISCIPLINE);
-
-    if (add)
-        delete add;
-
-    mDisciplines.clear();
-    mDisciplines = mSaveManager->loadDiscipline();
-    initLabsTree();
-    emit labsTreeChanged();
-}
-
-void LecturesManager::insertChapter(const QString& name, const int& idx)
-{
-    qDebug() << "insertChapter: " << idx << " " << name;
-
-    auto it = mChapters.end();
-    --it;
-
-    int discIdx = -1;
-
-    while (mChapters.begin() != it)
-    {
-        if (it->id == idx)
-            discIdx = it->disciplineId;
-
-        if (it->id <= idx)
-            break;
-
-        int old = it->id;
-        mSaveManager->updChapterIdx(old, (it->id = it->id + 1));
-        --it;
-    }
-
-    BaseItem * add = new Chapter(idx + 1, name, idx);
-
-    if (!add)
-    {
-        qDebug() << "Cannot create instance of Chapter";
-        return;
-    }
-
-    mSaveManager->insertItem(add, SaveManager::TYPE_CHAPTER);
-
-    if (add)
-        delete add;
-
-    mChapters.clear();
-    mChapters = mSaveManager->loadChapters();
-    initLabsTree();
-    emit labsTreeChanged();
-}
-
-void LecturesManager::appendChapter(const QString& name, const int& idx)
-{
-    qDebug() << "appendChapter: " << idx << " " << name;
-
-    BaseItem * add = new Chapter(0, name, idx);
-
-    if (!add)
-    {
-        qDebug() << "Cannot create instance of Chapter";
-        return;
-    }
-
-    mSaveManager->appendItem(add, SaveManager::TYPE_CHAPTER);
-
-    if (add)
-        delete add;
-
-    mChapters.clear();
-    mChapters = mSaveManager->loadChapters();
-    initLabsTree();
-    emit labsTreeChanged();
-}
-
-void LecturesManager::insertTheme(const QString& name, const int& idx)
-{
-    qDebug() << "insertTheme: " << idx << " " << name;
-
-    auto it = mThemes.end();
-    --it;
-
-    int chaptIdx = -1;
-
-    while (mThemes.begin() != it)
-    {
-        if (it->id == idx)
-            chaptIdx = it->chapterId;
-
-        if (it->id <= idx)
-            break;
-
-        int old = it->id;
-        mSaveManager->updThemeIdx(old, (it->id = it->id + 1));
-        --it;
-    }
-
-    BaseItem * add = new Theme(idx + 1, name, chaptIdx);
-
-    if (!add)
-    {
-        qDebug() << "Cannot create instance of Theme";
-        return;
-    }
-
-    mSaveManager->insertItem(add, SaveManager::TYPE_THEME);
-
-    if (add)
-        delete add;
-
-    mThemes.clear();
-    mThemes = mSaveManager->loadTheme();
-    initLabsTree();
-    emit labsTreeChanged();
-}
-
-void LecturesManager::appendTheme(const QString& name, const int& idx)
-{
-    qDebug() << "appendTheme: " << idx << " " << name;
-
-    BaseItem * add = new Theme(0, name, idx);
-
-    if (!add)
-    {
-        qDebug() << "Cannot create instance of Theme";
-        return;
-    }
-
-    mSaveManager->appendItem(add, SaveManager::TYPE_THEME);
-
-    if (add)
-        delete add;
-
-    mThemes.clear();
-    mThemes = mSaveManager->loadTheme();
-    initLabsTree();
-    emit labsTreeChanged();
-}
-
-void LecturesManager::insertSubtheme(const QString& name, const int& idx)
-{
-    qDebug() << "insertSubtheme: " << idx << " " << name;
-
-    auto it = mSubtheme.end();
-    --it;
-
-    int themeIdx = -1;
-
-    while (mSubtheme.begin() != it)
-    {
-        if (it->id == idx)
-            themeIdx = it->themeId;
-
-        if (it->id <= idx)
-            break;
-
-        int old = it->id;
-        mSaveManager->updSubthemeIdx(old, (it->id = it->id + 1));
-        --it;
-    }
-
-    BaseItem * add = new Subtheme(idx + 1, name, themeIdx);
-
-    if (!add)
-    {
-        qDebug() << "Cannot create instance of Subtheme";
-        return;
-    }
-
-    mSaveManager->insertItem(add, SaveManager::TYPE_SUBTHEME);
-
-    if (add)
-        delete add;
-
-    mSubtheme.clear();
-    mSubtheme = mSaveManager->loadSubtheme();
-    initLabsTree();
-    emit labsTreeChanged();
-}
-
-void LecturesManager::appendSubtheme(const QString& name, const int& idx)
-{
-    qDebug() << "appendSubtheme: " << idx << " " << name;
-
-    BaseItem * add = new Subtheme(0, name, idx);
-
-    if (!add)
-    {
-        qDebug() << "Cannot create instance of Subtheme";
-        return;
-    }
-
-    mSaveManager->appendItem(add, SaveManager::TYPE_SUBTHEME);
-
-    if (add)
-        delete add;
-
-    mSubtheme.clear();
-    mSubtheme = mSaveManager->loadSubtheme();
-    initLabsTree();
-    emit labsTreeChanged();
-}
-
-bool LecturesManager::fileExist(const LecturesManager::FileType& type, const int& idx, const int& nesting)
-{
-    qDebug() << "fileExist";
 
     switch(type)
     {
-    case LectureFile: return lectureFileExist(nesting, idx);
-    case LiteratureListFile: return literListFileExist(idx);
-    case EducationPlanFile: return educPlanFileExist(idx);
-    case EducationProgramFile: return educProgFileExist(idx);
-    default: return false;
-    }
-}
-
-QString LecturesManager::getFileContent(const LecturesManager::FileType& type, const int& idx, const int& nesting)
-{
-    qDebug() << "getFileContent";
-
-    switch(type)
-    {
-    case LectureFile: return getLectureFileContent(nesting, idx);
-    case LiteratureListFile: return getLiterListFileContent(idx);
-    case EducationPlanFile: return getEducPlanFileContent(idx);
-    case EducationProgramFile: return getEducProgFileContent(idx);
-    default: return QString();
-    }
-}
-
-void LecturesManager::removeLectureFile(const int& nesting, const int& idx)
-{
-    qDebug() << "removeLectureFile";
-
-    if (nesting == 3)
+    case SubthemeLectureFileType:
     {
         auto fileIter = std::find_if(mSubthemeLectureFiles.begin(), mSubthemeLectureFiles.end(),
                                      [&idx](SubthemeLectureFile& file){ return file.subthemeId == idx; });
 
         if (mSubthemeLectureFiles.end() == fileIter)
         {
-            qDebug() << "Unable to delete file";
+            qDebug() << "Unable to delete file: file not exists";
             return;
         }
 
-        mSaveManager->deleteItem(fileIter->id, SaveManager::TYPE_SUBTHEME_LECTURE);
-        QFile::remove(fileIter->path);
+        mSaveManager->deleteItem(fileIter->id, cast(type));
+
+        if (QFile::remove(fileIter->path))
+            qWarning() << "Cannot remove file on file system: " << fileIter->path;
+
         mSubthemeLectureFiles = mSaveManager->loadSubthemeLectureFile();
     }
-    else if (nesting == 2)
+    case ThemeLectureFileType:
     {
         auto fileIter = std::find_if(mThemeLectureFiles.begin(), mThemeLectureFiles.end(),
                                      [&idx](ThemeLectureFile& file){ return file.themeId == idx; });
@@ -576,17 +477,57 @@ void LecturesManager::removeLectureFile(const int& nesting, const int& idx)
             return;
         }
 
-        mSaveManager->deleteItem(fileIter->id, SaveManager::TYPE_THEME_LECTURE);
-        QFile::remove(fileIter->path);
+        mSaveManager->deleteItem(fileIter->id, cast(type));
+
+        if (QFile::remove(fileIter->path))
+            qWarning() << "Cannot remove file on file system: " << fileIter->path;
+
         mThemeLectureFiles = mSaveManager->loadThemeLectureFile();
     }
+    case LiteratureListFileType:
+    case EducationPlanFileType:
+    case EducationProgramFileType:
+    {
+        auto disc = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                                 [&idx](Discipline& d){ return d.id == idx; });
+
+        if (mDisciplines.end() == disc)
+        {
+            qDebug() << "Cannot remove literature list file";
+            return;
+        }
+
+        switch(type)
+        {
+        case LiteratureListFileType: disc->literPath = ""; break;
+        case EducationPlanFileType: disc->educPlanPath = ""; break;
+        case EducationProgramFileType: disc->educProgPath = ""; break;
+        }
+
+        BaseItem * edit = new Discipline(disc->id, disc->name, disc->literPath, disc->educPlanPath, disc->educProgPath);
+
+        if (!edit)
+        {
+            qDebug() << "Cannot create instance of Discipline";
+            return;
+        }
+
+        mSaveManager->editItem(edit, cast(type));
+
+        if (edit)
+            delete edit;
+    }
+    default: break;
+    }
 }
 
-bool LecturesManager::lectureFileExist(const int& nesting, const int& idx)
+bool LecturesManager::fileExist(const LecturesManager::FileType& type, const int& idx)
 {
-    qDebug() << "lectureFileExist";
+    qDebug() << "fileExist";
 
-    if (nesting == 3)
+    switch(type)
+    {
+    case SubthemeLectureFileType:
     {
         auto fileIter = std::find_if(mSubthemeLectureFiles.begin(), mSubthemeLectureFiles.end(),
                                      [&idx](SubthemeLectureFile& file){ return file.subthemeId == idx; });
@@ -594,18 +535,14 @@ bool LecturesManager::lectureFileExist(const int& nesting, const int& idx)
         if (mSubthemeLectureFiles.end() == fileIter || fileIter->path.isEmpty())
             return false;
 
-        QFile file(fileIter->path);
-
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        {
-            qDebug() << "Unable to open file " << fileIter->path << file.errorString();
+        if (!QFile::exists(fileIter->path))
             return false;
-        }
 
-        file.close();
+        qDebug() << "fileExist: true";
         return true;
     }
-    else if (nesting == 2)
+        break;
+    case ThemeLectureFileType:
     {
         auto fileIter = std::find_if(mThemeLectureFiles.begin(), mThemeLectureFiles.end(),
                                      [&idx](ThemeLectureFile& file){ return file.themeId == idx; });
@@ -613,36 +550,67 @@ bool LecturesManager::lectureFileExist(const int& nesting, const int& idx)
         if (mThemeLectureFiles.end() == fileIter || fileIter->path.isEmpty())
             return false;
 
-        QFile file(fileIter->path);
-
-        if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-        {
-            qDebug() << "Unable to open file " << fileIter->path << file.errorString();
+        if (!QFile::exists(fileIter->path))
             return false;
-        }
 
-        file.close();
+        qDebug() << "fileExist: true";
         return true;
     }
-    return false;
+    case LiteratureListFileType:
+    {
+        auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                                     [&idx](Discipline& file){ return file.id == idx; });
+
+        if (mDisciplines.end() == fileIter || fileIter->literPath.isEmpty())
+            return false;
+
+        if (!QFile::exists(fileIter->literPath))
+            return false;
+
+        qDebug() << "fileExist: true";
+        return true;
+    }
+    case EducationPlanFileType:
+    {
+        auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                                     [&idx](Discipline& file){ return file.id == idx; });
+
+        if (mDisciplines.end() == fileIter || fileIter->educPlanPath.isEmpty())
+            return false;
+
+        if (!QFile::exists(fileIter->educPlanPath))
+            return false;
+
+        qDebug() << "fileExist: true";
+        return true;
+    }
+    case EducationProgramFileType:
+    {
+        auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                                     [&idx](Discipline& file){ return file.id == idx; });
+
+        if (mDisciplines.end() == fileIter || fileIter->educProgPath.isEmpty())
+            return false;
+
+        if (!QFile::exists(fileIter->educProgPath))
+            return false;
+
+        qDebug() << "fileExist: true";
+        return true;
+    }
+    default: return false;
+    }
 }
 
-QString LecturesManager::getLectureFileContent(const int& nesting, const int& idx)
+QString LecturesManager::getFileContent(const LecturesManager::FileType& type, const int& idx)
 {
-    qDebug() << "getLectureFileContent";
+    qDebug() << "getFileContent: " << idx;
+
     QString path;
 
-    if (nesting == 3)
+    switch(type)
     {
-        auto fileIter = std::find_if(mSubthemeLectureFiles.begin(), mSubthemeLectureFiles.end(),
-                                     [&idx](SubthemeLectureFile& file){ return file.subthemeId == idx; });
-
-        if (mSubthemeLectureFiles.end() == fileIter || fileIter->path.isEmpty())
-            return QString();
-
-        path = fileIter->path;
-    }
-    else if (nesting == 2)
+    case ThemeLectureFileType:
     {
         auto fileIter = std::find_if(mThemeLectureFiles.begin(), mThemeLectureFiles.end(),
                                      [&idx](ThemeLectureFile& file){ return file.themeId == idx; });
@@ -652,8 +620,53 @@ QString LecturesManager::getLectureFileContent(const int& nesting, const int& id
 
         path = fileIter->path;
     }
+        break;
+    case SubthemeLectureFileType:
+    {
+        auto fileIter = std::find_if(mSubthemeLectureFiles.begin(), mSubthemeLectureFiles.end(),
+                                     [&idx](SubthemeLectureFile& file){ return file.subthemeId == idx; });
 
-    qDebug() << "file path: " << path;
+        if (mSubthemeLectureFiles.end() == fileIter || fileIter->path.isEmpty())
+            return QString();
+
+        path = fileIter->path;
+    }
+        break;
+    case LiteratureListFileType:
+    {
+        auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                                     [&idx](Discipline& file){ return file.id == idx; });
+
+        if (mDisciplines.end() == fileIter || fileIter->literPath.isEmpty())
+            return QString();
+
+        path = fileIter->literPath;
+    }
+        break;
+    case EducationPlanFileType:
+    {
+        auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                                     [&idx](Discipline& file){ return file.id == idx; });
+
+        if (mDisciplines.end() == fileIter || fileIter->educPlanPath.isEmpty())
+            return QString();
+
+        path = fileIter->educPlanPath;
+    }
+        break;
+    case EducationProgramFileType:
+    {
+        auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                                     [&idx](Discipline& file){ return file.id == idx; });
+
+        if (mDisciplines.end() == fileIter || fileIter->educProgPath.isEmpty())
+            return QString();
+
+        path = fileIter->educProgPath;
+    }
+        break;
+    default: return QString();
+    }
 
     QFile file(path);
 
@@ -669,27 +682,44 @@ QString LecturesManager::getLectureFileContent(const int& nesting, const int& id
     return fileContent;
 }
 
-void LecturesManager::createFile(const int& nesting, const int& idx)
+void LecturesManager::createFile(const int& idx, FileType type)
 {
-    qDebug() << "createFile";
+    qDebug() << "createFile " << idx;
 
-    const QString fileExtension {"qppt"};
+    if (!mSaveManager)
+    {
+        qWarning() << "Cannot insert item due to invalid save manager";
+        return;
+    }
+
     QString baseFolder {"Lectures\\"};
 
     if (!QDir(baseFolder).exists())
         QDir().mkdir(baseFolder);
 
-    if (nesting == 3)
-        baseFolder.append("Subthemes");
-    else
+    switch (type)
+    {
+    case ThemeLectureFileType:
         baseFolder.append("Themes");
+        break;
+    case SubthemeLectureFileType:
+        baseFolder.append("Subthemes");
+        break;
+    case LiteratureListFileType:
+        baseFolder.append("Literatures");
+        break;
+    case EducationPlanFileType:
+        baseFolder.append("EducPlans");
+        break;
+    case EducationProgramFileType:
+        baseFolder.append("EducProgram");
+        break;
+    }
 
     if (!QDir(baseFolder).exists())
         QDir().mkdir(baseFolder);
 
     QString filePath(baseFolder + QDir::separator() + QString::number(idx) + "." + fileExtension);
-    qDebug() << filePath;
-
     QFile file(filePath);
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
@@ -701,38 +731,127 @@ void LecturesManager::createFile(const int& nesting, const int& idx)
     QTextStream textStream(&file);
     textStream << filePath;
 
-    if (nesting == 3)
-        saveSubthemeLectureFile(filePath, idx);
-    else
+    switch (type)
+    {
+    case ThemeLectureFileType:
         saveThemeLectureFile(filePath, idx);
+        break;
+    case SubthemeLectureFileType:
+        saveSubthemeLectureFile(filePath, idx);
+        break;
+    }
 
     file.close();
 }
 
-void LecturesManager::saveFileContent(const QString& text, const int& nesting, const int& idx)
+void LecturesManager::saveFileContent(const QString& text, const int& idx, FileType type)
 {
     qDebug() << "saveFileContent for id: " << idx;
+
     QString path;
 
-    if (nesting == 3)
+    switch (type)
     {
-        auto fileIter = std::find_if(mSubthemeLectureFiles.begin(), mSubthemeLectureFiles.end(),
-                                     [&idx](SubthemeLectureFile& file){ return file.subthemeId == idx; });
-
-        if (mSubthemeLectureFiles.end() == fileIter || fileIter->path.isEmpty())
-            return;
-
-        path = fileIter->path;
-    }
-    else
+    case ThemeLectureFileType:
     {
         auto fileIter = std::find_if(mThemeLectureFiles.begin(), mThemeLectureFiles.end(),
                                      [&idx](ThemeLectureFile& file){ return file.themeId == idx; });
 
-        if (mThemeLectureFiles.end() == fileIter || fileIter->path.isEmpty())
+        if (mThemeLectureFiles.end() == fileIter)
+        {
+            qWarning() << "Cannot save file content: lecture file does not exist";
             return;
+        }
+
+        if (fileIter->path.isEmpty())
+        {
+            qWarning() << "Cannot save file content: file path is empty";
+            return;
+        }
 
         path = fileIter->path;
+    }
+        break;
+    case SubthemeLectureFileType:
+    {
+        auto fileIter = std::find_if(mSubthemeLectureFiles.begin(), mSubthemeLectureFiles.end(),
+                                     [&idx](SubthemeLectureFile& file){ return file.subthemeId == idx; });
+
+        if (mSubthemeLectureFiles.end() == fileIter)
+        {
+            qWarning() << "Cannot save file content: lecture file does not exist";
+            return;
+        }
+
+        if (fileIter->path.isEmpty())
+        {
+            qWarning() << "Cannot save file content: file path is empty";
+            return;
+        }
+
+        path = fileIter->path;
+    }
+        break;
+    case LiteratureListFileType:
+    {
+        auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                                     [&idx](Discipline& file){ return file.id == idx; });
+
+        if (mDisciplines.end() == fileIter)
+        {
+            qWarning() << "Cannot save file content: lecture file does not exist";
+            return;
+        }
+
+        if (fileIter->literPath.isEmpty())
+        {
+            qWarning() << "Cannot save file content: file path is empty";
+            return;
+        }
+
+        path = fileIter->literPath;
+    }
+        break;
+    case EducationPlanFileType:
+    {
+        auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                                     [&idx](Discipline& file){ return file.id == idx; });
+
+        if (mDisciplines.end() == fileIter)
+        {
+            qWarning() << "Cannot save file content: lecture file does not exist";
+            return;
+        }
+
+        if (fileIter->educPlanPath.isEmpty())
+        {
+            qWarning() << "Cannot save file content: file path is empty";
+            return;
+        }
+
+        path = fileIter->educPlanPath;
+    }
+        break;
+    case EducationProgramFileType:
+    {
+        auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                                     [&idx](Discipline& file){ return file.id == idx; });
+
+        if (mDisciplines.end() == fileIter)
+        {
+            qWarning() << "Cannot save file content: lecture file does not exist";
+            return;
+        }
+
+        if (fileIter->educProgPath.isEmpty())
+        {
+            qWarning() << "Cannot save file content: file path is empty";
+            return;
+        }
+
+        path = fileIter->educProgPath;
+    }
+        break;
     }
 
     QFile file(path);
@@ -749,14 +868,31 @@ void LecturesManager::saveFileContent(const QString& text, const int& nesting, c
     emit fileContentChanged();
 }
 
-void LecturesManager::copyLectureFile(QString path, const int& nesting, const int& idx)
+void LecturesManager::copyFile(QString path, const int& idx, FileType type)
 {
     QString baseFolder {"Lectures\\"};
 
-    if (nesting == 3)
-        baseFolder.append("Subthemes");
-    else
+    if (!QDir(baseFolder).exists())
+        QDir().mkdir(baseFolder);
+
+    switch (type)
+    {
+    case ThemeLectureFileType:
         baseFolder.append("Themes");
+        break;
+    case SubthemeLectureFileType:
+        baseFolder.append("Subthemes");
+        break;
+    case LiteratureListFileType:
+        baseFolder.append("Literatures");
+        break;
+    case EducationPlanFileType:
+        baseFolder.append("EducPlans");
+        break;
+    case EducationProgramFileType:
+        baseFolder.append("EducProgram");
+        break;
+    }
 
     if (!QDir(baseFolder).exists())
         QDir().mkdir(baseFolder);
@@ -767,332 +903,147 @@ void LecturesManager::copyLectureFile(QString path, const int& nesting, const in
     QString newPath(baseFolder + '\\' + fileName);
     QFile::copy(path, newPath);
 
-    if (nesting == 3)
-        saveSubthemeLectureFile(newPath, idx);
-    else
+    switch (type)
+    {
+    case ThemeLectureFileType:
         saveThemeLectureFile(newPath, idx);
-}
-
-bool LecturesManager::literListFileExist(const int& idx)
-{
-    qDebug() << "literListFileExist";
-
-    auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
-                                 [&idx](Discipline& file){ return file.id == idx; });
-
-    if (mDisciplines.end() == fileIter || fileIter->literPath.isEmpty())
-        return false;
-
-    QFile file(fileIter->literPath);
-
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        qDebug() << "Unable to open file " << fileIter->literPath << file.errorString();
-        return false;
+        break;
+    case SubthemeLectureFileType:
+        saveSubthemeLectureFile(newPath, idx);
+        break;
     }
-    file.close();
-    return true;
 }
 
-QString LecturesManager::getLiterListFileContent(const int& idx)
+QString LecturesManager::teacherEmail() const
 {
-    qDebug() << "getLiterListFileContent";
-
-    auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
-                                 [&idx](Discipline& file){ return file.id == idx; });
-
-    if (mDisciplines.end() == fileIter || fileIter->literPath.isEmpty())
-        return QString();
-
-    QFile file(fileIter->literPath);
-
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        qDebug() << "Unable to open file " << fileIter->literPath << file.errorString();
-        return QString();
-    }
-
-    QTextStream textStream(&file);
-    QString fileContent = textStream.readAll().trimmed();
-    file.close();
-    return fileContent;
+    return mTeacherEmail;
 }
 
-void LecturesManager::createLiterListFile(const int& idx)
+void LecturesManager::setTeacherEmail(const QString& email)
 {
-    qDebug() << "createLiterListFile";
+    qDebug() << "setTeacherEmail: " << email;
 
-    const QString fileExtension {"qppt"};
-    QString baseFolder {"Lectures\\Literatures"};
-
-    if (!QDir(baseFolder).exists())
-        QDir().mkdir(baseFolder);
-
-    QString filePath(baseFolder + QDir::separator() + QString::number(idx) + "." + fileExtension);
-    QFile file(filePath);
-
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    if (!mSaveManager)
     {
-        qDebug() << "Unable to create file " << filePath << file.errorString();
+        qWarning() << "Cannot remove item due to invalid save manager";
         return;
     }
 
-    QTextStream textStream(&file);
-    textStream << filePath;
-    saveLiterListFile(filePath, idx);
-    file.close();
+    mTeacherEmail = email;
+    mSaveManager->updTeacherMail(email);
+    emit teacherEmailChanged();
 }
 
-void LecturesManager::saveLiterListFileContent(const QString& text, const int& idx)
+void LecturesManager::saveStudentCourses(QString courseName, int groupId)
 {
-    qDebug() << "saveLiterListFileContent for id: " << idx;
-    auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
-                                 [&idx](Discipline& file){ return file.id == idx; });
-
-    if (mDisciplines.end() == fileIter || fileIter->literPath.isEmpty())
-        return;
-
-    QFile file(fileIter->literPath);
-
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+    if (!mSaveManager)
     {
-        qDebug() << "Unable to open file " << fileIter->literPath << file.errorString();
+        qWarning() << "Cannot remove item due to invalid save manager";
         return;
     }
 
-    QTextStream textStream(&file);
-    textStream << text;
-    file.close();
-}
+    auto disc = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                             [&courseName](Discipline& d){ return !d.name.compare(courseName); });
 
-void LecturesManager::copyLiterListFile(QString path, const int& idx)
-{
-    QString baseFolder {"Lectures\\Literatures"};
-
-    if (!QDir(baseFolder).exists())
-        QDir().mkdir(baseFolder);
-
-    QString prefix("file:///");
-    path.remove(0, prefix.size());
-    QString fileName(path.right(path.size() - path.lastIndexOf('/') - 1));
-    QString newPath(baseFolder + '\\' + fileName);
-    QFile::copy(path, newPath);
-
-    saveLiterListFile(newPath, idx);
-}
-
-bool LecturesManager::educPlanFileExist(const int& idx)
-{
-    qDebug() << "getEducPlanFileContent";
-
-    auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
-                                 [&idx](Discipline& file){ return file.id == idx; });
-
-    if (mDisciplines.end() == fileIter || fileIter->educPlanPath.isEmpty())
-        return false;
-
-    QFile file(fileIter->educPlanPath);
-
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    if (mDisciplines.end() == disc)
     {
-        qDebug() << "Unable to open file " << fileIter->educPlanPath << file.errorString();
-        return false;
-    }
-    file.close();
-    return true;
-}
-
-QString LecturesManager::getEducPlanFileContent(const int& idx)
-{
-    qDebug() << "getEducPlanFileContent";
-
-    auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
-                                 [&idx](Discipline& file){ return file.id == idx; });
-
-    if (mDisciplines.end() == fileIter || fileIter->educPlanPath.isEmpty())
-        return QString();
-
-    QFile file(fileIter->educPlanPath);
-
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        qDebug() << "Unable to open file " << fileIter->educPlanPath << file.errorString();
-        return QString();
-    }
-
-    QTextStream textStream(&file);
-    QString fileContent = textStream.readAll().trimmed();
-    file.close();
-    return fileContent;
-}
-
-void LecturesManager::createEducPlanFile(const int& idx)
-{
-    qDebug() << "createLiterListFile";
-
-    const QString fileExtension {"qppt"};
-    QString baseFolder {"Lectures\\EducPlans"};
-
-    if (!QDir(baseFolder).exists())
-        QDir().mkdir(baseFolder);
-
-    QString filePath(baseFolder + QDir::separator() + QString::number(idx) + "." + fileExtension);
-    QFile file(filePath);
-
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-    {
-        qDebug() << "Unable to create file " << filePath << file.errorString();
+        qDebug() << "Cannot find discipline with name " << courseName;
         return;
     }
 
-    QTextStream textStream(&file);
-    textStream << filePath;
-    saveEducPlanFile(filePath, idx);
-    file.close();
+    mSaveManager->updStudentsCourses(disc->id, groupId);
 }
 
-void LecturesManager::saveEducPlanFileContent(const QString& text, const int& idx)
+QStringList LecturesManager::getCourses()
 {
-    qDebug() << "saveEducPlanFileContent for id: " << idx;
-    auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
-                                 [&idx](Discipline& file){ return file.id == idx; });
+    QStringList result;
 
-    if (mDisciplines.end() == fileIter || fileIter->educPlanPath.isEmpty())
-        return;
+    for(auto& it: mDisciplines)
+        result << it.name;
 
-    QFile file(fileIter->educPlanPath);
+    return result;
+}
 
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
+QList<QObject*> LecturesManager::lecturesTree()
+{
+    if (mLecturesTree.size() <= 0)
     {
-        qDebug() << "Unable to open file " << fileIter->educPlanPath << file.errorString();
-        return;
+        TreeItem * d_item =  new TreeItem("Додати дисципліну", -1, 0);
+        mLecturesTree << d_item;
     }
 
-    QTextStream textStream(&file);
-    textStream << text;
-    file.close();
+    return mLecturesTree;
 }
 
-void LecturesManager::copyEducPlanFile(QString path, const int& idx)
+bool LecturesManager::isEmptyTree()
 {
-    QString baseFolder {"Lectures\\Literatures"};
-
-    if (!QDir(baseFolder).exists())
-        QDir().mkdir(baseFolder);
-
-    QString prefix("file:///");
-    path.remove(0, prefix.size());
-    QString fileName(path.right(path.size() - path.lastIndexOf('/') - 1));
-    QString newPath(baseFolder + '\\' + fileName);
-    QFile::copy(path, newPath);
-
-    saveEducPlanFileContent(newPath, idx);
+    return mLecturesTree.size() <= 0;
 }
 
-bool LecturesManager::educProgFileExist(const int& idx)
+void LecturesManager::initLecturesTree()
 {
-    auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
-                                 [&idx](Discipline& file){ return file.id == idx; });
+    mLecturesTree.clear();
 
-    if (mDisciplines.end() == fileIter || fileIter->educProgPath.isEmpty())
-        return false;
-
-    QFile file(fileIter->educProgPath);
-
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    for (auto disc : mDisciplines)
     {
-        qDebug() << "Unable to open file " << fileIter->educProgPath << file.errorString();
-        return false;
-    }
-    file.close();
-    return true;
-}
+        TreeItem * d_item = new TreeItem(disc.name, disc.id, 0);
 
-QString LecturesManager::getEducProgFileContent(const int& idx)
-{
-    qDebug() << "getEducProgFileContent";
+        if (!d_item)
+        {
+            qWarning() << "Cannot create discipline tree item";
+            continue;
+        }
 
-    auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
-                                 [&idx](Discipline& file){ return file.id == idx; });
+        for (auto chapt : mChapters)
+        {
+            if (chapt.disciplineId != disc.id)
+                continue;
 
-    if (mDisciplines.end() == fileIter || fileIter->educProgPath.isEmpty())
-        return QString();
+            TreeItem * c_item = new TreeItem(chapt.name, chapt.id, 1);
 
-    QFile file(fileIter->educProgPath);
+            if (!c_item)
+            {
+                qWarning() << "Cannot create chapter tree item";
+                continue;
+            }
 
-    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
-    {
-        qDebug() << "Unable to open file " << fileIter->educProgPath << file.errorString();
-        return QString();
-    }
+            for (auto them : mThemes)
+            {
+                if (them.chapterId != chapt.id)
+                    continue;
 
-    QTextStream textStream(&file);
-    QString fileContent = textStream.readAll().trimmed();
-    file.close();
-    return fileContent;
-}
+                TreeItem * t_item = new TreeItem(them.name, them.id, 2);
 
-void LecturesManager::createEducProgFile(const int& idx)
-{
-    qDebug() << "createEducProgFile";
+                if (!t_item)
+                {
+                    qWarning() << "Cannot create theme tree item";
+                    continue;
+                }
 
-    const QString fileExtension {"qppt"};
-    QString baseFolder {"Lectures\\EducProgram"};
+                for (auto sub : mSubtheme)
+                {
+                    if (sub.themeId != them.id)
+                        continue;
 
-    if (!QDir(baseFolder).exists())
-        QDir().mkdir(baseFolder);
+                    TreeItem * s_item = new TreeItem(sub.name, sub.id, 3);
 
-    QString filePath(baseFolder + QDir::separator() + QString::number(idx) + "." + fileExtension);
-    QFile file(filePath);
+                    if (!s_item)
+                    {
+                        qWarning() << "Cannot create subtheme tree item";
+                        continue;
+                    }
 
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-    {
-        qDebug() << "Unable to create file " << filePath << file.errorString();
-        return;
+                    t_item->addChild(s_item);
+                }
+                c_item->addChild(t_item);
+            }
+            d_item->addChild(c_item);
+        }
+
+        mLecturesTree << d_item;
     }
 
-    QTextStream textStream(&file);
-    textStream << filePath;
-    saveEducProgFile(filePath, idx);
-    file.close();
-}
-
-void LecturesManager::saveEducProgFileContent(const QString& text, const int& idx)
-{
-    qDebug() << "saveEducProgFileContent for id: " << idx;
-    auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
-                                 [&idx](Discipline& file){ return file.id == idx; });
-
-    if (mDisciplines.end() == fileIter || fileIter->educProgPath.isEmpty())
-        return;
-
-    QFile file(fileIter->educProgPath);
-
-    if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
-    {
-        qDebug() << "Unable to open file " << fileIter->educProgPath << file.errorString();
-        return;
-    }
-
-    QTextStream textStream(&file);
-    textStream << text;
-    file.close();
-}
-
-void LecturesManager::copyEducProgFile(QString path, const int& idx)
-{
-    QString baseFolder {"Lectures\\Literatures"};
-
-    if (!QDir(baseFolder).exists())
-        QDir().mkdir(baseFolder);
-
-    QString prefix("file:///");
-    path.remove(0, prefix.size());
-    QString fileName(path.right(path.size() - path.lastIndexOf('/') - 1));
-    QString newPath(baseFolder + '\\' + fileName);
-    QFile::copy(path, newPath);
-
-    saveEducProgFileContent(newPath, idx);
+    emit lecturesTreeChanged();
 }
 
 void LecturesManager::saveThemeLectureFile(const QString& path, const int& idx)
@@ -1181,168 +1132,5 @@ void LecturesManager::saveSubthemeLectureFile(const QString& path, const int& id
     }
 }
 
-void LecturesManager::saveLiterListFile(const QString& path, const int& idx)
-{
-    qDebug() << "saveLiterListFile";
 
-    auto disc = std::find_if(mDisciplines.begin(), mDisciplines.end(),
-                             [&idx](Discipline& d){ return d.id == idx; });
 
-    if (mDisciplines.end() == disc)
-    {
-        qDebug() << "Cannot find discipline with Id " << idx;
-        return;
-    }
-
-    disc->literPath = path;
-
-    BaseItem * edit = new Discipline(disc->id, disc->name, disc->literPath, disc->educPlanPath, disc->educProgPath);
-
-    if (!edit)
-    {
-        qDebug() << "Cannot create instance of Discipline";
-        return;
-    }
-
-    mSaveManager->editItem(edit, SaveManager::TYPE_DISCIPLINE);
-
-    if (edit)
-        delete edit;
-}
-
-void LecturesManager::saveEducPlanFile(const QString& path, const int& idx)
-{
-    qDebug() << "saveEducPlanFile";
-
-    auto disc = std::find_if(mDisciplines.begin(), mDisciplines.end(),
-                             [&idx](Discipline& d){ return d.id == idx; });
-
-    if (mDisciplines.end() == disc)
-    {
-        qDebug() << "Cannot find discipline with Id " << idx;
-        return;
-    }
-
-    disc->educPlanPath = path;
-
-    BaseItem * edit = new Discipline(disc->id, disc->name, disc->literPath, disc->educPlanPath, disc->educProgPath);
-
-    if (!edit)
-    {
-        qDebug() << "Cannot create instance of Discipline";
-        return;
-    }
-
-    mSaveManager->editItem(edit, SaveManager::TYPE_DISCIPLINE);
-
-    if (edit)
-        delete edit;
-}
-
-void LecturesManager::saveEducProgFile(const QString& path, const int& idx)
-{
-    qDebug() << "saveEducProgFile";
-
-    auto disc = std::find_if(mDisciplines.begin(), mDisciplines.end(),
-                             [&idx](Discipline& d){ return d.id == idx; });
-
-    if (mDisciplines.end() == disc)
-    {
-        qDebug() << "Cannot find discipline with Id " << idx;
-        return;
-    }
-
-    disc->educProgPath = path;
-
-    BaseItem * edit = new Discipline(disc->id, disc->name, disc->literPath, disc->educPlanPath, disc->educProgPath);
-
-    if (!edit)
-    {
-        qDebug() << "Cannot create instance of Discipline";
-        return;
-    }
-
-    mSaveManager->editItem(edit, SaveManager::TYPE_DISCIPLINE);
-
-    if (edit)
-        delete edit;
-}
-
-void LecturesManager::removeDisciplineFiles(const int& idx, const LecturesManager::FileType& type)
-{
-    qDebug() << "removeLiteratureListFile";
-
-    auto disc = std::find_if(mDisciplines.begin(), mDisciplines.end(),
-                             [&idx](Discipline& d){ return d.id == idx; });
-
-    if (mDisciplines.end() == disc)
-    {
-        qDebug() << "Cannot remove literature list file";
-        return;
-    }
-
-    switch(type)
-    {
-    case LiteratureListFile: disc->literPath = ""; break;
-    case EducationPlanFile: disc->educPlanPath = ""; break;
-    case EducationProgramFile: disc->educProgPath = ""; break;
-    }
-
-    BaseItem * edit = new Discipline(disc->id, disc->name, disc->literPath, disc->educPlanPath, disc->educProgPath);
-
-    if (!edit)
-    {
-        qDebug() << "Cannot create instance of Discipline";
-        return;
-    }
-
-    mSaveManager->editItem(edit, SaveManager::TYPE_DISCIPLINE);
-
-    if (edit)
-        delete edit;
-}
-
-QString LecturesManager::teacherEmail() const
-{
-    return mTeacherEmail;
-}
-
-void LecturesManager::setTeacherEmail(const QString& email)
-{
-    qDebug() << "setTeacherEmail: " << email;
-    mTeacherEmail = email;
-    mSaveManager->updTeacherMail(email);
-    emit teacherEmailChanged();
-}
-
-void LecturesManager::saveStudentCourses(QString courseName, int groupId)
-{
-    auto disc = std::find_if(mDisciplines.begin(), mDisciplines.end(),
-                 [&courseName](Discipline& d){ return !d.name.compare(courseName); });
-
-    if (mDisciplines.end() == disc)
-    {
-        qDebug() << "cannot find discipline with name " << courseName;
-        return;
-    }
-
-    mSaveManager->updStudentsCourses(disc->id, groupId);
-}
-
-void LecturesManager::saveTeacherEmail(const QString& email)
-{
-    qDebug() << "saveTeacherEmail: " << email;
-    mTeacherEmail = email;
-    mSaveManager->updTeacherMail(email);
-    emit teacherEmailChanged();
-}
-
-QStringList LecturesManager::getCourses()
-{
-    QStringList result;
-
-    for(auto& it: mDisciplines)
-        result << it.name;
-
-    return result;
-}

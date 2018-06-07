@@ -29,7 +29,8 @@ class SaveManager
 public:
 
     enum ItemType {
-        TYPE_CHAPTER,
+        TYPE_UNKNOWN = -1,
+        TYPE_CHAPTER = 0,
         TYPE_DISCIPLINE,
         TYPE_THEME,
         TYPE_SUBTHEME,

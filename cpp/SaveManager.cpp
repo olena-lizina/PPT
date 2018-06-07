@@ -421,12 +421,12 @@ void SaveManager::editItem(BaseItem* item, ItemType type)
 
         if (!info)
         {
-            qDebug() << "Cannot dynamic cast BaseItem to Group";
+            qWarning() << "Cannot dynamic cast BaseItem to Group";
             return;
         }
 
         if (!mSqlManager.execute(mEditStr[TYPE_GROUP].arg(info->name).arg(info->id)).first)
-            qDebug() << "Cannot edit group";
+            qWarning() << "Cannot edit group";
     }
         break;
     case TYPE_STUDENT:
@@ -435,12 +435,12 @@ void SaveManager::editItem(BaseItem* item, ItemType type)
 
         if (!info)
         {
-            qDebug() << "Cannot dynamic cast BaseItem to Student";
+            qWarning() << "Cannot dynamic cast BaseItem to Student";
             return;
         }
 
         if (!mSqlManager.execute(mEditStr[TYPE_STUDENT].arg(info->name).arg(info->phone).arg(info->email).arg(info->photoPath).arg(info->groupId).arg(info->id)).first)
-            qDebug() << "Cannot edit student";
+            qWarning() << "Cannot edit student";
     }
         break;
     case TYPE_STUDENTS_COURSES: break;
@@ -450,7 +450,7 @@ void SaveManager::editItem(BaseItem* item, ItemType type)
 void SaveManager::deleteItem(const int& id, ItemType type)
 {
     if (!mSqlManager.execute(mDeleteStr[type].arg(id)).first)
-        qDebug() << "Cannot delete item";
+        qWarning() << "Cannot delete item";
 }
 
 void SaveManager::updStudentsCourses(const int& courseId, int groupId)
@@ -459,10 +459,7 @@ void SaveManager::updStudentsCourses(const int& courseId, int groupId)
     int lastId = 0;
 
     if (res.first && !res.second.isEmpty() && !res.second.at(0).isEmpty())
-    {
-        qDebug() << "Cannot get last student course";
         lastId = res.second.at(0).at(0).toInt();
-    }
 
     QString tempAddStr("INSERT INTO StudentsCourses(Id, StudId, CourseId) VALUES ");
     QString tempExStr("SELECT * FROM StudentsCourses WHERE StudId='%1' AND CourseId='%2'");
@@ -477,7 +474,7 @@ void SaveManager::updStudentsCourses(const int& courseId, int groupId)
     auto studIds = mSqlManager.execute(selStudsStr);
     if (!studIds.first || studIds.second.isEmpty() || studIds.second.at(0).isEmpty())
     {
-        qDebug() << "Cannot get last student ids";
+        qWarning() << "Cannot get last student ids";
         return;
     }
 
@@ -486,13 +483,17 @@ void SaveManager::updStudentsCourses(const int& courseId, int groupId)
         auto tmp = mSqlManager.execute(tempExStr.arg(stud.at(0).toInt()).arg(courseId));
         if (tmp.first && !tmp.second.isEmpty() && !tmp.second.at(0).isEmpty())
             continue;
-        tempAddStr.append(QString("(" + QString::number(++lastId) + "," + QString::number(stud.at(0).toInt()) + "," + QString::number(courseId) + "),"));
+
+        QString str("(" + QString::number(++lastId) + "," + QString::number(stud.at(0).toInt()) + "," + QString::number(courseId) + "),");
+        tempAddStr.append(str);
     }
 
     tempAddStr = tempAddStr.left(tempAddStr.length() - 1);
 
+    qDebug() << tempAddStr;
+
     if (!mSqlManager.execute(tempAddStr).first)
-        qDebug() << "Cannot save addStudentsCourses";
+        qWarning() << "Cannot save addStudentsCourses";
 }
 
 void SaveManager::addTeacherMail(const QString& mail)

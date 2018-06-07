@@ -19,8 +19,9 @@
 #ifndef LECTURESMANAGER_H
 #define LECTURESMANAGER_H
 #include "ManagerInterface.h"
-#include <memory>
 #include "DataTypes.h"
+
+#include <memory>
 #include <QList>
 
 class LecturesManager: public ManagerInterface
@@ -30,7 +31,7 @@ class LecturesManager: public ManagerInterface
     Q_ENUMS(FileType)
     Q_ENUMS(ItemType)
 
-    Q_PROPERTY(QList<QObject*> labsTree READ labsTree NOTIFY labsTreeChanged)
+    Q_PROPERTY(QList<QObject*> lecturesTree READ lecturesTree NOTIFY lecturesTreeChanged)
     Q_PROPERTY(QString teacherEmail READ teacherEmail WRITE setTeacherEmail NOTIFY teacherEmailChanged)
 
 public:
@@ -43,54 +44,27 @@ public:
     };
 
     enum FileType {
-        LectureFile,
-        LiteratureListFile,
-        EducationPlanFile,
-        EducationProgramFile
+        ThemeLectureFileType,
+        SubthemeLectureFileType,
+        LiteratureListFileType,
+        EducationPlanFileType,
+        EducationProgramFileType
     };
 
     explicit LecturesManager(QObject* parent = nullptr);
     static QObject* managerProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
 
 public:
-    Q_INVOKABLE void updateDiscipline(const QString& name, const int& idx);
-    Q_INVOKABLE void updateChapter(const QString& name, const int& idx);
-    Q_INVOKABLE void updateTheme(const QString& name, const int& idx);
-    Q_INVOKABLE void updateSubtheme(const QString& name, const int& idx);
-
-    Q_INVOKABLE void removeDiscipline(const int& idx);
-    Q_INVOKABLE void removeChapter(const int& idx);
-    Q_INVOKABLE void removeTheme(const int& idx);
-    Q_INVOKABLE void removeSubtheme(const int& idx);
-    Q_INVOKABLE void removeFile(const LecturesManager::FileType& type, const int& idx, const int& nesting = 0);
-
-    Q_INVOKABLE void insertDiscipline(const QString& name, const int& idx);
-    Q_INVOKABLE void insertChapter(const QString& name, const int& idx);
-    Q_INVOKABLE void appendChapter(const QString& name, const int& idx);
-    Q_INVOKABLE void insertTheme(const QString& name, const int& idx);
-    Q_INVOKABLE void appendTheme(const QString& name, const int& idx);
-    Q_INVOKABLE void insertSubtheme(const QString& name, const int& idx);
-    Q_INVOKABLE void appendSubtheme(const QString& name, const int& idx);
-
-    Q_INVOKABLE bool fileExist(const LecturesManager::FileType& type, const int& idx, const int& nesting = 0);
-    Q_INVOKABLE QString getFileContent(const LecturesManager::FileType& type, const int& idx, const int& nesting = 0);
-    Q_INVOKABLE void createFile(const int& nesting, const int& idx);
-    Q_INVOKABLE void saveFileContent(const QString& text, const int& nesting, const int& idx);
-    Q_INVOKABLE void copyLectureFile(QString path, const int& nesting, const int& idx);
-
-    Q_INVOKABLE void createLiterListFile(const int& idx);
-    Q_INVOKABLE void saveLiterListFileContent(const QString& text, const int& idx);
-    Q_INVOKABLE void copyLiterListFile(QString path, const int& idx);
-
-    Q_INVOKABLE void createEducPlanFile(const int& idx);
-    Q_INVOKABLE void saveEducPlanFileContent(const QString& text, const int& idx);
-    Q_INVOKABLE void copyEducPlanFile(QString path, const int& idx);
-
-    Q_INVOKABLE void createEducProgFile(const int& idx);
-    Q_INVOKABLE void saveEducProgFileContent(const QString& text, const int& idx);
-    Q_INVOKABLE void copyEducProgFile(QString path, const int& idx);
-
-    Q_INVOKABLE void saveTeacherEmail(const QString& email);
+    Q_INVOKABLE void insertItem(const QString& name, const int& idx, ItemType type);
+    Q_INVOKABLE void appendItem(const QString& name, const int& idx, ItemType type);
+    Q_INVOKABLE void updateItem(const QString& name, const int& idx, ItemType type);
+    Q_INVOKABLE void removeItem(const int& idx, ItemType type);
+    Q_INVOKABLE void removeFile(const LecturesManager::FileType& type, const int& idx);
+    Q_INVOKABLE bool fileExist(const LecturesManager::FileType& type, const int& idx);
+    Q_INVOKABLE QString getFileContent(const LecturesManager::FileType& type, const int& idx);
+    Q_INVOKABLE void createFile(const int& idx, FileType type);
+    Q_INVOKABLE void saveFileContent(const QString& text, const int& idx, FileType type);
+    Q_INVOKABLE void copyFile(QString path, const int& idx, FileType type);
 
     QString teacherEmail() const;
     void setTeacherEmail(const QString& email);
@@ -99,51 +73,29 @@ public:
 
     Q_INVOKABLE QStringList getCourses();
 
-public:
-    QList<QObject*> labsTree();
-    Q_INVOKABLE bool isEmptyTree() { return m_labsTree.size() <= 0; }
+    QList<QObject*> lecturesTree();
+    Q_INVOKABLE bool isEmptyTree();
 
 signals:
-    void labsTreeChanged();
+    void lecturesTreeChanged();
     void fileContentChanged();
     void teacherEmailChanged();
 
 private:
-    void initLabsTree();
-
-    QString getLectureFileContent(const int& nesting, const int& idx);
-    QString getLiterListFileContent(const int& idx);
-    QString getEducPlanFileContent(const int& idx);
-    QString getEducProgFileContent(const int& idx);
+    void initLecturesTree();
 
     void saveThemeLectureFile(const QString& path, const int& idx);
     void saveSubthemeLectureFile(const QString& path, const int& idx);
-    void saveLiterListFile(const QString& path, const int& idx);
-    void saveEducPlanFile(const QString& path, const int& idx);
-    void saveEducProgFile(const QString& path, const int& idx);
-
-    bool lectureFileExist(const int& nesting, const int& idx);
-    bool literListFileExist(const int& idx);
-    bool educPlanFileExist(const int& idx);
-    bool educProgFileExist(const int& idx);
-
-    void removeLectureFile(const int& nesting, const int& idx);
-    void removeDisciplineFiles(const int& idx, const LecturesManager::FileType& type);
 
 private:
-    static SaveManager::Ptr mSaveManager;
-    static QQmlApplicationEngine *m_qmlEngine;
-    QList<QObject*> m_labsTree;
-
-    QList<Discipline> mDisciplines;
-    QList<Chapter> mChapters;
-    QList<Theme> mThemes;
-    QList<Subtheme> mSubtheme;
-
-    QList<ThemeLectureFile> mThemeLectureFiles;
+    QString                    mTeacherEmail;
+    QList<Theme>               mThemes;
+    QList<Chapter>             mChapters;
+    QList<QObject*>            mLecturesTree;
+    QList<Subtheme>            mSubtheme;
+    QList<Discipline>          mDisciplines;
+    QList<ThemeLectureFile>    mThemeLectureFiles;
     QList<SubthemeLectureFile> mSubthemeLectureFiles;
-
-    QString mTeacherEmail;
 };
 
 #endif // LECTURESMANAGER_H
