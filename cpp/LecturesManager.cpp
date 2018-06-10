@@ -127,6 +127,12 @@ void LecturesManager::insertItem(const QString& name, const int& idx, ItemType t
 
         int discIdx = -1;
 
+        if (mChapters.begin() == it)
+        {
+            if (it->id == idx)
+                discIdx = it->disciplineId;
+        }
+
         while (mChapters.begin() != it)
         {
             if (it->id == idx)
@@ -138,6 +144,12 @@ void LecturesManager::insertItem(const QString& name, const int& idx, ItemType t
             int old = it->id;
             mSaveManager->updChapterIdx(old, (it->id = it->id + 1));
             --it;
+        }
+
+        if (discIdx == -1)
+        {
+            qWarning() << "Cannot find chapter with idx: " << idx;
+            return;
         }
 
         add = new Chapter(idx + 1, name, idx);
@@ -160,6 +172,12 @@ void LecturesManager::insertItem(const QString& name, const int& idx, ItemType t
 
         int chaptIdx = -1;
 
+        if (mThemes.begin() == it)
+        {
+            if (it->id == idx)
+                chaptIdx = it->chapterId;
+        }
+
         while (mThemes.begin() != it)
         {
             if (it->id == idx)
@@ -171,6 +189,12 @@ void LecturesManager::insertItem(const QString& name, const int& idx, ItemType t
             int old = it->id;
             mSaveManager->updThemeIdx(old, (it->id = it->id + 1));
             --it;
+        }
+
+        if (chaptIdx == -1)
+        {
+            qWarning() << "Cannot find theme with idx: " << idx;
+            return;
         }
 
         add = new Theme(idx + 1, name, chaptIdx);
@@ -193,6 +217,12 @@ void LecturesManager::insertItem(const QString& name, const int& idx, ItemType t
 
         int themeIdx = -1;
 
+        if (mSubtheme.begin() == it)
+        {
+            if (it->id == idx)
+                themeIdx = it->themeId;
+        }
+
         while (mSubtheme.begin() != it)
         {
             if (it->id == idx)
@@ -204,6 +234,12 @@ void LecturesManager::insertItem(const QString& name, const int& idx, ItemType t
             int old = it->id;
             mSaveManager->updSubthemeIdx(old, (it->id = it->id + 1));
             --it;
+        }
+
+        if (themeIdx == -1)
+        {
+            qWarning() << "Cannot find subtheme with idx: " << idx;
+            return;
         }
 
         add = new Subtheme(idx + 1, name, themeIdx);
@@ -431,6 +467,9 @@ void LecturesManager::removeItem(const int& idx, ItemType type)
     case SUBTHEME_ITEM:
         mSubtheme.clear();
         mSubtheme = mSaveManager->loadSubtheme();
+        
+        
+        
         break;
     }
     initLecturesTree();

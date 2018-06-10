@@ -56,7 +56,7 @@ void SaveManager::initTypeNames()
 void SaveManager::initInsertStrs()
 {
     mInsertStr[TYPE_CHAPTER] = "INSERT INTO Chapter (Id,Name,Discipline_Id) VALUES ('%1',\"%2\",'%3')";
-    mInsertStr[TYPE_DISCIPLINE] = "INSERT INTO Discipline (Id,Name,Liter_Path) VALUES ('%1',\"%2\",\"%3\")";
+    mInsertStr[TYPE_DISCIPLINE] = "INSERT INTO Discipline (Id,Name,Liter_Path, Educ_Plan_Path, Educ_Progr_Path) VALUES ('%1',\"%2\",\"%3\", \"%4\", \"%5\")";
     mInsertStr[TYPE_THEME] = "INSERT INTO Theme (Id,Name,Chapter_Id) VALUES ('%1',\"%2\",'%3')";
     mInsertStr[TYPE_SUBTHEME] = "INSERT INTO Subtheme(Id,Name,Theme_Id) VALUES ('%1',\"%2\",'%3')";
     mInsertStr[TYPE_LAB_WORK] = "INSERT INTO Lab_Work (Id,Discipline_Id,Finish_Date,Name,Path) VALUES ('%1','%2',\"%3\",\"%4\",\"%5\")";
