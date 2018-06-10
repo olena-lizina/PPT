@@ -62,7 +62,7 @@ Rectangle {
                         onClicked: {
                             ScreenContextBuffer.screenType = LecturesManager.LiteratureListFileType;
 
-                            if (LecturesManager.fileExist(LecturesManager.LiteratureListFileType, ScreenContextBuffer.selectedIdx))
+                            if (LecturesManager.fileExist(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx))
                             {
                                 ScreenContextBuffer.edit = false
                                 ScreenContextBuffer.loaderSource = ""
@@ -211,7 +211,7 @@ Rectangle {
         {
             var params
 
-            if (ScreenContextBuffer.screenType === LecturesManager.LiteratureListFile)
+            if (ScreenContextBuffer.screenType === LecturesManager.LiteratureListFileType)
             {
                 params = {
                     title: qsTr("Literature list"),
@@ -220,7 +220,7 @@ Rectangle {
                     rightBtnText: qsTr("Import literature list")
                 }
             }
-            else if (ScreenContextBuffer.screenType === LecturesManager.EducationProgramFile)
+            else if (ScreenContextBuffer.screenType === LecturesManager.EducationProgramFileType)
             {
                 params = {
                     title: qsTr("Education program"),
@@ -229,7 +229,7 @@ Rectangle {
                     rightBtnText: qsTr("Import education program")
                 }
             }
-            else if (ScreenContextBuffer.screenType === LecturesManager.EducationPlanFile)
+            else if (ScreenContextBuffer.screenType === LecturesManager.EducationPlanFileType)
             {
                 params = {
                     title: qsTr("Education plan"),
@@ -249,12 +249,12 @@ Rectangle {
                 {
                     ScreenContextBuffer.edit = true
 
-                    if (ScreenContextBuffer.screenType === LecturesManager.LiteratureListFile)
-                        LecturesManager.createLiterListFile(ScreenContextBuffer.selectedIdx)
-                    else if (ScreenContextBuffer.screenType === LecturesManager.EducationProgramFile)
-                        LecturesManager.createEducProgFile(ScreenContextBuffer.selectedIdx)
-                    else if (ScreenContextBuffer.screenType === LecturesManager.EducationPlanFile)
-                        LecturesManager.createEducPlanFile(ScreenContextBuffer.selectedIdx);
+                    if (ScreenContextBuffer.screenType === LecturesManager.LiteratureListFileType)
+                        LecturesManager.createFile(ScreenContextBuffer.selectedIdx, ScreenContextBuffer.screenType)
+                    else if (ScreenContextBuffer.screenType === LecturesManager.EducationProgramFileType)
+                        LecturesManager.createFile(ScreenContextBuffer.selectedIdx, ScreenContextBuffer.screenType)
+                    else if (ScreenContextBuffer.screenType === LecturesManager.EducationPlanFileType)
+                        LecturesManager.createFile(ScreenContextBuffer.selectedIdx, ScreenContextBuffer.screenType);
 
                     ScreenContextBuffer.loaderSource = ""
                 }
