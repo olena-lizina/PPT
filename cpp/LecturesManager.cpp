@@ -96,7 +96,7 @@ void LecturesManager::insertItem(const QString& name, const int& idx, ItemType t
             auto it = mDisciplines.end();
             --it;
 
-            while (mDisciplines.begin() != it)
+            while (mDisciplines.begin() <= it)
             {
                 if (it->id <= idx)
                     break;
@@ -127,13 +127,7 @@ void LecturesManager::insertItem(const QString& name, const int& idx, ItemType t
 
         int discIdx = -1;
 
-        if (mChapters.begin() == it)
-        {
-            if (it->id == idx)
-                discIdx = it->disciplineId;
-        }
-
-        while (mChapters.begin() != it)
+        while (mChapters.begin() <= it)
         {
             if (it->id == idx)
                 discIdx = it->disciplineId;
@@ -172,13 +166,7 @@ void LecturesManager::insertItem(const QString& name, const int& idx, ItemType t
 
         int chaptIdx = -1;
 
-        if (mThemes.begin() == it)
-        {
-            if (it->id == idx)
-                chaptIdx = it->chapterId;
-        }
-
-        while (mThemes.begin() != it)
+        while (mThemes.begin() <= it)
         {
             if (it->id == idx)
                 chaptIdx = it->chapterId;
@@ -217,13 +205,7 @@ void LecturesManager::insertItem(const QString& name, const int& idx, ItemType t
 
         int themeIdx = -1;
 
-        if (mSubtheme.begin() == it)
-        {
-            if (it->id == idx)
-                themeIdx = it->themeId;
-        }
-
-        while (mSubtheme.begin() != it)
+        while (mSubtheme.begin() <= it)
         {
             if (it->id == idx)
                 themeIdx = it->themeId;
