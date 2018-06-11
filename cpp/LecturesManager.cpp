@@ -760,6 +760,11 @@ void LecturesManager::createFile(const int& idx, FileType type)
     case SubthemeLectureFileType:
         saveSubthemeLectureFile(filePath, idx);
         break;
+    case LiteratureListFileType:
+    case EducationPlanFileType:
+    case EducationProgramFileType:
+        saveDisciplineFiles(filePath, idx, type);
+        break;
     }
 
     file.close();
@@ -1150,6 +1155,41 @@ void LecturesManager::saveSubthemeLectureFile(const QString& path, const int& id
 
         if (edit)
             delete edit;
+    }
+}
+
+void LecturesManager::saveDisciplineFiles(const QString& path, const int& idx, LecturesManager::FileType type)
+{
+    qDebug() << "saveDisciplineFiles";
+
+    {
+        auto fileIter = std::find_if(mDisciplines.begin(), mDisciplines.end(),
+                                     [&idx](Discipline& file){ return file.id == idx; });
+
+        if (mDisciplines.end() == fileIter)
+        {
+            qWarning() << "Cannot save discipline file: discipline does not exist";
+            return;
+        }
+
+        switch(type)
+        {
+        case EducationPlanFileType:
+            fileIter->educPlanPath = path;
+            break;
+        case EducationProgramFileType:
+            fileIter->educProgPath = path;
+            break;
+        case LiteratureListFileType:
+            fileIter->literPath = path;
+            break;
+        }
+
+        BaseItem * add = new Discipline(idx, fileIter->name, fileIter->literPath, fileIter->educPlanPath, fileIter->educProgPath);
+        mSaveManager->editItem(add, SaveManager::TYPE_DISCIPLINE);
+
+        if (add)
+            delete add;
     }
 }
 
