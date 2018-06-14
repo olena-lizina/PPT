@@ -48,7 +48,7 @@ namespace {
         case LecturesManager::EducationProgramFileType: return SaveManager::TYPE_DISCIPLINE;
         default: return SaveManager::TYPE_UNKNOWN;
         }
-    }
+    }    
 } // anonymous
 
 LecturesManager::LecturesManager(QObject* parent)
@@ -435,18 +435,34 @@ void LecturesManager::removeItem(const int& idx, ItemType type)
     switch (type)
     {
     case DISCIPLINE_ITEM:
+        removeFile(LiteratureListFileType, idx);
+        removeFile(EducationPlanFileType, idx);
+        removeFile(EducationProgramFileType, idx);
         mDisciplines.clear();
         mDisciplines = mSaveManager->loadDiscipline();
+
+        for (auto it: mChapters)
+        {
+            if (it.disciplineId != idx)
+                continue;
+
+            removeThemeFiles(it.id);
+        }
+
         break;
     case CHAPTER_ITEM:
         mChapters.clear();
         mChapters = mSaveManager->loadChapters();
+        removeThemeFiles(idx);
         break;
     case THEME_ITEM:
+        removeFile(ThemeLectureFileType, idx);
         mThemes.clear();
         mThemes = mSaveManager->loadTheme();
+        removeSubthemeFiles(idx);
         break;
     case SUBTHEME_ITEM:
+        removeFile(SubthemeLectureFileType, idx);
         mSubtheme.clear();
         mSubtheme = mSaveManager->loadSubtheme();
         break;
@@ -1189,5 +1205,42 @@ void LecturesManager::saveDisciplineFiles(const QString& path, const int& idx, L
     }
 }
 
+void LecturesManager::removeSubthemeFiles(const int& idx)
+{
+    for (auto it: mSubtheme)
+    {
+        if (it.themeId != idx)
+            continue;
+
+        auto file = std::find_if(mSubthemeLectureFiles.begin(), mSubthemeLectureFiles.end(),
+                     [it](SubthemeLectureFile& file) { return file.subthemeId == it.id; });
+
+        if (mSubthemeLectureFiles.end() == file)
+            continue;
+
+        if (QFile::remove(file->path))
+            qWarning() << "Cannot remove file on file system: " << file->path;
+    }
+}
+
+void LecturesManager::removeThemeFiles(const int& idx)
+{
+    for (auto it: mThemes)
+    {
+        if (it.chapterId != idx)
+            continue;
+
+        auto file = std::find_if(mThemeLectureFiles.begin(), mThemeLectureFiles.end(),
+                                 [it](ThemeLectureFile& file) { return file.themeId == it.id; });
+
+        if (mThemeLectureFiles.end() == file)
+            continue;
+
+        if (QFile::remove(file->path))
+            qWarning() << "Cannot remove file on file system: " << file->path;
+
+        removeSubthemeFiles(it.id);
+    }
+}
 
 

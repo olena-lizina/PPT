@@ -88,6 +88,10 @@ private:
     void saveSubthemeLectureFile(const QString& path, const int& idx);
     void saveDisciplineFiles(const QString& path, const int& idx, LecturesManager::FileType type);
 
+    void removeSubthemeFiles(const int& idx);
+    void removeThemeFiles(const int& idx);
+
+
 private:
     QString                    mTeacherEmail;
     QList<Theme>               mThemes;
