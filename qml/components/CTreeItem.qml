@@ -44,8 +44,6 @@ Row {
                 anchors.fill: parent
                 acceptedButtons: Qt.LeftButton | Qt.RightButton
                 onClicked: {
-                    //ScreenContextBuffer.screenType = LecturesManager.LectureFile;
-
                     if (mouse.button == Qt.LeftButton)
                     {
                         if (modelData.idx === -1)
@@ -68,10 +66,12 @@ Row {
                             {
                                 ScreenContextBuffer.courseId = modelData.idx
                                 ScreenContextBuffer.courseName = modelData.text
-                                ScreenContextBuffer.loaderSource = ""
+                                ScreenContextBuffer.screenType = -1
                             }
+
                             ScreenContextBuffer.edit = false;
                             ScreenContextBuffer.setNestingAndIndex(modelData.nesting, modelData.idx);
+                            ScreenContextBuffer.loaderSource = ""
                             modelData.isOpen = !modelData.isOpen;
                         }
                     }

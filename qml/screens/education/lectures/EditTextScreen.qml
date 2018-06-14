@@ -28,12 +28,7 @@ import "../.."
 Item {
     id: rootItem
 
-    property string textItText: LecturesManager.getFileContent(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting)
-
-    Component.onCompleted: {
-        codeArea.myNesting = ScreenContextBuffer.nesting
-        codeArea.myIdx = ScreenContextBuffer.selectedIdx
-    }
+    property string textItText: LecturesManager.getFileContent(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx)
 
     CToolBar {
         id: toolBar
@@ -93,26 +88,7 @@ Item {
                 Layout.alignment: Qt.AlignRight
                 icon: "\u2714"
                 tooltipText: qsTr("Save lecture")
-                onClicked: {
-
-                    if (textItText !== codeArea.text)
-                    {
-                        if (ScreenContextBuffer.screenType === LecturesManager.LiteratureListFile)
-                            LecturesManager.saveLiterListFileContent(codeArea.text, ScreenContextBuffer.selectedIdx)
-                        else if (ScreenContextBuffer.screenType === LecturesManager.EducationProgramFile)
-                            LecturesManager.saveEducProgFileContent(codeArea.text, ScreenContextBuffer.selectedIdx)
-                        else if (ScreenContextBuffer.screenType === LecturesManager.EducationPlanFile)
-                            LecturesManager.saveEducPlanFileContent(codeArea.text, ScreenContextBuffer.selectedIdx);
-                        else
-                            LecturesManager.saveFileContent(codeArea.text, ScreenContextBuffer.nesting, ScreenContextBuffer.selectedIdx)
-
-                        MailServiceManager.sendEducationMaterials(ScreenContextBuffer.courseName, ScreenContextBuffer.courseId)
-                    }
-
-                    LecturesManager.clearComponentCache()
-                    Qt.inputMethod.hide()
-                    ScreenContextBuffer.edit = false
-                }
+                onClicked: saveContent()
             }
 
             CToolButton {
@@ -132,7 +108,7 @@ Item {
                     {
                         if (value)
                         {
-                            LecturesManager.removeFile(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting);
+                            LecturesManager.removeFile(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx);
                             ScreenContextBuffer.loaderSource = ""
                         }
                     }
@@ -146,19 +122,7 @@ Item {
     TextArea {
         id: codeArea
 
-        property int myNesting
-        property int myIdx
-
-        Component.onDestruction: {
-            if (ScreenContextBuffer.screenType === LecturesManager.LiteratureListFile)
-                LecturesManager.saveLiterListFileContent(codeArea.text, myIdx)
-            else if (ScreenContextBuffer.screenType === LecturesManager.EducationProgramFile)
-                LecturesManager.saveEducProgFileContent(codeArea.text, myIdx)
-            else if (ScreenContextBuffer.screenType === LecturesManager.EducationPlanFile)
-                LecturesManager.saveEducPlanFileContent(codeArea.text, myIdx);
-            else
-                LecturesManager.saveFileContent(codeArea.text, myNesting, myIdx)
-        }
+        Component.onDestruction: saveContent()
 
         anchors.top: toolBar.bottom
         anchors.bottom: rootItem.bottom
@@ -179,6 +143,20 @@ Item {
         textFormat: TextEdit.RichText
         inputMethodHints: Qt.ImhNoPredictiveText
         onLinkActivated: Qt.openUrlExternally(link)
+    }
+
+    function saveContent()
+    {
+        if (textItText !== codeArea.text)
+        {
+            LecturesManager.saveFileContent(codeArea.text, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.screenType)
+            if (ScreenContextBuffer.screenType === LecturesManager.ThemeLectureFileType || ScreenContextBuffer.screenType === LecturesManager.SubthemeLectureFileType)
+                MailServiceManager.sendEducationMaterials(ScreenContextBuffer.courseName, ScreenContextBuffer.courseId)
+        }
+
+        LecturesManager.clearComponentCache()
+        Qt.inputMethod.hide()
+        ScreenContextBuffer.edit = false
     }
 }
 

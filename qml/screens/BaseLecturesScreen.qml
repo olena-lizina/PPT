@@ -109,27 +109,28 @@ BlankScreen {
     {
         rectLoader.source = ""
 
-        if (ScreenContextBuffer.screenType === LecturesManager.LiteratureListFileType ||
-                ScreenContextBuffer.screenType === LecturesManager.EducationPlanFileType ||
-                ScreenContextBuffer.screenType === LecturesManager.EducationProgramFileType)
+        if (ScreenContextBuffer.nesting === 1) // chapters
         {
-            if (LecturesManager.fileExist(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx))
-                rectLoader.source = "education/lectures/EditTextScreen.qml"
-            else
-                rectLoader.source = "education/lectures/AddDisciplineFilesScreen.qml"
+            rectLoader.source = "education/lectures/DummyScreen.qml";
             return;
         }
 
-        if (ScreenContextBuffer.nesting === 0)
-            rectLoader.source = "education/lectures/AddDisciplineFilesScreen.qml"
-        else if (ScreenContextBuffer.nesting === 1)
-            rectLoader.source = "education/lectures/DummyScreen.qml"
-        else
+        if (LecturesManager.fileExist(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx)) // disciplines, themes, subthemes
         {
-            if (LecturesManager.fileExist(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx))
-                rectLoader.source = "education/lectures/EditTextScreen.qml"
-            else
-                rectLoader.source = "education/lectures/AddFileScreen.qml"
+            rectLoader.source = "education/lectures/EditTextScreen.qml";
+            return;
+        }
+
+        if (ScreenContextBuffer.nesting === 2 || ScreenContextBuffer.nesting === 3) // themes, subthemes
+        {
+            rectLoader.source = "education/lectures/AddFileScreen.qml";
+            return;
+        }
+
+        if (ScreenContextBuffer.nesting === 0) // disciplines
+        {
+            rectLoader.source = "education/lectures/AddDisciplineFilesScreen.qml"
+            return;
         }
     }
 }

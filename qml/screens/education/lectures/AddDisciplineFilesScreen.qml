@@ -61,16 +61,7 @@ Rectangle {
 
                         onClicked: {
                             ScreenContextBuffer.screenType = LecturesManager.LiteratureListFileType;
-
-                            if (LecturesManager.fileExist(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx))
-                            {
-                                ScreenContextBuffer.edit = false
-                                ScreenContextBuffer.loaderSource = ""
-                            }
-                            else
-                            {
-                                handleBtnClicked()
-                            }
+                            handleBtnClicked()
                         }
                     }
                 }
@@ -106,16 +97,7 @@ Rectangle {
 
                         onClicked: {
                             ScreenContextBuffer.screenType = LecturesManager.EducationProgramFileType
-
-                            if (LecturesManager.fileExist(LecturesManager.EducationProgramFileType, ScreenContextBuffer.selectedIdx))
-                            {
-                                ScreenContextBuffer.edit = false
-                                ScreenContextBuffer.loaderSource = ""
-                            }
-                            else
-                            {
-                                handleBtnClicked()
-                            }
+                            handleBtnClicked()
                         }
                     }
                 }
@@ -151,16 +133,7 @@ Rectangle {
 
                         onClicked: {
                             ScreenContextBuffer.screenType = LecturesManager.EducationPlanFileType
-
-                            if (LecturesManager.fileExist(LecturesManager.EducationPlanFileType, ScreenContextBuffer.selectedIdx))
-                            {
-                                ScreenContextBuffer.edit = false
-                                ScreenContextBuffer.loaderSource = ""
-                            }
-                            else
-                            {
-                                handleBtnClicked()
-                            }
+                            handleBtnClicked()
                         }
                     }
                 }
@@ -188,6 +161,7 @@ Rectangle {
 
     Connections {
         target: getFileDialog.item
+
         onProcess: {
             getFileDialog.source = ""
             ScreenContextBuffer.edit = false            
@@ -202,7 +176,7 @@ Rectangle {
 
     function handleBtnClicked()
     {
-        if (LecturesManager.fileExist(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.nesting))
+        if (LecturesManager.fileExist(ScreenContextBuffer.screenType, ScreenContextBuffer.selectedIdx))
         {
             ScreenContextBuffer.edit = false
             ScreenContextBuffer.loaderSource = ""
@@ -248,14 +222,7 @@ Rectangle {
                 else // create
                 {
                     ScreenContextBuffer.edit = true
-
-                    if (ScreenContextBuffer.screenType === LecturesManager.LiteratureListFileType)
-                        LecturesManager.createFile(ScreenContextBuffer.selectedIdx, ScreenContextBuffer.screenType)
-                    else if (ScreenContextBuffer.screenType === LecturesManager.EducationProgramFileType)
-                        LecturesManager.createFile(ScreenContextBuffer.selectedIdx, ScreenContextBuffer.screenType)
-                    else if (ScreenContextBuffer.screenType === LecturesManager.EducationPlanFileType)
-                        LecturesManager.createFile(ScreenContextBuffer.selectedIdx, ScreenContextBuffer.screenType);
-
+                    LecturesManager.createFile(ScreenContextBuffer.selectedIdx, ScreenContextBuffer.screenType)
                     ScreenContextBuffer.loaderSource = ""
                 }
             }

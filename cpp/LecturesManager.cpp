@@ -449,9 +449,6 @@ void LecturesManager::removeItem(const int& idx, ItemType type)
     case SUBTHEME_ITEM:
         mSubtheme.clear();
         mSubtheme = mSaveManager->loadSubtheme();
-        
-        
-        
         break;
     }
     initLecturesTree();
@@ -733,7 +730,7 @@ void LecturesManager::createFile(const int& idx, FileType type)
         baseFolder.append("EducPlans");
         break;
     case EducationProgramFileType:
-        baseFolder.append("EducProgram");
+        baseFolder.append("EducPrograms");
         break;
     }
 
@@ -751,6 +748,7 @@ void LecturesManager::createFile(const int& idx, FileType type)
 
     QTextStream textStream(&file);
     textStream << filePath;
+    file.close();
 
     switch (type)
     {
@@ -766,8 +764,6 @@ void LecturesManager::createFile(const int& idx, FileType type)
         saveDisciplineFiles(filePath, idx, type);
         break;
     }
-
-    file.close();
 }
 
 void LecturesManager::saveFileContent(const QString& text, const int& idx, FileType type)
