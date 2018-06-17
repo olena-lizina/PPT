@@ -88,5 +88,7 @@
         <file>qml/components/CTextLink.qml</file>
         <file>qml/screens/education/labs/ShowReportScreen.qml</file>
         <file>qml/components/CCodeArea.qml</file>
+        <file>qml/components/dialogs/EvaluateDialog.qml</file>
+        <file>qml/screens/education/grades/GradesScreen.qml.qml</file>
     </qresource>
 </RCC>

@@ -397,7 +397,8 @@ void SaveManager::editItem(BaseItem* item, ItemType type)
             return;
         }
 
-        if (!mSqlManager.execute(mEditStr[TYPE_REPORT].arg(info->labId).arg(info->delivDate).arg(info->mark).arg(info->evalDate).arg(info->id)).first)
+        mEditStr[TYPE_REPORT] = "UPDATE Report SET Lab_Id='%1',Delivery_Date=\"%2\",Mark=\"%3\",Evaluation_Date=\"%4\",Stud_Id='%5' WHERE Id='%6'";
+        if (!mSqlManager.execute(mEditStr[TYPE_REPORT].arg(info->labId).arg(info->delivDate).arg(info->mark).arg(info->evalDate).arg(info->studId).arg(info->id)).first)
             qDebug() << "Cannot edit report";
     }
         break;

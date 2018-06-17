@@ -78,7 +78,7 @@ QList<QObject*> LabsManager::getExecutors(int id)
         if (mReportFiles.end() == rep)
             continue;
 
-        result.append(new ReportInfoModel(stud->name, work, rep->path));
+        result.append(new ReportInfoModel(stud->name, work));
     }
 
     return result;
@@ -92,7 +92,7 @@ QObject* LabsManager::getExecutor(int id)
 
     for (auto work : mReports)
     {
-        if (id != work.labId)
+        if (id != work.id)
             continue;
 
         auto stud = std::find_if(students.begin(), students.end(),
@@ -101,13 +101,7 @@ QObject* LabsManager::getExecutor(int id)
         if (students.end() == stud)
             continue;
 
-        auto rep = std::find_if(mReportFiles.begin(), mReportFiles.end(),
-                                [work](ReportFile& st){ return work.id == st.reportId; });
-
-        if (mReportFiles.end() == rep)
-            continue;
-
-        result = new ReportInfoModel(stud->name, work, rep->path);
+        result = new ReportInfoModel(stud->name, work);
         break;
     }
 
@@ -367,6 +361,38 @@ QString LabsManager::reportFileContent(QString path)
     QString fileText = textStream.readAll().trimmed();
     file.close();
     return fileText;
+}
+
+void LabsManager::saveEvaluation(int id, QString mark, QString date)
+{
+    qDebug() << "saveEvaluation";
+
+    auto report = std::find_if(mReports.begin(), mReports.end(),
+                            [&id](Report rep){ return rep.id == id; });
+
+    if (report == mReports.end())
+    {
+        qDebug() << "Cannot find such report with id: " << id;
+        return;
+    }
+
+    report->mark = mark;
+    report->evalDate = date;
+
+    BaseItem * edit = new Report(report->id, report->labId, report->delivDate, report->mark, report->evalDate, report->studId);
+
+    if (!edit)
+    {
+        qDebug() << "Cannot create instance of Report";
+        return;
+    }
+
+    mSaveManager->editItem(edit, SaveManager::TYPE_REPORT);
+
+    if (edit)
+        delete edit;
+
+    initLabsTree();
 }
 
 void LabsManager::removeLab(int id)

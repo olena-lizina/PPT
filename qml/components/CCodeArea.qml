@@ -77,7 +77,7 @@ Item {
                     anchors.right: column.right
                     color: index + 1 === textEdit.currentLine ? palette.label : palette.lineNumber
                     font.family: settings.font
-                    font.pixelSize: 6 * settings.pixelDensity
+                    font.pixelSize: 4 * settings.pixelDensity
                     font.bold: index + 1 === textEdit.currentLine
                     text: index + 1
                 }
@@ -119,7 +119,7 @@ Item {
             selectedTextColor: palette.editorSelectedText
 
             font.family: settings.font
-            font.pixelSize: 6 * settings.pixelDensity
+            font.pixelSize: 4 * settings.pixelDensity
             textMargin: 2 * settings.pixelDensity
             wrapMode: TextEdit.Wrap
             textFormat: TextEdit.PlainText

@@ -117,6 +117,7 @@ Rectangle {
             text2: qsTr("Finished: ") + modelData.finished
             text3: qsTr("Mark: ") + modelData.mark
             text4: qsTr("Evaluated: ") + modelData.evalDate
+            reportId: modelData.id
 
             onClicked: {
                 ScreenContextBuffer.executorId = modelData.id

@@ -38,7 +38,7 @@ BlankScreen {
             CBackButton {
                 Layout.fillWidth: true
                 Layout.fillHeight: true
-                text: qsTr("Learning progress")
+                text: qsTr("Tasks")
             }
 
             CHomeButton {
@@ -70,13 +70,13 @@ BlankScreen {
                 }
             }
 
-//            CNavigationButton {
-//                anchors.left: parent.left
-//                anchors.right: parent.right
-//                text: qsTr("Gradebook")
-//                icon: "\uD83D\uDCCA"
-//                //onClicked: stackView.push(Qt.resolvedUrl("SettingsScreen.qml"))
-//            }
+            CNavigationButton {
+                anchors.left: parent.left
+                anchors.right: parent.right
+                text: qsTr("Gradebook")
+                icon: "\uf080"
+                onClicked: stackView.push(Qt.resolvedUrl("education/labs/GradesScreen.qml"))
+            }
         }
     }
 

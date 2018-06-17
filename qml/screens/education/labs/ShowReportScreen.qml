@@ -34,23 +34,21 @@ Item {
     }
 
     CToolBar {
-        id: topBar
-        anchors.left: rootItem.left
-        anchors.right: rootItem.right
-        anchors.top: rootItem.top
-        height: 18.5 * settings.pixelDensity
+        id: toolBar
+        anchors.left: parent.left
+        anchors.right: parent.right
+        anchors.top: parent.top
 
-        Row {
-            anchors.fill: topBar
-            anchors.leftMargin: 20
-            spacing: 3
+        RowLayout {
+            anchors.fill: parent
+            spacing: 0
 
             CNavigationButton {
-                text: "Back"//ScreenContextBuffer.filePath
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                text: ScreenContextBuffer.filePath
 
-                onClicked: {
-                    ScreenContextBuffer.callBackToReport()
-                }
+                onClicked: ScreenContextBuffer.callBackToReport()
             }
         }
     }
@@ -58,7 +56,7 @@ Item {
     CCodeArea {
         id: codeArea
 
-        anchors.top: topBar.bottom
+        anchors.top: toolBar.bottom
         anchors.bottom: rootItem.bottom
         anchors.left: rootItem.left
         anchors.right: rootItem.right

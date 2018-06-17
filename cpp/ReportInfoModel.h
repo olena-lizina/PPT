@@ -30,17 +30,15 @@ class ReportInfoModel : public QObject
     Q_PROPERTY(QString finished READ finished WRITE setFinished NOTIFY finishedChanged)
     Q_PROPERTY(QString mark     READ mark     WRITE setMark     NOTIFY markChanged    )
     Q_PROPERTY(QString evalDate READ evalDate WRITE setEvalDate NOTIFY evalDateChanged)
-    Q_PROPERTY(QString path     READ path     WRITE setPath     NOTIFY pathChanged    )
 
 public:
-    ReportInfoModel(const QString studName, const Report rep, const QString reportPath)
+    ReportInfoModel(const QString studName, const Report rep)
         : QObject(nullptr)
         , mId(rep.id)
         , mStudName(studName)
         , mFinishDate(rep.delivDate)
         , mMark(rep.mark)
         , mEvalDate(rep.evalDate)
-        , mPath(reportPath)
     {}
 
 public slots:    
@@ -50,13 +48,11 @@ public slots:
     QString finished() const { return mFinishDate; }
     QString mark() const { return mMark; }
     QString evalDate() const { return mEvalDate; }
-    QString path() const { return mPath; }
 
     void setStudName(QString name) { mStudName = name; }
     void setFinished(QString finish) { mFinishDate = finish; }
     void setMark(QString mark) { mMark = mark; }
     void setEvalDate(QString eval) { mEvalDate = eval; }
-    void setPath(QString path) { mPath = path; }
 
 signals:
 
@@ -64,7 +60,6 @@ signals:
     void finishedChanged();
     void markChanged    ();
     void evalDateChanged();
-    void pathChanged    ();
 
 private:
     const int mId;
@@ -72,6 +67,5 @@ private:
     QString mFinishDate;
     QString mMark;
     QString mEvalDate;
-    QString mPath;
 };
 #endif // REPORTINFOMODEL_H

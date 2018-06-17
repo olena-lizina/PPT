@@ -17,6 +17,7 @@
 ****************************************************************************/
 
 import QtQuick 2.5
+import LabsManager 1.1
 
 Item {
     id: cInformationItem
@@ -31,14 +32,7 @@ Item {
     property alias text2: label2.text
     property alias text3: label3.text
     property alias text4: label4.text
-
-    Rectangle {
-        id: btnRect
-
-        anchors.fill: parent
-        color: palette.button
-        visible: mouseArea.pressed
-    }
+    property int reportId
 
     CHorizontalSeparator {
         anchors.left: parent.left
@@ -54,7 +48,7 @@ Item {
         anchors.leftMargin: 5 * settings.pixelDensity
         anchors.rightMargin: 5 * settings.pixelDensity
         spacing: 0.5 * settings.pixelDensity
-        width: 0.55 * settings.windowWidth
+        width: 0.45 * settings.windowWidth
 
         CLabel {
             id: label1
@@ -71,15 +65,28 @@ Item {
         }
     }
 
+    MouseArea {
+        id: mouseArea
+        anchors.fill: firstCol
+        onClicked: cInformationItem.clicked()
+    }
+
+    Rectangle {
+        id: btnRect
+        anchors.fill: firstCol
+        color: palette.button
+        visible: mouseArea2.pressed
+    }
+
     Column {
         id: secondCol
         anchors.left: firstCol.right
-        anchors.right: cInformationItem.right
+        anchors.right: evaluate.left
         anchors.verticalCenter: parent.verticalCenter
         anchors.leftMargin: 5 * settings.pixelDensity
         anchors.rightMargin: 5 * settings.pixelDensity
         spacing: 0.5 * settings.pixelDensity
-        width: 0.25 * settings.windowWidth
+        width: 0.20 * settings.windowWidth
 
         CLabel {
             id: label3
@@ -99,8 +106,39 @@ Item {
     }
 
     MouseArea {
-        id: mouseArea
-        anchors.fill: parent
+        id: mouseArea2
+        anchors.fill: secondCol
         onClicked: cInformationItem.clicked()
+    }
+
+    Rectangle {
+        id: btnRect2
+        anchors.fill: secondCol
+        color: palette.button
+        visible: mouseArea2.pressed
+    }
+
+    CNavigationButton {
+        id:evaluate
+        anchors.right: cInformationItem.right
+        anchors.left: secondCol.rigth
+        width: 0.10 * settings.windowWidth
+        text: qsTr("Evaluate")
+
+        onClicked: {
+            var params = {
+                title: qsTr("Evaluation"),
+                text: qsTr("Mark:")
+            }
+
+            var callback = function(value)
+            {
+                var evaluationDate = new Date();
+                LabsManager.saveEvaluation(reportId, value, evaluationDate.toLocaleDateString())
+                text3 = qsTr("Mark: ") + value
+                text4 = qsTr("Evaluated: ") + evaluationDate.toLocaleDateString()
+            }
+            dialog.open(dialog.types.evaluate, params, callback)
+        }
     }
 }

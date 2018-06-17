@@ -208,10 +208,10 @@ void ScreenContextBuffer::setLabId(int id)
 
     if (mLabId != id)
     {
-        mLabId = id;
-        emit labIdChanged();
-        qDebug() << "emit labIdChanged";
+        mLabId = id;        
     }
+    emit labIdChanged();
+    qDebug() << "emit labIdChanged";
 }
 
 void ScreenContextBuffer::setExecutorId(int id)
@@ -229,7 +229,7 @@ void ScreenContextBuffer::setFilePath(QString path)
     if (path.compare(mFilePath))
     {
         mFilePath = path;
-        emit filePathChanged();
-        qDebug() << "emit filePathChanged";
     }
+    emit filePathChanged();
+    qDebug() << "emit filePathChanged";
 }

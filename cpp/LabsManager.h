@@ -57,9 +57,11 @@ public:
     Q_INVOKABLE QString getLabName(int id);
 
     Q_INVOKABLE QString reportFileContent(QString path);
+    Q_INVOKABLE void saveEvaluation(int id, QString mark, QString date);
 
 signals:
     void labsTreeChanged();
+    void reportsChanged();
 private:
     void initLabsTree();    
 

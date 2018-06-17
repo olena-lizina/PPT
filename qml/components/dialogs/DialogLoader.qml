@@ -37,6 +37,7 @@ Loader {
         property string insert: "ThemeClickedDialog.qml"
         property string getFile: "SelectFileDialog.qml"
         property string createLab: "CreateLabDialog.qml"
+        property string evaluate: "EvaluateDialog.qml"
     }
 
     function open(type, parameters, callback) {
