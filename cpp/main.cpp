@@ -28,6 +28,7 @@
 #include "MailServiceManager.h"
 #include "LabsManager.h"
 #include "SyntaxHighlighter.h"
+#include "GradesManager.h"
 
 int main(int argc, char *argv[])
 {
@@ -47,6 +48,7 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonType<ScreenContextBuffer>("ScreenContextBuffer", 1, 1, "ScreenContextBuffer", &ScreenContextBuffer::screenContextBufferProvider);
     qmlRegisterSingletonType<MailServiceManager>("MailServiceManager", 1, 1, "MailServiceManager", &MailServiceManager::managerProvider);
     qmlRegisterSingletonType<LabsManager>("LabsManager", 1, 1, "LabsManager", &LabsManager::managerProvider);
+    qmlRegisterSingletonType<GradesManager>("GradesManager", 1, 1, "GradesManager", &GradesManager::managerProvider);
 
     qmlRegisterType<SyntaxHighlighter>("SyntaxHighlighter", 1, 1, "SyntaxHighlighter");
 
@@ -55,6 +57,7 @@ int main(int argc, char *argv[])
     LecturesManager::setSaveManager(saveManager);
     MailServiceManager::setSaveManager(saveManager);
     LabsManager::setSaveManager(saveManager);
+    GradesManager::setSaveManager(saveManager);
 
     QQmlApplicationEngine engine;
     engine.rootContext()->setContextProperty("applicationDirPath", QGuiApplication::applicationDirPath());
@@ -65,6 +68,7 @@ int main(int argc, char *argv[])
     ScreenContextBuffer::setQmlEngine(&engine);
     MailServiceManager::setQmlEngine(&engine);
     LabsManager::setQmlEngine(&engine);
+    GradesManager::setQmlEngine(&engine);
 
     return app.exec();
 }

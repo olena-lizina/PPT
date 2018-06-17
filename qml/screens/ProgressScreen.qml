@@ -75,7 +75,7 @@ BlankScreen {
                 anchors.right: parent.right
                 text: qsTr("Gradebook")
                 icon: "\uf080"
-                onClicked: stackView.push(Qt.resolvedUrl("education/labs/GradesScreen.qml"))
+                onClicked: stackView.push(Qt.resolvedUrl("education/grades/GradesScreen.qml"))
             }
         }
     }

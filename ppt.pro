@@ -27,7 +27,8 @@ HEADERS += \
     cpp/GradesManager.h \
     cpp/SQLiteManager.h \
     cpp/QMLHighlighter.h \
-    cpp/SyntaxHighlighter.h
+    cpp/SyntaxHighlighter.h \
+    cpp/GradesInfoModel.h
 
 SOURCES += \
     cpp/main.cpp \
