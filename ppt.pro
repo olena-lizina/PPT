@@ -1,7 +1,7 @@
 QT += \
     core gui qml quick sql widgets
 
-TARGET = ppt
+TARGET = ZPNP
 TEMPLATE = app
 
 CONFIG += mobility

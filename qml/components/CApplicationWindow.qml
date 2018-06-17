@@ -29,7 +29,7 @@ ApplicationWindow {
     width: 800
     height: 640
     visible: true
-    title: "PPT"
+    title: "ZPNP"
     visibility: settings.debugMode ? "FullScreen" : "Maximized"
 
     style: ApplicationWindowStyle {
