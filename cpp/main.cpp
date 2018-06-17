@@ -38,10 +38,10 @@ int main(int argc, char *argv[])
     translator.load("ppt_" + QLocale::system().name(), QCoreApplication::applicationDirPath());
     app.installTranslator(&translator);
 
-    app.setApplicationName("Pedagogical program tool");
+    app.setApplicationName("ZPNP");
     app.setApplicationVersion("1.0.1");
     app.setOrganizationName("lizinaolena");
-    app.setOrganizationDomain("com.lizinaolena.ppz");
+    app.setOrganizationDomain("com.lizinaolena.zpnp");
 
     qmlRegisterSingletonType<StudentManager>("StudentManager", 1, 1, "StudentManager", &StudentManager::managerProvider);
     qmlRegisterSingletonType<LecturesManager>("LecturesManager", 1, 1, "LecturesManager", &LecturesManager::managerProvider);
