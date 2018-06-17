@@ -104,6 +104,21 @@
     </message>
 </context>
 <context>
+    <name>CCodeArea</name>
+    <message>
+        <source>Undo</source>
+        <translation>Скасувати</translation>
+    </message>
+    <message>
+        <source>Redo</source>
+        <translation>Виконати знову</translation>
+    </message>
+    <message>
+        <source>Paste</source>
+        <translation>Втавити</translation>
+    </message>
+</context>
+<context>
     <name>CContextMenu</name>
     <message>
         <source>Edit</source>
@@ -119,6 +134,29 @@
     <message>
         <source>Home</source>
         <translation>Домашня сторінка</translation>
+    </message>
+</context>
+<context>
+    <name>CInformationItem</name>
+    <message>
+        <source>Evaluate</source>
+        <translation>Оцінити</translation>
+    </message>
+    <message>
+        <source>Evaluation</source>
+        <translation>Оцінка</translation>
+    </message>
+    <message>
+        <source>Mark:</source>
+        <translation>Оцінка:</translation>
+    </message>
+    <message>
+        <source>Mark: </source>
+        <translation>Оцінка:</translation>
+    </message>
+    <message>
+        <source>Evaluated: </source>
+        <translation>Оцінено:</translation>
     </message>
 </context>
 <context>
@@ -371,19 +409,19 @@
     <name>EditLectureDialog</name>
     <message>
         <source>Cancel</source>
-        <translation>Скасувати</translation>
+        <translation type="vanished">Скасувати</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation>ОК</translation>
+        <translation type="vanished">ОК</translation>
     </message>
     <message>
         <source>Input field cannot be left blank</source>
-        <translation>Дане поле не може бути пустим</translation>
+        <translation type="vanished">Дане поле не може бути пустим</translation>
     </message>
     <message>
         <source>Such name name already exists</source>
-        <translation>Така назва вже існує</translation>
+        <translation type="vanished">Така назва вже існує</translation>
     </message>
 </context>
 <context>
@@ -465,25 +503,40 @@
     </message>
 </context>
 <context>
-    <name>FontSizeDialog</name>
+    <name>EvaluateDialog</name>
     <message>
         <source>Cancel</source>
         <translation>Скасувати</translation>
     </message>
     <message>
+        <source>Save</source>
+        <translation>Зберегти</translation>
+    </message>
+    <message>
+        <source>Input field cannot be left blank</source>
+        <translation>Поле для вводу не може залишитися пустим</translation>
+    </message>
+</context>
+<context>
+    <name>FontSizeDialog</name>
+    <message>
+        <source>Cancel</source>
+        <translation type="vanished">Скасувати</translation>
+    </message>
+    <message>
         <source>OK</source>
-        <translation>ОК</translation>
+        <translation type="vanished">ОК</translation>
     </message>
 </context>
 <context>
     <name>IndentSizeDialog</name>
     <message>
         <source>Cancel</source>
-        <translation>Скасувати</translation>
+        <translation type="vanished">Скасувати</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation>ОК</translation>
+        <translation type="vanished">ОК</translation>
     </message>
 </context>
 <context>
@@ -495,6 +548,18 @@
     <message>
         <source>Should be done due: &quot;%1&quot;</source>
         <translation>Має бути виконано до: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Finished: </source>
+        <translation>Завершено:</translation>
+    </message>
+    <message>
+        <source>Mark: </source>
+        <translation>Оцінка:</translation>
+    </message>
+    <message>
+        <source>Evaluated: </source>
+        <translation>Оцінено:</translation>
     </message>
 </context>
 <context>
@@ -527,7 +592,7 @@
     </message>
     <message>
         <source>Learning progress</source>
-        <translation>Журнал оцінювання</translation>
+        <translation type="vanished">Журнал оцінювання</translation>
     </message>
     <message>
         <source>About</source>
@@ -537,43 +602,47 @@
         <source>ZPNP</source>
         <translation>ЗПНП</translation>
     </message>
+    <message>
+        <source>Tasks</source>
+        <translation>Завдання</translation>
+    </message>
 </context>
 <context>
     <name>MessageDialog</name>
     <message>
         <source>OK</source>
-        <translation>ОК</translation>
+        <translation type="vanished">ОК</translation>
     </message>
 </context>
 <context>
     <name>NewFileDialog</name>
     <message>
         <source>File name</source>
-        <translation>Назва файлу</translation>
+        <translation type="vanished">Назва файлу</translation>
     </message>
     <message>
         <source>File type</source>
-        <translation>Тип файлу</translation>
+        <translation type="vanished">Тип файлу</translation>
     </message>
     <message>
         <source>Note: the file name must start with a capital letter and cannot contain spaces (e.g., MyItem.qml)</source>
-        <translation>Примітка: назва файлу повинна починатися із великої літери та не може містити пробілів (наприклад, MyItem.qml)</translation>
+        <translation type="vanished">Примітка: назва файлу повинна починатися із великої літери та не може містити пробілів (наприклад, MyItem.qml)</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Скасувати</translation>
+        <translation type="vanished">Скасувати</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation>ОК</translation>
+        <translation type="vanished">ОК</translation>
     </message>
     <message>
         <source>The file name cannot be left blank</source>
-        <translation>Назва файлу не може бути пустою</translation>
+        <translation type="vanished">Назва файлу не може бути пустою</translation>
     </message>
     <message>
         <source>The file already exists</source>
-        <translation>Файл з такою назвою вже існує</translation>
+        <translation type="vanished">Файл з такою назвою вже існує</translation>
     </message>
 </context>
 <context>
@@ -595,18 +664,41 @@
     <name>ProgressScreen</name>
     <message>
         <source>Learning progress</source>
-        <translation>Навчальний прогрес</translation>
+        <translation type="vanished">Навчальний прогрес</translation>
     </message>
     <message>
         <source>Laboratory works</source>
         <translation>Лабораторні роботи</translation>
+    </message>
+    <message>
+        <source>Tasks</source>
+        <translation>Завдання</translation>
+    </message>
+    <message>
+        <source>Gradebook</source>
+        <translation>Журнал оцінювання</translation>
+    </message>
+</context>
+<context>
+    <name>ReportInfoScreen</name>
+    <message>
+        <source>Finished: </source>
+        <translation>Завершено:</translation>
+    </message>
+    <message>
+        <source>Mark: </source>
+        <translation>Оцінка:</translation>
+    </message>
+    <message>
+        <source>Evaluated: </source>
+        <translation>Оцінено:</translation>
     </message>
 </context>
 <context>
     <name>SelectFileDialog</name>
     <message>
         <source>Choose a file to open</source>
-        <translation>Оберіть файл, щоб відкири</translation>
+        <translation>Оберіть файл, щоб відкрити</translation>
     </message>
 </context>
 <context>

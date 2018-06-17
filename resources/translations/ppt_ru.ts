@@ -104,6 +104,21 @@
     </message>
 </context>
 <context>
+    <name>CCodeArea</name>
+    <message>
+        <source>Undo</source>
+        <translation>Отменить</translation>
+    </message>
+    <message>
+        <source>Redo</source>
+        <translation>Сделать снова</translation>
+    </message>
+    <message>
+        <source>Paste</source>
+        <translation>Вставить</translation>
+    </message>
+</context>
+<context>
     <name>CContextMenu</name>
     <message>
         <source>Edit</source>
@@ -119,6 +134,29 @@
     <message>
         <source>Home</source>
         <translation>Домашняя страница</translation>
+    </message>
+</context>
+<context>
+    <name>CInformationItem</name>
+    <message>
+        <source>Evaluate</source>
+        <translation>Оценить</translation>
+    </message>
+    <message>
+        <source>Evaluation</source>
+        <translation>Оценка</translation>
+    </message>
+    <message>
+        <source>Mark:</source>
+        <translation>Оценка:</translation>
+    </message>
+    <message>
+        <source>Mark: </source>
+        <translation>Оценка:</translation>
+    </message>
+    <message>
+        <source>Evaluated: </source>
+        <translation>Оценено:</translation>
     </message>
 </context>
 <context>
@@ -371,19 +409,19 @@
     <name>EditLectureDialog</name>
     <message>
         <source>Cancel</source>
-        <translation>Отменить</translation>
+        <translation type="vanished">Отменить</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation>ОК</translation>
+        <translation type="vanished">ОК</translation>
     </message>
     <message>
         <source>Input field cannot be left blank</source>
-        <translation>Поле для ввода не может быть пустым</translation>
+        <translation type="vanished">Поле для ввода не может быть пустым</translation>
     </message>
     <message>
         <source>Such name name already exists</source>
-        <translation>Такое имя уже существует</translation>
+        <translation type="vanished">Такое имя уже существует</translation>
     </message>
 </context>
 <context>
@@ -465,25 +503,40 @@
     </message>
 </context>
 <context>
-    <name>FontSizeDialog</name>
+    <name>EvaluateDialog</name>
     <message>
         <source>Cancel</source>
         <translation>Отменить</translation>
     </message>
     <message>
+        <source>Save</source>
+        <translation>Сохранить</translation>
+    </message>
+    <message>
+        <source>Input field cannot be left blank</source>
+        <translation>Поле для ввода не может быть пустым</translation>
+    </message>
+</context>
+<context>
+    <name>FontSizeDialog</name>
+    <message>
+        <source>Cancel</source>
+        <translation type="vanished">Отменить</translation>
+    </message>
+    <message>
         <source>OK</source>
-        <translation>ОК</translation>
+        <translation type="vanished">ОК</translation>
     </message>
 </context>
 <context>
     <name>IndentSizeDialog</name>
     <message>
         <source>Cancel</source>
-        <translation>Отменить</translation>
+        <translation type="vanished">Отменить</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation>ОК</translation>
+        <translation type="vanished">ОК</translation>
     </message>
 </context>
 <context>
@@ -495,6 +548,18 @@
     <message>
         <source>Should be done due: &quot;%1&quot;</source>
         <translation>Должно быть выполнено до: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Finished: </source>
+        <translation>Выполнено:</translation>
+    </message>
+    <message>
+        <source>Mark: </source>
+        <translation>Оценка:</translation>
+    </message>
+    <message>
+        <source>Evaluated: </source>
+        <translation>Оценено:</translation>
     </message>
 </context>
 <context>
@@ -531,7 +596,7 @@
     </message>
     <message>
         <source>Learning progress</source>
-        <translation>Журнал успеваемости</translation>
+        <translation type="vanished">Журнал успеваемости</translation>
     </message>
     <message>
         <source>About</source>
@@ -541,43 +606,47 @@
         <source>ZPNP</source>
         <translation>ЗПНП</translation>
     </message>
+    <message>
+        <source>Tasks</source>
+        <translation>Задания</translation>
+    </message>
 </context>
 <context>
     <name>MessageDialog</name>
     <message>
         <source>OK</source>
-        <translation>ОК</translation>
+        <translation type="vanished">ОК</translation>
     </message>
 </context>
 <context>
     <name>NewFileDialog</name>
     <message>
         <source>File name</source>
-        <translation>Имя файла</translation>
+        <translation type="vanished">Имя файла</translation>
     </message>
     <message>
         <source>File type</source>
-        <translation>Тип файла</translation>
+        <translation type="vanished">Тип файла</translation>
     </message>
     <message>
         <source>Note: the file name must start with a capital letter and cannot contain spaces (e.g., MyItem.qml)</source>
-        <translation>Примечание: имя файла должно начинаться с большой буквы и не должно содержать пробелы (например, MyItem.qml)</translation>
+        <translation type="vanished">Примечание: имя файла должно начинаться с большой буквы и не должно содержать пробелы (например, MyItem.qml)</translation>
     </message>
     <message>
         <source>Cancel</source>
-        <translation>Отменить</translation>
+        <translation type="vanished">Отменить</translation>
     </message>
     <message>
         <source>OK</source>
-        <translation>ОК</translation>
+        <translation type="vanished">ОК</translation>
     </message>
     <message>
         <source>The file name cannot be left blank</source>
-        <translation>Имя файла не может быть пустым</translation>
+        <translation type="vanished">Имя файла не может быть пустым</translation>
     </message>
     <message>
         <source>The file already exists</source>
-        <translation>Файл с таким именем уже существует</translation>
+        <translation type="vanished">Файл с таким именем уже существует</translation>
     </message>
 </context>
 <context>
@@ -599,11 +668,34 @@
     <name>ProgressScreen</name>
     <message>
         <source>Learning progress</source>
-        <translation>Учебный прогресс</translation>
+        <translation type="vanished">Учебный прогресс</translation>
     </message>
     <message>
         <source>Laboratory works</source>
         <translation>Лабораторные работы</translation>
+    </message>
+    <message>
+        <source>Tasks</source>
+        <translation>Задания</translation>
+    </message>
+    <message>
+        <source>Gradebook</source>
+        <translation>Журнал оценок</translation>
+    </message>
+</context>
+<context>
+    <name>ReportInfoScreen</name>
+    <message>
+        <source>Finished: </source>
+        <translation>Завершено:</translation>
+    </message>
+    <message>
+        <source>Mark: </source>
+        <translation>Оценка:</translation>
+    </message>
+    <message>
+        <source>Evaluated: </source>
+        <translation>Оценено:</translation>
     </message>
 </context>
 <context>
