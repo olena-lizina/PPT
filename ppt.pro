@@ -54,6 +54,7 @@ SOURCES += \
     qml/screens/admins/*.qml \
     qml/screens/education/lectures/*.qml \
     qml/screens/education/labs/*.qml \
+    qml/screens/education/grades/*.qml \
     qml/*.qml
 }
 
@@ -69,7 +70,3 @@ else:unix: LIBS += -L$$SMTP_LIBRARY_LOCATION/release -lSMTPEmail
 
 INCLUDEPATH += $$SMTP_LIBRARY_LOCATION/include/
 DEPENDPATH += $$SMTP_LIBRARY_LOCATION/include/
-
-DISTFILES += \
-    qml/screens/education/labs/ReportInfoScreen.qml \
-    qml/components/palettes/CTextLink.qml

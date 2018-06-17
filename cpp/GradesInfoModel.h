@@ -15,57 +15,59 @@
 ** limitations under the License.
 **
 ****************************************************************************/
-#ifndef REPORTINFOMODEL_H
-#define REPORTINFOMODEL_H
+#ifndef GRADESINFOMODEL_H
+#define GRADESINFOMODEL_H
 #include <QObject>
 #include <QString>
 #include "DataTypes.h"
 
-class ReportInfoModel : public QObject
+class GradesInfoModel : public QObject
 {
     Q_OBJECT
 
-    Q_PROPERTY(int id READ id)
+    Q_PROPERTY(int studId       READ studId   WRITE setStudId   NOTIFY studIdChanged  )
+    Q_PROPERTY(int labId        READ labId    WRITE setLabId    NOTIFY labIdChanged   )
     Q_PROPERTY(QString studName READ studName WRITE setStudName NOTIFY studNameChanged)
-    Q_PROPERTY(QString finished READ finished WRITE setFinished NOTIFY finishedChanged)
+    Q_PROPERTY(QString labName  READ labName  WRITE setLabName  NOTIFY labNameChanged )
     Q_PROPERTY(QString mark     READ mark     WRITE setMark     NOTIFY markChanged    )
-    Q_PROPERTY(QString evalDate READ evalDate WRITE setEvalDate NOTIFY evalDateChanged)
 
 public:
-    ReportInfoModel(const QString studName, const Report rep)
+    GradesInfoModel(const int studId, const QString studName, const int labId, const QString labName, const QString mark)
         : QObject(nullptr)
-        , mId(rep.id)
         , mStudName(studName)
-        , mFinishDate(rep.delivDate)
-        , mMark(rep.mark)
-        , mEvalDate(rep.evalDate)
+        , mMark(mark)
+        , mLabName(labName)
+        , mStudId(studId)
+        , mLabId(labId)
     {}
 
 public slots:    
 
-    int id() const { return mId; }
     QString studName() const { return mStudName; }
-    QString finished() const { return mFinishDate; }
     QString mark() const { return mMark; }
-    QString evalDate() const { return mEvalDate; }
+    QString labName() const { return mLabName; }
+    int studId() const { return mStudId; }
+    int labId() const { return mLabId; }
 
     void setStudName(QString name) { mStudName = name; }
-    void setFinished(QString finish) { mFinishDate = finish; }
     void setMark(QString mark) { mMark = mark; }
-    void setEvalDate(QString eval) { mEvalDate = eval; }
+    void setLabName(QString labName) { mLabName = labName; }
+    void setStudId(int id) { mStudId = id; }
+    void setLabId(int id) { mLabId = id; }
 
 signals:
 
     void studNameChanged();
-    void finishedChanged();
     void markChanged    ();
-    void evalDateChanged();
+    void studIdChanged  ();
+    void labIdChanged   ();
+    void labNameChanged ();
 
 private:
-    const int mId;
     QString mStudName;
-    QString mFinishDate;
     QString mMark;
-    QString mEvalDate;
+    QString mLabName;
+    int mStudId;
+    int mLabId;
 };
-#endif // REPORTINFOMODEL_H
+#endif // GRADESINFOMODEL_H

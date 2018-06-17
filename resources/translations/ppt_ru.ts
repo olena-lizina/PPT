@@ -529,6 +529,25 @@
     </message>
 </context>
 <context>
+    <name>GradesScreen</name>
+    <message>
+        <source>Gradebook</source>
+        <translation>Журнал оценок</translation>
+    </message>
+    <message>
+        <source>Student Name</source>
+        <translation>Имя студента</translation>
+    </message>
+    <message>
+        <source>Laboratory work name</source>
+        <translation>Название лабораторной работы</translation>
+    </message>
+    <message>
+        <source>Mark</source>
+        <translation>Оценка</translation>
+    </message>
+</context>
+<context>
     <name>IndentSizeDialog</name>
     <message>
         <source>Cancel</source>
