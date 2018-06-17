@@ -569,7 +569,7 @@ QList<Chapter> SaveManager::loadChapters()
         Chapter tmp;
         tmp.id = chapt.at(0).toInt();
         tmp.name = chapt.at(1).toString();
-        tmp.disciplineId = chapt.at(3).toInt();
+        tmp.disciplineId = chapt.at(2).toInt();
         chapters << tmp;
     }
 
@@ -810,7 +810,7 @@ QList<Subtheme> SaveManager::loadSubtheme()
         Subtheme tmp;
         tmp.id = subtheme.at(0).toInt();
         tmp.name = subtheme.at(1).toString();
-        tmp.themeId = subtheme.at(3).toInt();
+        tmp.themeId = subtheme.at(2).toInt();
         subthemes << tmp;
     }
 
@@ -835,7 +835,7 @@ QList<Theme> SaveManager::loadTheme()
         Theme tmp;
         tmp.id = subtheme.at(0).toInt();
         tmp.name = subtheme.at(1).toString();
-        tmp.chapterId = subtheme.at(3).toInt();
+        tmp.chapterId = subtheme.at(2).toInt();
         themes << tmp;
     }
 

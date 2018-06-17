@@ -30,7 +30,7 @@ Item {
 
     property string textItText
     Component.onCompleted: {
-        textItText = LabsManager.fileContent
+        textItText = LabsManager.fileContent(ScreenContextBuffer.labId)
         codeArea.myIdx = ScreenContextBuffer.labId
     }
 

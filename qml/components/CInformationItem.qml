@@ -21,6 +21,8 @@ import QtQuick 2.5
 Item {
     id: cInformationItem
 
+    signal clicked()
+
     anchors.left: parent.left
     anchors.right: parent.right
     implicitHeight: 18.5 * settings.pixelDensity
@@ -30,6 +32,14 @@ Item {
     property alias text3: label3.text
     property alias text4: label4.text
 
+    Rectangle {
+        id: btnRect
+
+        anchors.fill: parent
+        color: palette.button
+        visible: mouseArea.pressed
+    }
+
     CHorizontalSeparator {
         anchors.left: parent.left
         anchors.right: parent.right
@@ -38,11 +48,13 @@ Item {
 
     Column {
         id: firstCol
-        anchors.left: parent.left
+        anchors.left: cInformationItem.left
+        anchors.right: secondCol.left
         anchors.verticalCenter: parent.verticalCenter
         anchors.leftMargin: 5 * settings.pixelDensity
         anchors.rightMargin: 5 * settings.pixelDensity
         spacing: 0.5 * settings.pixelDensity
+        width: 0.55 * settings.windowWidth
 
         CLabel {
             id: label1
@@ -60,12 +72,14 @@ Item {
     }
 
     Column {
+        id: secondCol
         anchors.left: firstCol.right
-        anchors.right: parent.right
+        anchors.right: cInformationItem.right
         anchors.verticalCenter: parent.verticalCenter
         anchors.leftMargin: 5 * settings.pixelDensity
         anchors.rightMargin: 5 * settings.pixelDensity
         spacing: 0.5 * settings.pixelDensity
+        width: 0.25 * settings.windowWidth
 
         CLabel {
             id: label3
@@ -82,5 +96,11 @@ Item {
             font.pixelSize: 5 * settings.pixelDensity
             color: palette.description
         }
+    }
+
+    MouseArea {
+        id: mouseArea
+        anchors.fill: parent
+        onClicked: cInformationItem.clicked()
     }
 }

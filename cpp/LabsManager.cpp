@@ -17,6 +17,7 @@
 ****************************************************************************/
 #include "LabsManager.h"
 
+#include <QGuiApplication>
 #include <QTextStream>
 #include <QDebug>
 #include <QFile>
@@ -83,6 +84,51 @@ QList<QObject*> LabsManager::getExecutors(int id)
     return result;
 }
 
+QObject* LabsManager::getExecutor(int id)
+{
+    QObject* result;
+
+    auto students = mSaveManager->loadStudent();
+
+    for (auto work : mReports)
+    {
+        if (id != work.labId)
+            continue;
+
+        auto stud = std::find_if(students.begin(), students.end(),
+                                 [work](Student& st){ return work.studId == st.id; });
+
+        if (students.end() == stud)
+            continue;
+
+        auto rep = std::find_if(mReportFiles.begin(), mReportFiles.end(),
+                                [work](ReportFile& st){ return work.id == st.reportId; });
+
+        if (mReportFiles.end() == rep)
+            continue;
+
+        result = new ReportInfoModel(stud->name, work, rep->path);
+        break;
+    }
+
+    return result;
+}
+
+QStringList LabsManager::getReportFiles(int id)
+{
+    QStringList result;
+
+    auto reportFiles = mSaveManager->loadReportFile();
+
+    for (auto work : reportFiles)
+    {
+        if (work.reportId == id)
+            result << work.path;
+    }
+
+    return result;
+}
+
 void LabsManager::initLabsTree()
 {
     m_labsTree.clear();
@@ -107,14 +153,14 @@ void LabsManager::createLab(QString name, QString dueDate, int discipline)
     const QString fileExtension {"qppt"};
     QString baseFolder {"Labs"};
 
-    if (!QDir(baseFolder).exists())
-        QDir().mkdir(baseFolder);
+    if (!QDir(QGuiApplication::applicationDirPath() + QDir::separator() + baseFolder).exists())
+        QDir().mkdir(QGuiApplication::applicationDirPath() + QDir::separator() + baseFolder);
 
     int idx = mLabWorks.isEmpty() ? 1 : mLabWorks.last().id + 1;
     QString filePath(baseFolder + QDir::separator() + QString::number(idx) + "." + fileExtension);
     qDebug() << filePath;
 
-    QFile file(filePath);
+    QFile file(QGuiApplication::applicationDirPath() + QDir::separator() + filePath);
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
@@ -139,7 +185,8 @@ void LabsManager::createLab(QString name, QString dueDate, int discipline)
     if (add)
         delete add;
 
-    //TODO//mLabWorks.append(work);
+    mLabWorks.clear();
+    mLabWorks = mSaveManager->loadLabWork();
 
     initLabsTree();
 }
@@ -174,21 +221,20 @@ void LabsManager::editLab(QString name, QString dueDate, int labId)
         delete edit;
 
     initLabsTree();
-    emit labChanged();
 }
 
 void LabsManager::importLab(QString name, QString date, int discipline, QString path)
 {
     QString baseFolder {"Labs"};
 
-    if (!QDir(baseFolder).exists())
-        QDir().mkdir(baseFolder);
+    if (!QDir(QGuiApplication::applicationDirPath() + QDir::separator() + baseFolder).exists())
+        QDir().mkdir(QGuiApplication::applicationDirPath() + QDir::separator() + baseFolder);
 
     QString prefix("file:///");
     path.remove(0, prefix.size());
     QString fileName(path.right(path.size() - path.lastIndexOf('/') - 1));
     QString newPath(baseFolder + '\\' + fileName);
-    QFile::copy(path, newPath);
+    QFile::copy(path, QGuiApplication::applicationDirPath() + QDir::separator() + newPath);
 
     int idx = mLabWorks.isEmpty() ? 1 : mLabWorks.last().id + 1;
 
@@ -218,7 +264,7 @@ bool LabsManager::labExist(int id)
     if (mLabWorks.end() == res)
         return false;
 
-    QFile file(res->path);
+    QFile file(QGuiApplication::applicationDirPath() + QDir::separator() + res->path);
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
         return false;
@@ -238,18 +284,17 @@ QString LabsManager::getLabFinishDate(int id)
     return res->finishDate;
 }
 
-QString LabsManager::fileContent()
+QString LabsManager::fileContent(int idx)
 {
     qDebug() << "fileContent";
 
-    int idx = mSelectedLab;
     auto fileIter = std::find_if(mLabWorks.begin(), mLabWorks.end(),
                                  [&idx](LabWork& file){ return file.id == idx; });
 
     if (mLabWorks.end() == fileIter || fileIter->path.isEmpty())
         return QString();
 
-    QFile file(fileIter->path);
+    QFile file(QGuiApplication::applicationDirPath() + QDir::separator() + fileIter->path);
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
@@ -271,7 +316,7 @@ void LabsManager::saveFileContent(QString text, int labId)
 
     if (mLabWorks.end() == fileIter)
         return;
-    QFile file(fileIter->path);
+    QFile file(QGuiApplication::applicationDirPath() + QDir::separator() + fileIter->path);
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
@@ -282,7 +327,6 @@ void LabsManager::saveFileContent(QString text, int labId)
     QTextStream textStream(&file);
     textStream << text;
     file.close();
-    emit fileContentChanged();
 }
 
 QString LabsManager::getDisciplineName(int id)
@@ -307,6 +351,24 @@ QString LabsManager::getLabName(int id)
     return fileIter->name;
 }
 
+QString LabsManager::reportFileContent(QString path)
+{
+    qDebug() << "reportFileContent";
+
+    QFile file(QGuiApplication::applicationDirPath() + QDir::separator() + path);
+
+    if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
+    {
+        qDebug() << "Unable to open file " << path << file.errorString();
+        return QString();
+    }
+
+    QTextStream textStream(&file);
+    QString fileText = textStream.readAll().trimmed();
+    file.close();
+    return fileText;
+}
+
 void LabsManager::removeLab(int id)
 {
     mSaveManager->deleteItem(id, SaveManager::TYPE_LAB_WORK);
@@ -318,4 +380,5 @@ void LabsManager::removeLab(int id)
     mLabWorks.erase(fileIter);
     initLabsTree();
     emit labsTreeChanged();
+    //TODO remove file
 }

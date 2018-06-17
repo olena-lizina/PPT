@@ -27,6 +27,7 @@
 #include "ScreenContextBuffer.h"
 #include "MailServiceManager.h"
 #include "LabsManager.h"
+#include "SyntaxHighlighter.h"
 
 int main(int argc, char *argv[])
 {
@@ -46,6 +47,8 @@ int main(int argc, char *argv[])
     qmlRegisterSingletonType<ScreenContextBuffer>("ScreenContextBuffer", 1, 1, "ScreenContextBuffer", &ScreenContextBuffer::screenContextBufferProvider);
     qmlRegisterSingletonType<MailServiceManager>("MailServiceManager", 1, 1, "MailServiceManager", &MailServiceManager::managerProvider);
     qmlRegisterSingletonType<LabsManager>("LabsManager", 1, 1, "LabsManager", &LabsManager::managerProvider);
+
+    qmlRegisterType<SyntaxHighlighter>("SyntaxHighlighter", 1, 1, "SyntaxHighlighter");
 
     SaveManager::Ptr saveManager(new SaveManager());
     StudentManager::setSaveManager(saveManager);

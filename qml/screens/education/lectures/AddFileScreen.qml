@@ -58,8 +58,11 @@ Rectangle {
                         anchors.fill: parent
 
                         onClicked: {
-                            ScreenContextBuffer.screenType = LecturesManager.LectureFile;
-                            LecturesManager.createFile(ScreenContextBuffer.nesting, ScreenContextBuffer.selectedIdx)
+                            if (ScreenContextBuffer.nesting === 3)
+                                ScreenContextBuffer.screenType = LecturesManager.SubthemeLectureFileType;
+                            else
+                                ScreenContextBuffer.screenType = LecturesManager.ThemeLectureFileType;
+                            LecturesManager.createFile(ScreenContextBuffer.selectedIdx, ScreenContextBuffer.screenType)
                             ScreenContextBuffer.edit = true;
                             ScreenContextBuffer.loaderSource = "education/lectures/EditTextScreen.qml"
                         }
@@ -124,8 +127,11 @@ Rectangle {
         target: getFileDialog.item
         onProcess: {
             getFileDialog.source = ""
-            ScreenContextBuffer.screenType = LecturesManager.LectureFile;
-            LecturesManager.copyLectureFile(value, ScreenContextBuffer.nesting, ScreenContextBuffer.selectedIdx)
+            if (ScreenContextBuffer.nesting === 3)
+                ScreenContextBuffer.screenType = LecturesManager.SubthemeLectureFileType;
+            else
+                ScreenContextBuffer.screenType = LecturesManager.ThemeLectureFileType;
+            LecturesManager.copyLectureFile(value, ScreenContextBuffer.selectedIdx, ScreenContextBuffer.screenType)
             ScreenContextBuffer.edit = false;
             ScreenContextBuffer.loaderSource = "education/lectures/EditTextScreen.qml"
         }

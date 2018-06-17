@@ -29,8 +29,6 @@ class LabsManager: public ManagerInterface
     Q_OBJECT
 
     Q_PROPERTY(QList<QObject*> labsTree READ labsTree NOTIFY labsTreeChanged)
-    Q_PROPERTY(QString fileContent READ fileContent WRITE setFileContent NOTIFY fileContentChanged)
-    Q_PROPERTY(int selectedLab READ selectedLab WRITE setSelectedLab NOTIFY selectedLabChanged)
 
 public:
 
@@ -40,6 +38,10 @@ public:
 public:
     QList<QObject*> labsTree();
     Q_INVOKABLE QList<QObject*> getExecutors(int id);
+    Q_INVOKABLE QObject* getExecutor(int id);
+
+    Q_INVOKABLE QStringList getReportFiles(int id);
+
     Q_INVOKABLE bool isEmptyTree() { return m_labsTree.size() <= 0; }
 
     Q_INVOKABLE void createLab(QString name, QString dueDate, int discipline);
@@ -49,22 +51,15 @@ public:
     Q_INVOKABLE void removeLab(int id);
     Q_INVOKABLE QString getLabFinishDate(int id);
 
-    QString fileContent();
-    int selectedLab() { return mSelectedLab; }
-
-    void setSelectedLab(int id) { mSelectedLab = id; }
-    void setFileContent(QString) {}
-
+    Q_INVOKABLE QString fileContent(int idx);
     Q_INVOKABLE void saveFileContent(QString text, int labId);
     Q_INVOKABLE QString getDisciplineName(int id);
     Q_INVOKABLE QString getLabName(int id);
 
+    Q_INVOKABLE QString reportFileContent(QString path);
+
 signals:
     void labsTreeChanged();
-    void fileContentChanged();
-    void labChanged();
-    void selectedLabChanged();
-
 private:
     void initLabsTree();    
 
@@ -74,7 +69,6 @@ private:
     QList<Report> mReports;
     QList<ReportFile> mReportFiles;
     QList<Discipline> mDisciplines;
-    int mSelectedLab;
 };
 
 #endif // LABSMANAGER_H

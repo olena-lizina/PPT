@@ -96,6 +96,15 @@ BlankScreen {
         target: ScreenContextBuffer
         onLabsNestingChanged: handleItemChanged()
         onLabIdChanged: handleItemChanged()
+
+        onExecutorIdChanged: rectLoader.source = "ReportInfoScreen.qml"
+
+        onBackToReport: rectLoader.source = "ReportInfoScreen.qml"
+
+        onFilePathChanged: {
+            rectLoader.source = "ShowReportScreen.qml"
+        }
+
         onOnOpenLabScreen: {
             LabsManager.selectedLab = ScreenContextBuffer.labId
             rectLoader.source = "EditLabScreen.qml"

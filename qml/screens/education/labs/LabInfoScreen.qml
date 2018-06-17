@@ -27,9 +27,6 @@ Rectangle {
     width: 0.75 * settings.windowWidth
     height: settings.windowHeight - toolBar.height
 
-    property string name
-    property string date
-
     gradient: Gradient {
         GradientStop { position: 0.0; color: "#ffffb3" }
         GradientStop { position: 1.0; color: "#b3d9ff" }
@@ -91,13 +88,6 @@ Rectangle {
 
                     text: qsTr("Should be done due: \"%1\"").arg(LabsManager.getLabFinishDate(ScreenContextBuffer.labId))
                     wrapMode: Text.Wrap
-
-                    Connections {
-                        target: LabsManager
-                        onLabChanged: {
-                            text: qsTr("Should be done due: \"%1\"").arg(LabsManager.getLabFinishDate(ScreenContextBuffer.labId))
-                        }
-                    }
                 }
 
                 CHorizontalSeparator {
@@ -108,5 +98,35 @@ Rectangle {
             }
         }
     }
+
+    CListView {
+        id: listView
+
+        anchors {
+            left: parent.left
+            right: parent.right
+            top: topBar.bottom
+            bottom: parent.bottom
+        }
+
+        model: LabsManager.getExecutors(ScreenContextBuffer.labId);
+
+        delegate: CInformationItem {
+
+            text1: modelData.studName
+            text2: qsTr("Finished: ") + modelData.finished
+            text3: qsTr("Mark: ") + modelData.mark
+            text4: qsTr("Evaluated: ") + modelData.evalDate
+
+            onClicked: {
+                ScreenContextBuffer.executorId = modelData.id
+            }
+        }
+    }
+
+    CScrollBar {
+        flickableItem: listView
+    }
+
 }
 

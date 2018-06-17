@@ -69,6 +69,12 @@ Row {
                                 ScreenContextBuffer.screenType = -1
                             }
 
+                            if (modelData.nesting === 2)
+                                ScreenContextBuffer.screenType = LecturesManager.ThemeLectureFileType
+
+                            if (modelData.nesting === 3)
+                                ScreenContextBuffer.screenType = LecturesManager.SubthemeLectureFileType
+
                             ScreenContextBuffer.edit = false;
                             ScreenContextBuffer.setNestingAndIndex(modelData.nesting, modelData.idx);
                             ScreenContextBuffer.loaderSource = ""

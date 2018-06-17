@@ -18,6 +18,7 @@
 #include "LecturesManager.h"
 #include "TreeItem.h"
 
+#include <QGuiApplication>
 #include <QDebug>
 #include <QFile>
 #include <QDir>
@@ -448,7 +449,8 @@ void LecturesManager::removeItem(const int& idx, ItemType type)
 
             removeThemeFiles(it.id);
         }
-
+        if (mDisciplines.isEmpty())
+            QDir(QGuiApplication::applicationDirPath() + QDir::separator() + "\\Lectures").removeRecursively();
         break;
     case CHAPTER_ITEM:
         mChapters.clear();
@@ -495,7 +497,7 @@ void LecturesManager::removeFile(const LecturesManager::FileType& type, const in
 
         mSaveManager->deleteItem(fileIter->id, cast(type));
 
-        if (QFile::remove(fileIter->path))
+        if (QFile::remove(QGuiApplication::applicationDirPath() + QDir::separator() + fileIter->path))
             qWarning() << "Cannot remove file on file system: " << fileIter->path;
 
         mSubthemeLectureFiles = mSaveManager->loadSubthemeLectureFile();
@@ -513,7 +515,7 @@ void LecturesManager::removeFile(const LecturesManager::FileType& type, const in
 
         mSaveManager->deleteItem(fileIter->id, cast(type));
 
-        if (QFile::remove(fileIter->path))
+        if (QFile::remove(QGuiApplication::applicationDirPath() + QDir::separator() + fileIter->path))
             qWarning() << "Cannot remove file on file system: " << fileIter->path;
 
         mThemeLectureFiles = mSaveManager->loadThemeLectureFile();
@@ -531,12 +533,17 @@ void LecturesManager::removeFile(const LecturesManager::FileType& type, const in
             return;
         }
 
+        QString path;
+
         switch(type)
         {
-        case LiteratureListFileType: disc->literPath = ""; break;
-        case EducationPlanFileType: disc->educPlanPath = ""; break;
-        case EducationProgramFileType: disc->educProgPath = ""; break;
+        case LiteratureListFileType: path += disc->literPath; disc->literPath = ""; break;
+        case EducationPlanFileType: path += disc->educPlanPath; disc->educPlanPath = ""; break;
+        case EducationProgramFileType: path += disc->educProgPath; disc->educProgPath = ""; break;
         }
+
+        if (QFile::remove(QGuiApplication::applicationDirPath() + QDir::separator() + path))
+            qWarning() << "Cannot remove file on file system: " << path;
 
         BaseItem * edit = new Discipline(disc->id, disc->name, disc->literPath, disc->educPlanPath, disc->educProgPath);
 
@@ -569,7 +576,7 @@ bool LecturesManager::fileExist(const LecturesManager::FileType& type, const int
         if (mSubthemeLectureFiles.end() == fileIter || fileIter->path.isEmpty())
             return false;
 
-        if (!QFile::exists(fileIter->path))
+        if (!QFile::exists(QGuiApplication::applicationDirPath() + QDir::separator() + fileIter->path))
             return false;
 
         qDebug() << "fileExist: true";
@@ -584,7 +591,7 @@ bool LecturesManager::fileExist(const LecturesManager::FileType& type, const int
         if (mThemeLectureFiles.end() == fileIter || fileIter->path.isEmpty())
             return false;
 
-        if (!QFile::exists(fileIter->path))
+        if (!QFile::exists(QGuiApplication::applicationDirPath() + QDir::separator() + fileIter->path))
             return false;
 
         qDebug() << "fileExist: true";
@@ -598,7 +605,7 @@ bool LecturesManager::fileExist(const LecturesManager::FileType& type, const int
         if (mDisciplines.end() == fileIter || fileIter->literPath.isEmpty())
             return false;
 
-        if (!QFile::exists(fileIter->literPath))
+        if (!QFile::exists(QGuiApplication::applicationDirPath() + QDir::separator() + fileIter->literPath))
             return false;
 
         qDebug() << "fileExist: true";
@@ -612,7 +619,7 @@ bool LecturesManager::fileExist(const LecturesManager::FileType& type, const int
         if (mDisciplines.end() == fileIter || fileIter->educPlanPath.isEmpty())
             return false;
 
-        if (!QFile::exists(fileIter->educPlanPath))
+        if (!QFile::exists(QGuiApplication::applicationDirPath() + QDir::separator() + fileIter->educPlanPath))
             return false;
 
         qDebug() << "fileExist: true";
@@ -626,7 +633,7 @@ bool LecturesManager::fileExist(const LecturesManager::FileType& type, const int
         if (mDisciplines.end() == fileIter || fileIter->educProgPath.isEmpty())
             return false;
 
-        if (!QFile::exists(fileIter->educProgPath))
+        if (!QFile::exists(QGuiApplication::applicationDirPath() + QDir::separator() + fileIter->educProgPath))
             return false;
 
         qDebug() << "fileExist: true";
@@ -702,7 +709,7 @@ QString LecturesManager::getFileContent(const LecturesManager::FileType& type, c
     default: return QString();
     }
 
-    QFile file(path);
+    QFile file(QGuiApplication::applicationDirPath() + QDir::separator() + path);
 
     if (!file.open(QIODevice::ReadOnly | QIODevice::Text))
     {
@@ -726,10 +733,10 @@ void LecturesManager::createFile(const int& idx, FileType type)
         return;
     }
 
-    QString baseFolder {"Lectures\\"};
+    QString baseFolder("Lectures\\");
 
-    if (!QDir(baseFolder).exists())
-        QDir().mkdir(baseFolder);
+    if (!QDir(QGuiApplication::applicationDirPath() + QDir::separator() + baseFolder).exists())
+        QDir().mkdir(QGuiApplication::applicationDirPath() + QDir::separator() + baseFolder);
 
     switch (type)
     {
@@ -750,11 +757,11 @@ void LecturesManager::createFile(const int& idx, FileType type)
         break;
     }
 
-    if (!QDir(baseFolder).exists())
-        QDir().mkdir(baseFolder);
+    if (!QDir(QGuiApplication::applicationDirPath() + QDir::separator() + baseFolder).exists())
+        QDir().mkdir(QGuiApplication::applicationDirPath() + QDir::separator() + baseFolder);
 
     QString filePath(baseFolder + QDir::separator() + QString::number(idx) + "." + fileExtension);
-    QFile file(filePath);
+    QFile file(QGuiApplication::applicationDirPath() + QDir::separator() + filePath);
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
@@ -892,7 +899,7 @@ void LecturesManager::saveFileContent(const QString& text, const int& idx, FileT
         break;
     }
 
-    QFile file(path);
+    QFile file(QGuiApplication::applicationDirPath() + QDir::separator() + path);
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text))
     {
@@ -910,8 +917,8 @@ void LecturesManager::copyFile(QString path, const int& idx, FileType type)
 {
     QString baseFolder {"Lectures\\"};
 
-    if (!QDir(baseFolder).exists())
-        QDir().mkdir(baseFolder);
+    if (!QDir(QGuiApplication::applicationDirPath() + QDir::separator() + baseFolder).exists())
+        QDir().mkdir(QGuiApplication::applicationDirPath() + QDir::separator() + baseFolder);
 
     switch (type)
     {
@@ -932,14 +939,14 @@ void LecturesManager::copyFile(QString path, const int& idx, FileType type)
         break;
     }
 
-    if (!QDir(baseFolder).exists())
-        QDir().mkdir(baseFolder);
+    if (!QDir(QGuiApplication::applicationDirPath() + QDir::separator() + baseFolder).exists())
+        QDir().mkdir(QGuiApplication::applicationDirPath() + QDir::separator() + baseFolder);
 
     QString prefix("file:///");
     path.remove(0, prefix.size());
     QString fileName(path.right(path.size() - path.lastIndexOf('/') - 1));
     QString newPath(baseFolder + '\\' + fileName);
-    QFile::copy(path, newPath);
+    QFile::copy(QGuiApplication::applicationDirPath() + QDir::separator() + path, QGuiApplication::applicationDirPath() + QDir::separator() + newPath);
 
     switch (type)
     {

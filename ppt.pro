@@ -25,7 +25,9 @@ HEADERS += \
     cpp/ReportInfoModel.h \
     cpp/ManagerInterface.h \
     cpp/GradesManager.h \
-    cpp/SQLiteManager.h
+    cpp/SQLiteManager.h \
+    cpp/QMLHighlighter.h \
+    cpp/SyntaxHighlighter.h
 
 SOURCES += \
     cpp/main.cpp \
@@ -38,7 +40,9 @@ SOURCES += \
     cpp/LabsManager.cpp \
     cpp/ManagerInterface.cpp \
     cpp/GradesManager.cpp \
-    cpp/SQLiteManager.cpp
+    cpp/SQLiteManager.cpp \
+    cpp/QMLHighlighter.cpp \
+    cpp/SyntaxHighlighter.cpp
 
 lupdate_only {
 SOURCES += \
@@ -64,3 +68,7 @@ else:unix: LIBS += -L$$SMTP_LIBRARY_LOCATION/release -lSMTPEmail
 
 INCLUDEPATH += $$SMTP_LIBRARY_LOCATION/include/
 DEPENDPATH += $$SMTP_LIBRARY_LOCATION/include/
+
+DISTFILES += \
+    qml/screens/education/labs/ReportInfoScreen.qml \
+    qml/components/palettes/CTextLink.qml

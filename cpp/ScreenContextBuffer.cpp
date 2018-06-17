@@ -98,6 +98,16 @@ int ScreenContextBuffer::labId() const
     return mLabId;
 }
 
+int ScreenContextBuffer::executorId() const
+{
+    return mExecutorId;
+}
+
+QString ScreenContextBuffer::filePath() const
+{
+    return mFilePath;
+}
+
 void ScreenContextBuffer::setNesting(const int& nesting)
 {
     //qDebug() << "setNesting: " << nesting;
@@ -201,5 +211,25 @@ void ScreenContextBuffer::setLabId(int id)
         mLabId = id;
         emit labIdChanged();
         qDebug() << "emit labIdChanged";
+    }
+}
+
+void ScreenContextBuffer::setExecutorId(int id)
+{
+    if (mExecutorId != id)
+    {
+        mExecutorId = id;
+        emit executorIdChanged();
+        qDebug() << "emit executorIdChanged";
+    }
+}
+
+void ScreenContextBuffer::setFilePath(QString path)
+{
+    if (path.compare(mFilePath))
+    {
+        mFilePath = path;
+        emit filePathChanged();
+        qDebug() << "emit filePathChanged";
     }
 }

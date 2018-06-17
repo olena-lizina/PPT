@@ -84,5 +84,9 @@
         <file>qml/components/CLabChildTreeList.qml</file>
         <file>qml/screens/education/labs/EditLabScreen.qml</file>
         <file>resources/images/dummy.png</file>
+        <file>qml/screens/education/labs/ReportInfoScreen.qml</file>
+        <file>qml/components/CTextLink.qml</file>
+        <file>qml/screens/education/labs/ShowReportScreen.qml</file>
+        <file>qml/components/CCodeArea.qml</file>
     </qresource>
 </RCC>

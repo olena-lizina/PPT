@@ -19,16 +19,18 @@ class ScreenContextBuffer: public QObject
     Q_PROPERTY(int labDisciplineId READ labDisciplineId WRITE setLabDisciplineId NOTIFY labDisciplineIdChanged)
     Q_PROPERTY(int labId READ labId WRITE setLabId NOTIFY labIdChanged)
 
+    Q_PROPERTY(int executorId READ executorId WRITE setExecutorId NOTIFY executorIdChanged)
+    Q_PROPERTY(QString filePath READ filePath WRITE setFilePath NOTIFY filePathChanged)
+
 public:
     ScreenContextBuffer(QObject *parent = 0);
     // singleton type provider function
     static QObject* screenContextBufferProvider(QQmlEngine *engine, QJSEngine *scriptEngine);
     static void setQmlEngine(QQmlApplicationEngine *engine);
     Q_INVOKABLE void clearComponentCache();
-
     Q_INVOKABLE void openLabScreen() { emit onOpenLabScreen(); }
-
     Q_INVOKABLE void setNestingAndIndex(const int& nesting, const int& idx);
+    Q_INVOKABLE void callBackToReport() { emit backToReport(); }
 
     int nesting() const;
     int selectedIdx() const;
@@ -40,6 +42,8 @@ public:
     int labsNesting() const;
     int labDisciplineId() const;
     int labId() const;
+    int executorId() const;
+    QString filePath() const;
 
     void setNesting(const int& nesting);
     void setSelectedIdx(const int& idx);
@@ -51,6 +55,8 @@ public:
     void setLabsNesting(const int& nesting);
     void setLabDisciplineId(int id);
     void setLabId(int id);
+    void setExecutorId(int id);
+    void setFilePath(QString path);
 
 signals:
     void nestingChanged();
@@ -65,6 +71,9 @@ signals:
     void labDisciplineIdChanged();
     void labIdChanged();
     void onOpenLabScreen();
+    void executorIdChanged();
+    void filePathChanged();
+    void backToReport();
 
 private:
     static QQmlApplicationEngine *m_qmlEngine;
@@ -78,6 +87,8 @@ private:
     int mLabsNesting;
     int mLabDisId;
     int mLabId;
+    int mExecutorId;
+    QString mFilePath;
 };
 
 #endif // SCREENCONTEXTBUFFER_H
